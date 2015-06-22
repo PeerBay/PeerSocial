@@ -1,0 +1,14 @@
+<div class="comment-form">
+	<div class="input-group">
+		<span class="input-group-btn">
+			<a href="" class="btn btn-default"><i class="fa fa-photo"></i></a>
+		</span>
+		<form ng-submit="submit()" >
+			<input ng-model="neo.share" initial-value value="post.share"  data-ng-hide="true"/>
+			<input ng-model="rel.person" initial-value value='peerFeedID' data-ng-hide="true"/>
+			<input ng-model="rel.post" initial-value="post.id" data-ng-hide="true"/>
+			<input type="text" class="form-control" placeholder="Comment.."  ng-model="neo.message"/>
+			<input type="submit" ng-hide="true"/>
+		</form>
+	</div>
+</div>

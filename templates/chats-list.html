@@ -1,0 +1,85 @@
+<div>
+    <div class="sidebar sidebar-chat right sidebar-size-2 sidebar-offset-0 chat-skin-white sidebar-visible-mobile" id="sidebar-chat" style="top:50px">
+   
+        <div class="split-vertical" >
+          
+              <a class="btn btn-success col-md-12" ng-if="!connectedToWebSocket" ng-click="connectToWebSocket()">
+                Connect
+            </a >
+            <div class="chat-search" >
+                <input type="text" class="form-control" placeholder="Search" />
+            </div>
+            <ul class="chat-filter nav nav-pills " >
+                <li class="active">
+                    <a href="#" data-target="li">All</a>
+                </li>
+                <li>
+                    <a href="#" data-target=".online">Online</a>
+                </li>
+                <li>
+                    <a href="#" data-target=".offline">Offline</a>
+                </li>
+            </ul>
+            <div class="split-vertical-body" ng-if="connectedToWebSocket">
+                <div class="split-vertical-cell">
+                    <div data-scrollable>
+                        
+                        <div class="input-group">
+                            
+                            <input type="text"  ng-model="peerID" >
+                            <span class="input-group-addon"><i class="fa fa-arrow-circle-right" ng-click="connectTo('chat',peerID,true)"></i></span>
+                        </div>
+                        <ul class="chat-contacts" ng-init="DB.get('friends')">
+                            <li  ng-class="connections[friend.person].online?'online':'offline'"  ng-repeat="friend in DB.friends">
+                               <a ng-click="connectTo('chats',friend.person,false,true)"><i class="fa fa-video-camera pull-right" ></i></a>
+                                <a href="#" ng-click="connectTo('chats',friend.person,false)">
+                                    <div class="media">
+                                        <div class="pull-left">
+                                            <span class="status"></span>
+                                            <img ng-src="{{DB.persons[friend.person].userImage}}" width="40" class="img-circle" />
+                                        </div>
+                                        <div class="media-body">
+                                            <div class="contact-name">{{DB.persons[friend.person].firstName+" "+DB.persons[friend.person].lastName}}</div>
+                                            <small>"Free Today"</small>
+                                        </div>
+                                    </div>
+                                </a>
+                            </li>
+                            
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="chat-window-container">
+        <div class="panel panel-default" ng-style="{'left':$index*250}" ng-repeat="(id,chat) in DB.chats">
+            <div class="panel-heading" data-toggle="chat-collapse" data-target="#chat{{id}}" ng-init="onStream('videocall',id)">
+                <a ng-click="connectTo('chats',id,false,true)"><i class="fa fa-video-camera pull-right" ></i></a><a href="#" class="close"><i class="fa fa-times"></i></a>
+                <a href="#">
+                    <span class="pull-left">
+                        <img ng-src="{{ DB.persons[id].userImage }}" class="img-circle" height="40">
+                    </span>
+                    <span class="contact-name">{{DB.persons[id].firstName + " "+ DB.persons[id].lastName}}</span>
+                </a>
+                <div ng-if="connections[id].stream">
+                    <video  ng-src="{{trustSrc(connections[id].stream)}}" autoplay width="100%"></video>
+                </div>
+            </div>
+            <div class="panel-body" id="chat{{id}}" style="max-height:200px;overflow:auto;" scroll-glue>
+                <div class="media" ng-repeat="chatpost in chat">
+                    <div  ng-class="chatpost.from==id?'media-left':'media-right'">
+                        <img ng-src="{{ DB.persons[chatpost.from].userImage }}" width="25" class="img-circle" alt="people" />
+                    </div>
+                    <div class="media-body" >
+                        <span class="message" ng-class="chatpost.from==id?'message':['message','right']">{{chatpost.message}}</span>
+                    </div>
+                </div>
+                <div dataform="chats" instance="{{id}}">
+            </div>
+
+                
+            </div>
+        </div>
+    </div>
+</div>    

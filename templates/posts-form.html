@@ -1,0 +1,24 @@
+<div class="col-xs-12 col-md-6 col-lg-4 item">
+  <div class="timeline-block">
+    <div class="panel panel-default share clearfix-xs">
+      <form ng-submit="submit()">
+        <input type="text"  placeholder="Name" ng-model="rel.person" initial-value="peerFeedID" ng-readonly="true" ng-hide="true">
+        <div class="panel-heading panel-heading-gray title">
+          What&acute;s new
+        </div>
+        <div class="panel-body">
+          <textarea name="status" class="form-control share-text" rows="3" placeholder="Share your status..." ng-model="neo.message"></textarea>
+        </div>
+        <div class="panel-footer share-buttons" ng-init="DB.get('friends')">
+          <a href="#"><i class="fa fa-map-marker"></i></a>
+          <a href="#"><i class="fa fa-photo"></i></a>
+          <a href="#"><i class="fa fa-video-camera"></i></a>
+          <select multiple  ng-model="neo.share" ng-options="friend.person as (DB.persons[friend.person].firstName+ ' ' +DB.persons[friend.id].lastName) for ( id , friend ) in DB.friends">
+            <option value=""> Share with..</option>
+          </select>
+          <button type="submit" class="btn btn-primary btn-xs pull-right " >Post</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

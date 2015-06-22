@@ -1,0 +1,24 @@
+ <ul class="comments">
+  <li class="media" ng-repeat="comment in post.comments" ng-if="DB.comments[comment]">
+    <div class="media-left">
+      <a href="">
+        <img ng-src="{{DB.persons[DB.comments[comment].person].userImage}}" width="40px" class="media-object">
+      </a>
+    </div>
+    <div class="media-body">
+      <div class="pull-right dropdown" data-show-hover="li">
+        <a href="#" data-toggle="dropdown" class="toggle-button">
+          <i class="fa fa-pencil"></i>
+        </a>
+        <ul class="dropdown-menu" role="menu">
+          <li><a href="#">Edit</a></li>
+          <li><a href="#">Delete</a></li>
+        </ul>
+      </div>
+      <a href="" class="comment-author pull-left">{{DB.persons[DB.comments[comment].person].firstName +" "+DB.persons[DB.comments[comment].person].lastName}}</a>
+      <span>{{DB.comments[comment].message}}</span>
+      <div class="comment-date">{{DB.comments[comment].id | date:"MM/dd/yyyy 'at' h:mma"}}</div>
+    </div>
+  </li>
+ 
+</ul>
