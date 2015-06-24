@@ -333,7 +333,7 @@
                                 </div>
                                 <div class="row" ng-init="DB.get('posts')" ng-if="page=='timeline'">
                                     <div ng-if="DB.persons[peerFeedID].coverImage" class="cover overlay cover-image-full height-300-lg">
-                                        <img src="images/profile-cover.jpg" alt="cover" />
+                                        <img ng-src="{{DB.persons[peerFeedID].coverImage}}" alt="cover" />
                                         <div class="overlay overlay-full">
                                           <div class="v-top">
                                             <a href="#" class="btn btn-cover"><i class="fa fa-pencil"></i></a>
@@ -411,6 +411,8 @@
         
         
         <script src="app.js">
+        </script>
+        <script src="msgpack.js">
         </script>
         <script type="application/javascript" src="pouchdb.js">
         </script>
