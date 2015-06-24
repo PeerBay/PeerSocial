@@ -1,5 +1,6 @@
-angular.module('peerFeedApp', ['luegg.directives','angular-bootstrap-select',
-  'angular-bootstrap-select.extra'])
+angular.module('peerFeedApp', ['luegg.directives', 'angular-bootstrap-select',
+	'angular-bootstrap-select.extra'
+])
 	.filter('orderObjectBy', function() {
 		return function(items, field, reverse) {
 			var filtered = [];
@@ -60,72 +61,72 @@ angular.module('peerFeedApp', ['luegg.directives','angular-bootstrap-select',
 			]
 		};
 	}).directive('appFilereader', function($q) {
-    var slice = Array.prototype.slice;
+		var slice = Array.prototype.slice;
 
-    return {
-        restrict: 'A',
-        require: '?ngModel',
-        link: function(scope, element, attrs, ngModel) {
-                if (!ngModel) return;
+		return {
+			restrict: 'A',
+			require: '?ngModel',
+			link: function(scope, element, attrs, ngModel) {
+				if (!ngModel) return;
 
-                ngModel.$render = function() {};
+				ngModel.$render = function() {};
 
-                element.bind('change', function(e) {
-                    var element = e.target;
-                    $q.all(slice.call(element.files, 0).map(readFile))
-                        .then(function(values) {
-                            if (element.multiple) ngModel.$setViewValue(values);
-                            else ngModel.$setViewValue(values.length ? values[0] : null);
-                        });
+				element.bind('change', function(e) {
+					var element = e.target;
+					$q.all(slice.call(element.files, 0).map(readFile))
+						.then(function(values) {
+							if (element.multiple) ngModel.$setViewValue(values);
+							else ngModel.$setViewValue(values.length ? values[0] : null);
+						});
 
-                    function readFile(file) {
-                        var deferred = $q.defer();
+					function readFile(file) {
+						var deferred = $q.defer();
 
-                        var reader = new FileReader();
-                        reader.onload = function(e) {
-                            deferred.resolve(e.target.result);
-                        };
-                        reader.onerror = function(e) {
-                            deferred.reject(e);
-                        };
+						var reader = new FileReader();
+						reader.onload = function(e) {
+							deferred.resolve(e.target.result);
+						};
+						reader.onerror = function(e) {
+							deferred.reject(e);
+						};
 
-                        reader.readAsDataURL(file);
+						reader.readAsDataURL(file);
 
-                        return deferred.promise;
-                    }
+						return deferred.promise;
+					}
 
-                }); //change
+				}); //change
 
-            } //link
-    }; //return
-}).directive('dataform', [
+			} //link
+		}; //return
+	}).directive('dataform', [
 
 		function() {
 			return {
 				restrict: 'A',
 				replace: true,
 				templateUrl: function(elem, attr) {
-					return "templates/"+attr.dataform + '-form.html';
+					return "templates/" + attr.dataform + '-form.html';
 				},
 				scope: true,
 				controller: function($rootScope, $scope, $element, $attrs) {
 					$scope.neo = {}
-					$scope.temp={}
-					$scope.attach={}
-					$scope.myImage=''
+					$scope.temp = {}
+					$scope.attach = {}
+					$scope.myImage = ''
 					$scope.transmit = function(save) {
 						doc = angular.extend($scope.neo, $scope.rel)
 						if (!doc.id) {
 							doc.id = Date.now();
 						}
 
-						doc.app=$attrs.dataform
+						doc.app = $attrs.dataform
 						console.log(doc)
-						
-						if($attrs.instance in $scope.DB[$attrs.dataform]){
+
+						if ($attrs.instance in $scope.DB[$attrs.dataform]) {
 							$scope.DB[$attrs.dataform][$attrs.instance].push(doc)
 							$scope.connections[$attrs.instance].transmit(doc)
-						}else{
+						} else {
 							$scope.DB[$attrs.dataform].push(doc)
 						}
 						$scope.neo = {}
@@ -149,17 +150,20 @@ angular.module('peerFeedApp', ['luegg.directives','angular-bootstrap-select',
 							doc = angular.extend($scope.DB[$attrs.dataform][doc.id], doc)
 						}
 						console.log(doc)
+
 						$rootScope.secretDB.rel.save($attrs.dataform, doc).then(function(res) {
 							console.log(res)
 
-							if($scope.attach){
-								for(a in $scope.attach){
+							if ($scope.attach) {
+								for (a in $scope.attach) {
 									console.log($scope.attach[a])
-									$rootScope.secretDB.rel.putAttachment($attrs.dataform,
-									 {id:res[$attrs.dataform][0].id,rev:res[$attrs.dataform][0].rev},
-									  a,
-									   $scope.attach[a],
-									    $scope.attach[a].type)
+									$rootScope.secretDB.rel.putAttachment($attrs.dataform, {
+											id: res[$attrs.dataform][0].id,
+											rev: res[$attrs.dataform][0].rev
+										},
+										a,
+										$scope.attach[a],
+										$scope.attach[a].type)
 								}
 
 							}
@@ -238,7 +242,7 @@ angular.module('peerFeedApp', ['luegg.directives','angular-bootstrap-select',
 				restrict: 'A',
 				replace: true,
 				templateUrl: function(elem, attr) {
-					return "templates/"+attr.datalist + '-list.html';
+					return "templates/" + attr.datalist + '-list.html';
 				},
 				scope: true
 			};
@@ -454,7 +458,7 @@ angular.module('peerFeedApp', ['luegg.directives','angular-bootstrap-select',
 					log: log
 				})
 			}
-			$rootScope.peernode = $scope.peernode = window.location.origin+"/db"
+			$rootScope.peernode = $scope.peernode = window.location.origin + "/db"
 			$scope.username = "vasilis"
 			$scope.password = "9411662"
 			$rootScope.connected = false
@@ -472,7 +476,7 @@ angular.module('peerFeedApp', ['luegg.directives','angular-bootstrap-select',
 							clearInterval(keyReadyInterval)
 							console.log(peerFeed.session.keys)
 							var mypeerFeedID = peerFeed.crypto.getpeerFeedID(peerFeed.session.keys.publicKey)
-							// $rootScope.Log("peerFeedID:" + mypeerFeedID)
+								// $rootScope.Log("peerFeedID:" + mypeerFeedID)
 							$rootScope.simpleID = mypeerFeedID.toLowerCase()
 							$rootScope.peerFeedID = mypeerFeedID
 							$.couch.urlPrefix = $scope.peernode;
@@ -683,8 +687,8 @@ angular.module('peerFeedApp', ['luegg.directives','angular-bootstrap-select',
 				})
 			}
 		}
-	]).controller('DataController', ['$scope', '$rootScope','$sce',
-		function($scope, $rootScope , $sce) {
+	]).controller('DataController', ['$scope', '$rootScope', '$sce',
+		function($scope, $rootScope, $sce) {
 			$scope.DB = {}
 			$scope.userID = 1
 			console.log(peerFeed.session.keys)
@@ -771,33 +775,33 @@ angular.module('peerFeedApp', ['luegg.directives','angular-bootstrap-select',
 			//         $scope.DB.get(parser.type, parser.id)
 			//     }
 			// })
-			
-			$scope.connectToWebSocket=function(anonymous){
-				if(anonymous==true){
-					proxy=new rtcProxy(function(){
+
+			$scope.connectToWebSocket = function(anonymous) {
+				if (anonymous == true) {
+					proxy = new rtcProxy(function() {
 						console.log("connected to websocket")
-						$scope.anonymousID=proxy.localID
-						$scope.connectedToWebSocket=true
+						$scope.anonymousID = proxy.localID
+						$scope.connectedToWebSocket = true
 						$scope.$apply()
 
 					})
-				}else{
-					
-					config={
-						keys:peerFeed.session.keys
+				} else {
+
+					config = {
+						keys: peerFeed.session.keys
 					}
-					proxy=new rtcProxy(config,function(){
-												console.log("connected to websocket")
+					proxy = new rtcProxy(config, function() {
+						console.log("connected to websocket")
 
-						$scope.connectedToWebSocket=true
+						$scope.connectedToWebSocket = true
 						$scope.$apply()
-						proxy.onNewChannel=function(channel){
-							peerID=channel.peerID
+						proxy.onNewChannel = function(channel) {
+							peerID = channel.peerID
 
-							console.log("new channel from:",peerID)
-							channel.onreceive=function(message){
-								app=message.app
-								console.log("new message:",message)
+							console.log("new channel from:", peerID)
+							channel.onreceive = function(message) {
+								app = message.app
+								console.log("new message:", message)
 								if (!(app in $scope.DB)) {
 									$scope.DB[app] = {}
 								}
@@ -806,16 +810,18 @@ angular.module('peerFeedApp', ['luegg.directives','angular-bootstrap-select',
 								}
 								$scope.DB[app][peerID].push(message)
 								$scope.$apply()
-								
+
 							}
-							$scope.connections[peerID]={online:true};
-							$scope.connections[peerID].transmit=channel.transmit
+							$scope.connections[peerID] = {
+								online: true
+							};
+							$scope.connections[peerID].transmit = channel.transmit
 
 						}
-						proxy.onMediaStream=function(stream){
-							peerID=stream.peerID
-						
-							$scope.connections[peerID].stream=URL.createObjectURL(stream);
+						proxy.onMediaStream = function(stream) {
+							peerID = stream.peerID
+
+							$scope.connections[peerID].stream = URL.createObjectURL(stream);
 
 							$scope.$apply()
 						}
@@ -823,12 +829,12 @@ angular.module('peerFeedApp', ['luegg.directives','angular-bootstrap-select',
 					})
 
 				}
-							}
-			$scope.connections={}
+			}
+			$scope.connections = {}
 
-			$scope.connectTo = function(app, peerID, through,video) {
+			$scope.connectTo = function(app, peerID, through, video) {
 				if (!peerID) {
-					
+
 				}
 				if (!(app in $scope.DB)) {
 					$scope.DB[app] = {}
@@ -837,36 +843,41 @@ angular.module('peerFeedApp', ['luegg.directives','angular-bootstrap-select',
 				if (!(peerID in $scope.DB[app])) {
 					$scope.DB[app][peerID] = []
 				}
-				if(video==true){
-					navigator.webkitGetUserMedia({ "audio": true, "video": true }, function (stream) {
+				if (video == true) {
+					navigator.webkitGetUserMedia({
+						"audio": true,
+						"video": true
+					}, function(stream) {
 						console.log("camera writing")
-						if(!($scope.peerFeedID in $scope.connections)){
-							$scope.connections[$scope.peerFeedID]={}	
+						if (!($scope.peerFeedID in $scope.connections)) {
+							$scope.connections[$scope.peerFeedID] = {}
 						}
-						$scope.connections[$scope.peerFeedID].stream=URL.createObjectURL(stream);
+						$scope.connections[$scope.peerFeedID].stream = URL.createObjectURL(stream);
 
-	        			proxy.createMediaConnection(peerID,stream,function(st){
-	        				console.log(st)
-	        				// mediaPeer.onaddstream=function(evt){
-	        				// 	console.log("added stream from ",peerID)
-	        				// }
-	        			})
+						proxy.createMediaConnection(peerID, stream, function(st) {
+							console.log(st)
+							// mediaPeer.onaddstream=function(evt){
+							// 	console.log("added stream from ",peerID)
+							// }
+						})
 
-        			},function(err){console.log(err)})
-				}else{
+					}, function(err) {
+						console.log(err)
+					})
+				} else {
 					proxy.connect(peerID, through, function(channel) {
 						channel.onreceive = function(message) {
 							console.log(message)
 							$scope.DB[message.app][peerID].push(message)
 							$scope.$apply()
 						}
-						$scope.connections[peerID]={online:true};
-						$scope.connections[peerID].transmit=channel.transmit
-						channel.onclose=function(){
-							$scope.connections[peerID]["online"]=false;
+						$scope.connections[peerID] = {
+							online: true
+						};
+						$scope.connections[peerID].transmit = channel.transmit
+						channel.onclose = function() {
+							$scope.connections[peerID]["online"] = false;
 						}
-					
-
 
 						// $scope.$watch("DB.["+ app +"]["+  peerID + "]", function(val, oldVal) {
 						// 	// Do stuff
@@ -912,8 +923,6 @@ angular.module('peerFeedApp', ['luegg.directives','angular-bootstrap-select',
 				}
 			}
 		}
-
-
 
 	])
 
@@ -1034,14 +1043,16 @@ peerFeed.session.logout = function(empty) {
 }
 peerFeed.encryptDoc = function(doc) {
 	var header = {}
+	var finaldoc = {}
+
 	mypeerFeedID = peerFeed.crypto.getpeerFeedID(peerFeed.session.keys.publicKey)
-	header._id = doc._id
-	header._rev = doc._rev
+	finaldoc._id = doc._id
+	finaldoc._rev = doc._rev
 	//console.log(doc)
 	if (doc.data.share) {
 		// share to peerfeedids
 		// header.share = hashCodes(doc.data.share)
-		header.share = hashCodes(doc.data.share)
+		finaldoc.share = hashCodes(doc.data.share)
 		if (doc.data.share.indexOf(mypeerFeedID) == -1) {
 			doc.data.share.push(mypeerFeedID)
 		}
@@ -1074,27 +1085,27 @@ peerFeed.encryptDoc = function(doc) {
 	header.ephemeral = nacl.util.encodeBase64(messageKeypair.publicKey)
 	header.cipher = nacl.util.encodeBase64(nacl.secretbox(message, messageNonce, messageKeypair.secretKey))
 	var decryptInfoNonces = []
-	//console.log(peerFeedIDs)
+		//console.log(peerFeedIDs)
 	for (var u = 0; u < peerFeedIDs.length; u++) {
 		decryptInfoNonces.push(peerFeed.crypto.getNonce())
 	}
 	header.challenge = []
 	for (var i = 0; i < peerFeedIDs.length; i++) {
 		var decryptInfo = {
-			senderID: mypeerFeedID,
-			recipientID: peerFeedIDs[i],
-			messageInfo: {
-				messageKey: messageKey,
-				messageNonce: nacl.util.encodeBase64(messageNonce),
-				messageHash: messageHash
+				senderID: mypeerFeedID,
+				recipientID: peerFeedIDs[i],
+				messageInfo: {
+					messageKey: messageKey,
+					messageNonce: nacl.util.encodeBase64(messageNonce),
+					messageHash: messageHash
+				}
 			}
-		}
-		// console.log(
-		// 	nacl.util.decodeUTF8(JSON.stringify(decryptInfo.messageInfo)),
-		// 	decryptInfoNonces[i],
-		// 	Base58.decode(peerFeedIDs[i]).subarray(0, 32),
-		// 	mySecretKey
-		// )
+			// console.log(
+			// 	nacl.util.decodeUTF8(JSON.stringify(decryptInfo.messageInfo)),
+			// 	decryptInfoNonces[i],
+			// 	Base58.decode(peerFeedIDs[i]).subarray(0, 32),
+			// 	mySecretKey
+			// )
 		decryptInfo.messageInfo = nacl.util.encodeBase64(
 			nacl.box(nacl.util.decodeUTF8(
 					JSON.stringify(decryptInfo.messageInfo)
@@ -1112,10 +1123,29 @@ peerFeed.encryptDoc = function(doc) {
 		header.decryptInfo[nacl.util.encodeBase64(decryptInfoNonces[i])] = decryptInfo
 	}
 	// console.log(header,doc)
-	return header;
+	// data=msgpack.encode(header)
+	// data=new Uint8Array(data)
+	data=JSON.stringify(header)
+	data=btoa(data)
+	finaldoc["_attachments"] = {
+		'cipher': {
+			content_type: 'multipart/mixed',
+			data: data
+		}
+	}
+	return finaldoc
 }
 peerFeed.decryptDoc = function(header, keys) {
-	//console.log(header)
+	cipher=header._attachments.cipher.data
+	
+	// data=nacl.util.decodeBase64(data)
+	// data=msgpack.decode(data.buffer)
+	cipher=atob(cipher)
+	cipher=JSON.parse(cipher)
+	cipher._id=header._id
+	cipher._rev=header._rev
+	cipher.share=header.share
+	header=cipher
 	if (keys) {
 		// console.log(keys)
 		var mySecretKey = keys.secretKey
