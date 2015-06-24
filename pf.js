@@ -1125,8 +1125,8 @@ peerFeed.encryptDoc = function(doc) {
 	// console.log(header,doc)
 	// data=msgpack.encode(header)
 	// data=new Uint8Array(data)
-	data=JSON.stringify(header)
-	data=btoa(data)
+	data = JSON.stringify(header)
+	data = btoa(data)
 	finaldoc["_attachments"] = {
 		'cipher': {
 			content_type: 'multipart/mixed',
@@ -1136,16 +1136,16 @@ peerFeed.encryptDoc = function(doc) {
 	return finaldoc
 }
 peerFeed.decryptDoc = function(header, keys) {
-	cipher=header._attachments.cipher.data
-	
+	cipher = header._attachments.cipher.data
+
 	// data=nacl.util.decodeBase64(data)
 	// data=msgpack.decode(data.buffer)
-	cipher=atob(cipher)
-	cipher=JSON.parse(cipher)
-	cipher._id=header._id
-	cipher._rev=header._rev
-	cipher.share=header.share
-	header=cipher
+	cipher = atob(cipher)
+	cipher = JSON.parse(cipher)
+	cipher._id = header._id
+	cipher._rev = header._rev
+	cipher.share = header.share
+	header = cipher
 	if (keys) {
 		// console.log(keys)
 		var mySecretKey = keys.secretKey
