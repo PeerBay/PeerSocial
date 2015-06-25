@@ -2,10 +2,10 @@ function rtcProxy(config, callback) {
 	// if(server==rtcpeer)
 	if (typeof config == "function") {
 		callback = config
-		server = "ws://127.0.0.1:8088"
+		server = "ws://"+location.origin+":8088"
 		keys=nacl.box.keyPair()
 	}else{
-		server=config.server || "ws://127.0.0.1:8088"
+		server=config.server || "ws://"+location.origin+":8088"
 		keys=config.keys || nacl.box.keyPair()
 		
 	}
