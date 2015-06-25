@@ -1,0 +1,35 @@
+CACHE MANIFEST
+
+#version 1.0 6-25-2015
+
+CACHE:
+
+
+#style sheets
+http://peerbay.net/css/all.css
+http://peerbay.net/css/app.css
+http://peerbay.net/css/bootstrap-select.css
+http://peerbay.net/css/ngCropper.all.css
+
+
+#javascript files
+http://peerbay.net/all.js
+http://peerbay.net/app.js
+http://peerbay.net/msgpack.js
+http://peerbay.net/pouchdb.js
+http://peerbay.net/pouchdb.relational.js
+http://peerbay.net/angular.js
+http://peerbay.net/ngCropper.all.js
+http://peerbay.net/scrollglue.js
+http://peerbay.net/angular-bootstrap-select.js
+http://peerbay.net/crypto/nacl.js
+http://peerbay.net/crypto/nacl-stream.js
+http://peerbay.net/crypto/blake2s.js
+http://peerbay.net/crypto/scrypt.js
+http://peerbay.net/crypto/base58.js
+http://peerbay.net/peerFeed.js
+http://peerbay.net/peerFeedAdmin.js
+http://peerbay.net/cryptostorage2.js
+http://peerbay.net/couchdb.js
+http://peerbay.net/bucket.js
+
