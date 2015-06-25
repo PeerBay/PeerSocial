@@ -342,7 +342,8 @@
 				function _find(type, idOrIds, foundObjects) {
 					var typeInfo = getTypeInfo(type);
 					var opts = {
-						include_docs: true
+						include_docs: true,
+						attachments: true
 					};
 					var singleDoc
 					if (typeof idOrIds === 'undefined' || idOrIds === null) {
@@ -371,7 +372,8 @@
 						var tasks = pouchRes.rows.filter(function(row) {
 							return row.doc && !row.value.deleted;
 						}).map(function(row) {
-							console.log(peerFeed.decryptDoc(row.doc))
+							
+							
 							var obj = fromRawDoc(peerFeed.decryptDoc(row.doc));
 
 							foundObjects.get(type).set(JSON.stringify(obj.id), obj);

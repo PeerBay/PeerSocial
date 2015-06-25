@@ -1,5 +1,5 @@
 angular.module('peerFeedApp', ['luegg.directives', 'angular-bootstrap-select',
-	'angular-bootstrap-select.extra'
+	'angular-bootstrap-select.extra', 'ngCropper'
 ])
 	.filter('orderObjectBy', function() {
 		return function(items, field, reverse) {
@@ -66,35 +66,58 @@ angular.module('peerFeedApp', ['luegg.directives', 'angular-bootstrap-select',
 		return {
 			restrict: 'A',
 			require: '?ngModel',
-			link: function(scope, element, attrs, ngModel) {
+			link: function(scope, element, attrs, ngModel, Cropper) {
 				if (!ngModel) return;
 
 				ngModel.$render = function() {};
-
+				var Cropper = element.injector().get("Cropper");
 				element.bind('change', function(e) {
+
 					var element = e.target;
-					$q.all(slice.call(element.files, 0).map(readFile))
-						.then(function(values) {
-							if (element.multiple) ngModel.$setViewValue(values);
-							else ngModel.$setViewValue(values.length ? values[0] : null);
-						});
+					if (attrs.imagewidth || attrs.imageheight) {
+						imagescale={}
+						if(attrs.imagewidth){
+							imagescale["width"]=attrs.imagewidth
+						}
+						if(attrs.imageheight){
+							imagescale["height"]=attrs.imageheight
+						}
+						$q.all(slice.call(element.files, 0).map(scaleImage))
+							.then(function(values) {
+								if (element.multiple) ngModel.$setViewValue(values);
+								else ngModel.$setViewValue(values.length ? values[0] : null);
+							});
 
-					function readFile(file) {
-						var deferred = $q.defer();
+						function scaleImage(file) {
+							var deferred = $q.defer();
+							Cropper.scale(file, imagescale).then(Cropper.encode).then(function(dataUrl) {
+								deferred.resolve(dataUrl);
+							});
+							return deferred.promise;
+						}
+					} else {
+						$q.all(slice.call(element.files, 0).map(readFile))
+							.then(function(values) {
+								if (element.multiple) ngModel.$setViewValue(values);
+								else ngModel.$setViewValue(values.length ? values[0] : null);
+							});
 
-						var reader = new FileReader();
-						reader.onload = function(e) {
-							deferred.resolve(e.target.result);
-						};
-						reader.onerror = function(e) {
-							deferred.reject(e);
-						};
+						function readFile(file) {
+							var deferred = $q.defer();
 
-						reader.readAsDataURL(file);
+							var reader = new FileReader();
+							reader.onload = function(e) {
+								deferred.resolve(e.target.result);
+							};
+							reader.onerror = function(e) {
+								deferred.reject(e);
+							};
 
-						return deferred.promise;
+							reader.readAsDataURL(file);
+
+							return deferred.promise;
+						}
 					}
-
 				}); //change
 
 			} //link
@@ -201,13 +224,15 @@ angular.module('peerFeedApp', ['luegg.directives', 'angular-bootstrap-select',
 						var accountRequests = new PouchDB($rootScope.peernode + "/accountrequests")
 						$scope.accountRequests = []
 						accountRequests.allDocs({
-							include_docs: true
+							include_docs: true,
+							attachments: true
 						}).then(
 							function(response) {
 								if (response) {
 									for (i in response.rows) {
 										// console.log(response)
 										if (response.rows[i].id.indexOf("design") == -1) {
+
 											$scope.accountRequests.push(
 												peerFeed.decryptDoc(response.rows[i].doc, adminKeyPair).data
 											)
@@ -607,13 +632,10 @@ angular.module('peerFeedApp', ['luegg.directives', 'angular-bootstrap-select',
 	]).controller('SignUpController', ['$scope', '$rootScope',
 		function($scope, $rootScope) {
 			$scope.user = {
-				peernode: window.location.origin,
+				peernode: window.location.origin + "/db",
 				username: "bob",
 				password: "9411662",
 				message: "hello",
-				email: "bob@peerbay.net",
-				shownname: "bob marley",
-				public: true
 			}
 			$scope.signUp = function() {
 				console.log($scope.user)
@@ -663,18 +685,15 @@ angular.module('peerFeedApp', ['luegg.directives', 'angular-bootstrap-select',
 														_id: "request_1_000" + Date.now(),
 														data: {
 															share: new Array(data.peerFeedID),
-															username: $scope.user.shownname,
-															email: $scope.user.email,
 															message: $scope.user.message,
 															peerFeedID: $rootScope.peerFeedID,
-															public: $scope.user.public
 														}
 													}
 													PouchDB(peerFeed.peerNode + "/accountrequests")
 														.put(peerFeed.encryptDoc(doc)).then(
 															function(r) {
 																console.log(r)
-																$rootScope.Log("Your account request has been made." +
+																alert("Your account request has been made." +
 																	"When the admin sees it you will be informed by email or you can try to login.")
 															})
 												}
@@ -1140,6 +1159,7 @@ peerFeed.decryptDoc = function(header, keys) {
 
 	// data=nacl.util.decodeBase64(data)
 	// data=msgpack.decode(data.buffer)
+
 	cipher = atob(cipher)
 	cipher = JSON.parse(cipher)
 	cipher._id = header._id

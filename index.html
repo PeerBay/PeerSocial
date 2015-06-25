@@ -15,6 +15,7 @@
         <link href="css/all.css" rel="stylesheet">
         <link href="css/app.css" rel="stylesheet">
         <link href="css/bootstrap-select.css" rel="stylesheet">
+        <link href="css/ngCropper.all.css" rel="stylesheet">
     </head>
     <body ng-app="peerFeedApp">
         <!-- Wrapper required for sidebar transitions -->
@@ -332,7 +333,7 @@
                                     </div>
                                 </div>
                                 <div class="row" ng-init="DB.get('posts')" ng-if="page=='timeline'">
-                                    <div ng-if="DB.persons[peerFeedID].coverImage" class="cover overlay cover-image-full height-300-lg">
+                                    <div ng-if="DB.persons[peerFeedID].coverImage" class=" overlay cover-image-full height-300-lg">
                                         <img ng-src="{{DB.persons[peerFeedID].coverImage}}" alt="cover" />
                                         <div class="overlay overlay-full">
                                           <div class="v-top">
@@ -411,6 +412,8 @@
         <script type="application/javascript" src="pouchdb.relational.js">
         </script>
         <script type="application/javascript" src="angular.js">
+        </script>
+        <script type="application/javascript" src="ngCropper.all.js">
         </script>
         <script type="application/javascript" src="scrollglue.js">
         </script>

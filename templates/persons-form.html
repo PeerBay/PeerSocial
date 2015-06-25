@@ -64,7 +64,7 @@
                                 <span class="btn btn-default btn-file">
                                     <span ng-hide="neo.userImage">Select image</span>
                                     <span ng-show="neo.userImage">Change</span>
-                                    <input type="file" ng-model="neo.userImage"  app-filereader/>
+                                    <input type="file" ng-model="neo.userImage" imagewidth=200  app-filereader/>
                                      
                                    
                                 </span>
@@ -85,7 +85,7 @@
                                 <span class="btn btn-default btn-file">
                                     <span ng-hide="neo.coverImage">Select image</span>
                                     <span ng-show="neo.coverImage">Change</span>
-                                    <input type="file" ng-model="neo.coverImage" ng-disabled="true"  app-filereader/>
+                                    <input type="file" ng-model="neo.coverImage" imagewidth=1500 imageheight=300  app-filereader/>
                                 </span>
                   
                             </div>
