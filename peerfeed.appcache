@@ -1,6 +1,6 @@
 CACHE MANIFEST
 
-#version 1.0 6-25-2015
+#version 1.1 6-25-2015
 
 CACHE:
 
@@ -33,3 +33,5 @@ http://peerbay.net/cryptostorage2.js
 http://peerbay.net/couchdb.js
 http://peerbay.net/bucket.js
 
+NETWORK:
+*
