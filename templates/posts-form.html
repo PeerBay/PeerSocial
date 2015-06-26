@@ -13,9 +13,12 @@
           <a href="#"><i class="fa fa-map-marker"></i></a>
           <a href="#"><i class="fa fa-photo"></i></a>
           <a href="#"><i class="fa fa-video-camera"></i></a>
-          <select multiple  ng-model="neo.share" ng-options="friend.person as (DB.persons[friend.person].firstName+ ' ' +DB.persons[friend.id].lastName) for ( id , friend ) in DB.friends">
-            <option value=""> Share with..</option>
-          </select>
+          <oi-multiselect multiple  ng-model="neo.share" ng-options="friend.person as ($parent.DB.persons[friend.person].firstName+ ' ' +$parent.DB.persons[friend.id].lastName) for ( id , friend ) in DB.friends">
+            
+          </oi-multiselect>
+         <!--  <select multiple  ng-model="neo.share" ng-options="friend.person as (DB.persons[friend.person].firstName+ ' ' +DB.persons[friend.id].lastName) for ( id , friend ) in DB.friends">
+            
+          </select> -->
           <button type="submit" class="btn btn-primary btn-xs pull-right " >Post</button>
         </div>
       </form>

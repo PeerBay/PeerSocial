@@ -282,22 +282,26 @@
 				}
 
 				function _saveAttr(type, id, rel, value) {
-					// console.log(type, id, value)
-					find(type, id)
+					console.log(type, id, value)
+			
+						find(type, id)
 						.then(function(res) {
-							// console.log(res)
+							console.log(res)
 							var typeInfo = getTypeInfo(type)
 
 							if (rel in res[typeInfo.plural][id]) {
 								res[typeInfo.plural][id][rel].push(value)
 							}else{
-                res[typeInfo.plural][id][rel]=[value]
-              }
+								console.log(res[typeInfo.plural][id])
+                				res[typeInfo.plural][id][rel]=[value]
+              				}
 							save(type, res[getTypeInfo(type).plural][id])
 						})
+						
 				}
 
 				function _save(type, obj) {
+					console.log(type,obj)
 					var typeInfo = getTypeInfo(type);
 					var pouchDoc;
 					// console.log(typeInfo.singular, obj.length)
@@ -305,7 +309,7 @@
 						var typeName;
 
 						for (typeName in typeInfo.relations) {
-							if ("belongsTo" in typeInfo.relations[typeName]) {
+							if ("belongsTo" in typeInfo.relations[typeName]  ) {
 								_saveAttr(typeName, obj[typeName], typeInfo.plural, obj.id)
 							}
 						}
@@ -367,7 +371,7 @@
 					if (!foundObjects.has(type)) {
 						foundObjects.set(type, new collections.Map());
 					}
-					console.log(opts)
+					// console.log(opts)
 					return db.allDocs(opts).then(function(pouchRes) {
 						var tasks = pouchRes.rows.filter(function(row) {
 							return row.doc && !row.value.deleted;
