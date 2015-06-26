@@ -38,6 +38,9 @@ function rtcProxy(config, callback) {
 	this.ws.onclose = function(e) {
 		console.log("Websocket closed");
 	}
+	this.onAction=function(action,data){
+
+	}
 	this.ws.onmessage = function(e) {
 		// console.log("Websocket message received: " + e.data);
 
@@ -74,6 +77,8 @@ function rtcProxy(config, callback) {
 					self.dht.update(self.knownPeers)
 					console.log(self.knownPeers)
 					break;
+				case:
+					self.onAction(json.action,json.data)	
 			}
 		}
 	}
