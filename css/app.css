@@ -40665,3 +40665,7 @@ ul.dropdown-menu li span.red {
 ul.dropdown-menu li span.green {
     color: green;
 }
+
+.cover-image-full img {
+    width:100%;
+}
