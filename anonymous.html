@@ -1,0 +1,40 @@
+<html>
+	<head></head>
+	<body>
+		<h1>Leave this tab open.</h1>
+		<h2>Thank you :-)</h2>
+	<script>
+	server=new WebSocket("ws://"+location.host+":8080")
+	server.onopen=function(e){
+		console.log(e)
+	}
+	server.onmessage=function(e){
+		request=JSON.parse(e.data)
+		if(request.action=="refresh"){
+			document.location.reload()
+		}else{
+			switch (json.data.type) {
+				case "offer":
+					if (json.video) {
+						self.acceptMediaConnection(json.from, json.data)
+					} else {
+						self.acceptConnection(json.from, json.data)
+
+					}
+					break;
+				case "answer":
+					self.establishConnection(json.from, json.data)
+					break;
+			}
+			if (json.data.candidate) {
+
+				self.peers[json.from].addIceCandidate(new RTCIceCandidate(json.data));
+			}
+
+	 }
+	}
+
+	</script>
+
+	</body>
+</html>
