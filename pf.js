@@ -1,6 +1,4 @@
-angular.module('peerFeedApp', ['luegg.directives', 'angular-bootstrap-select',
-	'angular-bootstrap-select.extra', 'ngCropper'
-])
+angular.module('peerFeedApp', ['luegg.directives', 'oi.multiselect', 'ngCropper'])
 	.filter('orderObjectBy', function() {
 		return function(items, field, reverse) {
 			var filtered = [];
@@ -60,6 +58,74 @@ angular.module('peerFeedApp', ['luegg.directives', 'angular-bootstrap-select',
 				}
 			]
 		};
+	}).directive('dropdownMultiselect', function() {
+		return {
+			restrict: 'E',
+			scope: {
+				model: '=',
+				options: '=',
+			},
+			template: "<div class='btn-group' data-ng-class='{open: open}'>" +
+				"<button class='btn btn-small'>Select...</button>" +
+				"<button class='btn btn-small dropdown-toggle' data-ng-click='openDropdown()'>" +
+				" <span class='caret'></span></button>" +
+				"<ul class='dropdown-menu' aria-labelledby='dropdownMenu'>" +
+				"<li><a data-ng-click='selectAll()'>" +
+				"<span class='glyphicon glyphicon-ok green' " +
+				"aria-hidden='true'></span> Check All</a></li>" +
+				"<li><a data-ng-click='deselectAll();'>" +
+				"<span class='glyphicon glyphicon-remove red'" +
+				"aria-hidden='true'></span> Uncheck All</a></li>" +
+				"<li class='divider'></li>" +
+				"<li data-ng-repeat='option in options'>" +
+				"<a data-ng-click='toggleSelectItem(option)'>" +
+				"<span data-ng-class='getClassName(option)' " +
+				"aria-hidden='true'></span> {{option.name}}</a></li>" +
+				"</ul>" +
+				"</div>",
+
+			controller: function($scope) {
+				$scope.openDropdown = function() {
+					$scope.open = !$scope.open;
+				};
+
+				$scope.selectAll = function() {
+					$scope.model = [];
+					angular.forEach($scope.options, function(item, index) {
+						$scope.model.push(item.id);
+					});
+				};
+
+				$scope.deselectAll = function() {
+					$scope.model = [];
+				};
+
+				$scope.toggleSelectItem = function(option) {
+					var intIndex = -1;
+					angular.forEach($scope.model, function(item, index) {
+						if (item == option.id) {
+							intIndex = index;
+						}
+					});
+
+					if (intIndex >= 0) {
+						$scope.model.splice(intIndex, 1);
+					} else {
+						$scope.model.push(option.id);
+					}
+				};
+
+				$scope.getClassName = function(option) {
+					var varClassName = 'glyphicon glyphicon-remove red';
+					angular.forEach($scope.model, function(item, index) {
+						if (item == option.id) {
+							varClassName = 'glyphicon glyphicon-ok green';
+						}
+					});
+					return (varClassName);
+				};
+			}
+		}
 	}).directive('appFilereader', function($q) {
 		var slice = Array.prototype.slice;
 
@@ -75,12 +141,12 @@ angular.module('peerFeedApp', ['luegg.directives', 'angular-bootstrap-select',
 
 					var element = e.target;
 					if (attrs.imagewidth || attrs.imageheight) {
-						imagescale={}
-						if(attrs.imagewidth){
-							imagescale["width"]=attrs.imagewidth
+						imagescale = {}
+						if (attrs.imagewidth) {
+							imagescale["width"] = attrs.imagewidth
 						}
-						if(attrs.imageheight){
-							imagescale["height"]=attrs.imageheight
+						if (attrs.imageheight) {
+							imagescale["height"] = attrs.imageheight
 						}
 						$q.all(slice.call(element.files, 0).map(scaleImage))
 							.then(function(values) {
@@ -604,14 +670,6 @@ angular.module('peerFeedApp', ['luegg.directives', 'angular-bootstrap-select',
 																async: true
 															}
 														}
-													},
-													'person': {
-														belongsTo: {
-															type: 'person',
-															options: {
-																async: false
-															}
-														}
 													}
 												}
 											}]);
@@ -917,7 +975,7 @@ angular.module('peerFeedApp', ['luegg.directives', 'angular-bootstrap-select',
 				if (id) {
 					$rootScope.secretDB.rel.find(app, id).then(function(res) {
 						//console.log(res)
-						$rootScope.Log("Getting " + app + " with id:" + id)
+						console.log(res)
 						for (i in res) {
 							if (!(i in $scope.DB)) {
 								$scope.DB[i] = {}
@@ -929,8 +987,8 @@ angular.module('peerFeedApp', ['luegg.directives', 'angular-bootstrap-select',
 					})
 				} else {
 					$rootScope.secretDB.rel.find(app).then(function(res) {
-						$rootScope.Log("Getting " + app)
-						//console.log(res)
+						// $rootScope.Log("Getting " + app)
+						console.log(res)
 						for (i in res) {
 							if (!(i in $scope.DB)) {
 								$scope.DB[i] = {}
@@ -1062,16 +1120,16 @@ peerFeed.session.logout = function(empty) {
 }
 peerFeed.encryptDoc = function(doc) {
 	var header = {}
-	var finaldoc = {}
+	
 
 	mypeerFeedID = peerFeed.crypto.getpeerFeedID(peerFeed.session.keys.publicKey)
-	finaldoc._id = doc._id
-	finaldoc._rev = doc._rev
+	header._id = doc._id
+	header._rev = doc._rev
 	//console.log(doc)
 	if (doc.data.share) {
 		// share to peerfeedids
 		// header.share = hashCodes(doc.data.share)
-		finaldoc.share = hashCodes(doc.data.share)
+		header.share = hashCodes(doc.data.share)
 		if (doc.data.share.indexOf(mypeerFeedID) == -1) {
 			doc.data.share.push(mypeerFeedID)
 		}
@@ -1144,28 +1202,30 @@ peerFeed.encryptDoc = function(doc) {
 	// console.log(header,doc)
 	// data=msgpack.encode(header)
 	// data=new Uint8Array(data)
-	data = JSON.stringify(header)
-	data = btoa(data)
-	finaldoc["_attachments"] = {
-		'cipher': {
-			content_type: 'multipart/mixed',
-			data: data
-		}
-	}
-	return finaldoc
+	// data = JSON.stringify(header)
+	// data = btoa(data)
+	// finaldoc["_attachments"] = {
+	// 	'cipher': {
+	// 		content_type: 'text/json',
+	// 		data: data
+	// 	}
+	// }
+	// return finaldoc
+	return header
 }
 peerFeed.decryptDoc = function(header, keys) {
-	cipher = header._attachments.cipher.data
+	console.log("decrypt "+header._id)
+	// cipher = header._attachments.cipher.data
 
 	// data=nacl.util.decodeBase64(data)
 	// data=msgpack.decode(data.buffer)
 
-	cipher = atob(cipher)
-	cipher = JSON.parse(cipher)
-	cipher._id = header._id
-	cipher._rev = header._rev
-	cipher.share = header.share
-	header = cipher
+	// cipher = atob(cipher)
+	// cipher = JSON.parse(cipher)
+	// cipher._id = header._id
+	// cipher._rev = header._rev
+	// cipher.share = header.share
+	// header = cipher
 	if (keys) {
 		// console.log(keys)
 		var mySecretKey = keys.secretKey
@@ -1240,7 +1300,8 @@ peerFeed.decryptDoc = function(header, keys) {
 	//console.log(doc,header)
 	data._id = header._id
 	data._rev = header._rev
-	// console.log(data)
+
+	console.log(data)
 	return data
 }
 var hashCodes = function(arr) {
