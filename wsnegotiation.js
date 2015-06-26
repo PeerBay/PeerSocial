@@ -2,21 +2,21 @@ function rtcProxy(config, callback) {
 	// if(server==rtcpeer)
 	if (typeof config == "function") {
 		callback = config
-		server = "ws://"+location.host+":8088"
-		keys=nacl.box.keyPair()
-	}else{
-		server=config.server || "ws://"+location.host+":8088"
-		keys=config.keys || nacl.box.keyPair()
-		
+		server = "ws://" + location.host + ":8080"
+		keys = nacl.box.keyPair()
+	} else {
+		server = config.server || "ws://" + location.host + ":8080"
+		keys = config.keys || nacl.box.keyPair()
+
 	}
-	console.log(server,keys)
+	console.log(server, keys)
 	var self = this;
 	this.ws = new WebSocket(server);
 	this.knownPeers = []
 	this.ws.onopen = function(e) {
 		this.server = true
 		console.log("Websocket opened");
-		
+
 		self.localID = keyToString(keys.publicKey)
 		if (callback) {
 			callback()
@@ -45,9 +45,9 @@ function rtcProxy(config, callback) {
 		console.log("ws message", json)
 		switch (json.data.type) {
 			case "offer":
-				if(json.video){
+				if (json.video) {
 					self.acceptMediaConnection(json.from, json.data)
-				}else{
+				} else {
 					self.acceptConnection(json.from, json.data)
 
 				}
@@ -101,7 +101,7 @@ function rtcProxy(config, callback) {
 			'OfferToReceiveVideo': true
 		}
 	}
-	this.connect = function(to, through, callback,stream) {
+	this.connect = function(to, through, callback, stream) {
 		console.log(to, through, callback)
 		if (typeof(to) == "function") {
 			callback = to;
@@ -119,7 +119,7 @@ function rtcProxy(config, callback) {
 		} else if (typeof(to) == "object" && typeof(through) == "function") {
 			callback = through
 			to = this.randomPeer()
-			through = this.randomPeers(3,[to]);
+			through = this.randomPeers(3, [to]);
 			peerID = through[0]
 			type = "onion"
 
@@ -128,14 +128,14 @@ function rtcProxy(config, callback) {
 				type = "onionTo"
 				peerID = through[0]
 
-			} else if(through==true) {
+			} else if (through == true) {
 				type = "randomOnionTo"
-				through = this.randomPeers(3,[to])
+				through = this.randomPeers(3, [to])
 				peerID = through[0]
-			}else{
-				type="direct"
-				peerID=to
-				through=[]
+			} else {
+				type = "direct"
+				peerID = to
+				through = []
 			}
 
 		} else {
@@ -146,7 +146,7 @@ function rtcProxy(config, callback) {
 				//prepare the onion connection
 				console.log(through, to)
 				channel.type = type
-				channel.to=to;
+				channel.to = to;
 				channel.through = through.slice(0)
 				console.log(channel.through)
 				keys = nacl.box.keyPair()
@@ -194,7 +194,7 @@ function rtcProxy(config, callback) {
 			}
 		} else {
 			prepare = function(channel) {
-				channel.to=to
+				channel.to = to
 				channel.type = type
 				channel.key = nacl.util.encodeBase64(nacl.randomBytes(32))
 				message = {
@@ -224,14 +224,14 @@ function rtcProxy(config, callback) {
 		}
 		console.log(peerID, type, through)
 
-		this.createConnection(peerID, prepare,stream)
+		this.createConnection(peerID, prepare, stream)
 	}
-	this.mediaPeers={}
-	this.createMediaConnection=function(peerID,stream,callback){
-		if(peerID in this.mediaPeers){
+	this.mediaPeers = {}
+	this.createMediaConnection = function(peerID, stream, callback) {
+		if (peerID in this.mediaPeers) {
 			this.mediaPeers[peerID].addStream(stream)
 
-		}else{
+		} else {
 			this.mediaPeers[peerID] = new webkitRTCPeerConnection(config, connection);
 			this.mediaPeers[peerID].peerID = peerID
 
@@ -246,13 +246,13 @@ function rtcProxy(config, callback) {
 					self.ws.send(JSON.stringify(json))
 				}
 			}
-			this.mediaPeers[peerID].onaddstream=function(evt){
-				console.log("received stream",evt)
-				evt.stream.peerID=peerID
+			this.mediaPeers[peerID].onaddstream = function(evt) {
+				console.log("received stream", evt)
+				evt.stream.peerID = peerID
 				self.onMediaStream(evt.stream)
 			}
-			if(typeof stream=="object"){
-				console.log("RTC with video",stream)
+			if (typeof stream == "object") {
+				console.log("RTC with video", stream)
 				this.mediaPeers[peerID].addStream(stream)
 			}
 			this.mediaPeers[peerID].createOffer(function(desc) {
@@ -262,23 +262,24 @@ function rtcProxy(config, callback) {
 					from: self.localID,
 					to: peerID,
 					data: desc,
-					video:true
+					video: true
 				};
 				self.ws.send(JSON.stringify(json))
 				console.log("send offer")
-			},function(e){console.log(e)},sdpConstraints);
+			}, function(e) {
+				console.log(e)
+			}, sdpConstraints);
 
 		}
 	}
-	this.createConnection = function(peerID, callback,stream) {
+	this.createConnection = function(peerID, callback, stream) {
 		console.log("createConnection", peerID, prepare)
-		if(peerID in this.peers ){
-			this.peers[peerID].close()	
+		if (peerID in this.peers) {
+			this.peers[peerID].close()
 		}
 		this.peers[peerID] = new webkitRTCPeerConnection(config, connection);
 		this.peers[peerID].peerID = peerID
-		
-	
+
 		var channel = this.channels[peerID] = this.peers[peerID].createDataChannel("dataChannel", {
 			reliable: true
 		});
@@ -312,11 +313,13 @@ function rtcProxy(config, callback) {
 			};
 			self.ws.send(JSON.stringify(json))
 			console.log("send offer")
-		},function(e){console.log(e)},sdpConstraints);
+		}, function(e) {
+			console.log(e)
+		}, sdpConstraints);
 
 	}
 
-	this.acceptConnection = function(peerID, offer,video) {
+	this.acceptConnection = function(peerID, offer, video) {
 		console.log("acceptConnection", peerID, offer)
 		this.peers[peerID] = new webkitRTCPeerConnection(config, connection);
 		this.peers[peerID].peerID = peerID
@@ -337,7 +340,7 @@ function rtcProxy(config, callback) {
 			self.channels[this.peerID].peerID = this.peerID
 			self.channels[this.peerID].onopen = function(e) {
 				console.log("datachannel opened")
-			
+
 				self.newChannel(this)
 			}
 			self.channels[this.peerID].onclose = function(e) {
@@ -345,12 +348,19 @@ function rtcProxy(config, callback) {
 			}
 		}
 
+		this.peers[peerID].setRemoteDescription(new RTCSessionDescription(offer), function(e) {
+			console.log(e)
+		}, function(e) {
+			console.log(e)
+		})
 
-		this.peers[peerID].setRemoteDescription(new RTCSessionDescription(offer),function(e){console.log(e)},function(e){console.log(e)})
-		
 		this.peers[peerID].createAnswer(function(desc) {
 			console.log("createAnswer")
-			self.peers[peerID].setLocalDescription(desc,function(e){console.log(e)},function(e){console.log(e)});
+			self.peers[peerID].setLocalDescription(desc, function(e) {
+				console.log(e)
+			}, function(e) {
+				console.log(e)
+			});
 			var json = {
 				from: self.localID,
 				to: peerID,
@@ -358,16 +368,20 @@ function rtcProxy(config, callback) {
 			};
 			self.ws.send(JSON.stringify(json))
 			console.log("sendAnswer")
-		},function(e){console.log(e)},sdpConstraints)
+		}, function(e) {
+			console.log(e)
+		}, sdpConstraints)
 
 	}
 	this.acceptMediaConnection = function(peerID, offer) {
 		console.log("acceptConnection", peerID, offer)
 		this.mediaPeers[peerID] = new webkitRTCPeerConnection(config, connection);
 		this.mediaPeers[peerID].peerID = peerID
-		
 
-		navigator.webkitGetUserMedia({ "audio": true, "video": true }, function (stream) {
+		navigator.webkitGetUserMedia({
+			"audio": true,
+			"video": true
+		}, function(stream) {
 			console.log("camera writing")
 			self.mediaPeers[peerID].addStream(stream)
 			self.mediaPeers[peerID].onicecandidate = function(event) {
@@ -382,24 +396,29 @@ function rtcProxy(config, callback) {
 				}
 			}
 
-			self.mediaPeers[peerID].onaddstream=function(evt){
-				console.log("received stream",evt)
-				evt.stream.peerID=peerID
+			self.mediaPeers[peerID].onaddstream = function(evt) {
+				console.log("received stream", evt)
+				evt.stream.peerID = peerID
 				self.onMediaStream(evt.stream)
-				
+
 			}
 
 			self.mediaPeers[peerID].setRemoteDescription(new RTCSessionDescription(offer),
-				function(){
+				function() {
 					consol.log("sdp success")
-					
-			},
-			function(e){console.log(e)})
+
+				},
+				function(e) {
+					console.log(e)
+				})
 			self.mediaPeers[peerID].createAnswer(function(desc) {
 				console.log("createAnswer")
 				self.mediaPeers[peerID].setLocalDescription(desc,
-					function(e){console.log(e)}
-					,function(e){console.log(e)});
+					function(e) {
+						console.log(e)
+					}, function(e) {
+						console.log(e)
+					});
 				var json = {
 					from: self.localID,
 					to: peerID,
@@ -407,9 +426,13 @@ function rtcProxy(config, callback) {
 				};
 				self.ws.send(JSON.stringify(json))
 				console.log("sendAnswer")
-			},function(e){console.log(e)},sdpConstraints)
+			}, function(e) {
+				console.log(e)
+			}, sdpConstraints)
 
-		},function(err){console.log(err)})
+		}, function(err) {
+			console.log(err)
+		})
 
 	}
 	this.establishConnection = function(peerID, answer) {
@@ -421,8 +444,8 @@ function rtcProxy(config, callback) {
 	}
 	this.newChannel = function(channel) {
 		console.log("new channel made", channel)
-		
-		channel.addStream=function(stream){
+
+		channel.addStream = function(stream) {
 			this.peers[channel.peerID].addStream(stream)
 		}
 		channel.onmessage = function(e) {
@@ -487,14 +510,14 @@ function rtcProxy(config, callback) {
 		// console.log(this.knownPeers)
 		return this.knownPeers[Math.floor(Math.random() * this.knownPeers.length)]
 	}
-	this.randomPeers = function(len,except) {
+	this.randomPeers = function(len, except) {
 		randompeers = [];
-		if(!except){
-			except=[];
+		if (!except) {
+			except = [];
 		}
 		for (i = 0; i <= len; i++) {
 			p = this.randomPeer()
-			if ((randompeers.indexOf(p) == -1) && (except.indexOf(p)==-1)) {
+			if ((randompeers.indexOf(p) == -1) && (except.indexOf(p) == -1)) {
 				randompeers.push(p)
 			} else {
 				i--;
@@ -503,7 +526,8 @@ function rtcProxy(config, callback) {
 		return randompeers;
 	}
 }
-function keyToString(key){
+
+function keyToString(key) {
 	if (key.length !== 32) {
 		throw new Error('keyToString: invalid public key size')
 		return false
@@ -517,9 +541,11 @@ function keyToString(key){
 	id[32] = hash.digest()[0]
 	return Base58.encode(id)
 }
-function keyToUint(key){
+
+function keyToUint(key) {
 	return Base58.decode(key).subarray(0, 32)
 }
+
 function encryptMessage(message, oPKey, mSKey) {
 	// message :JSON object
 	data = {}
