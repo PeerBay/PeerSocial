@@ -8,7 +8,7 @@
             <div class="col-md-4">
                 <div class="form-group">
                     <label class="control-label" for="formInput11">Field label</label>
-                    <input type="text" class="form-control" id="" placeholder="Admin Password" ng-model="password">
+                    <input type="password" class="form-control" id="" placeholder="Admin Password" ng-model="password">
                 </div>
                 <button type="button" class="btn btn-default" ng-click="login()">Admin Login</button>
             </div>
@@ -31,8 +31,11 @@
                             </div>
                             <button type="button" class="btn btn-default" ng-click="createAccount(request)">ADD</button>
                         </div>
+
                         <div class="line pull-in"></div>
                     </div>
+
+                    <div><input type="number" ng-model="invnum"> <button ng-click="generateInvitationCodes(invnum)">Create Invitation codes</button><div>{{invitationCodes}}</div><p href="">These are your active invitations: {{invitelink}}</p></div>
                 </div>
             </div>
         </div>

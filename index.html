@@ -34,6 +34,8 @@
                             <input class="form-control" type="text" placeholder="Username" ng-model="username">
                             <input class="form-control" type="url" placeholder="PeerNode URL" ng-model="peernode">
                             <input class="form-control" type="password" placeholder="Enter Password" ng-model="password">
+                            <label> Remember on this computer</label>
+                            <input class="form-control" type="checkbox"  ng-model="remember">
                             
                             <a  class="btn btn-primary" ng-click="signIn()">
                                 Login
@@ -69,6 +71,7 @@
                             <input class="form-control" type="text" placeholder="Username" ng-model="user.username">
                             <input class="form-control" type="url" placeholder="PeerNode URL" ng-model="user.peernode">
                             <input class="form-control" type="password" placeholder="Enter Password" ng-model="user.password">
+                            <input class="form-control" type="text" placeholder="Enter Invitation Code" ng-model="user.invitation">
                             <input type="password" class="form-control" placeholder="Enter Admin Password" ng-model="user.adminpassword" ng-show="adminParty">
                             <textarea class="form-control" rows="3" ng-model="user.message" ng-hide="adminParty">
                             </textarea>

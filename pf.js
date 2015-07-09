@@ -283,12 +283,34 @@ angular.module('peerFeedApp', ['luegg.directives', 'oi.multiselect', 'ngCropper'
 				scope: true,
 				controller: function($rootScope, $scope, $element, $attrs) {
 					$scope.password = ""
+					var invitationCodes = []
 					$scope.login = function() {
 						var adminWord = nacl.util.decodeUTF8($scope.password)
 						peerFeed.admin.seed = nacl.hash(adminWord)
 						adminKeyPair = nacl.box.keyPair.fromSecretKey(peerFeed.admin.seed)
 						var accountRequests = new PouchDB($rootScope.peernode + "/accountrequests")
 						$scope.accountRequests = []
+
+						peerFeed.admin.login({
+							func: function() {
+								var invitationsDB = new PouchDB($rootScope.peernode + "/invitations")
+								invitationsDB.allDocs().then(function(response) {
+									for (i in response.rows) {
+										// console.log(response)
+										invitationCodes.push(response.rows[i].id + " ")
+
+									}
+									a = new Blob(invitationCodes, {
+										type: "text/plain"
+									})
+									$scope.invitelink = URL.createObjectURL(a)
+									$scope.$apply()
+								})
+
+							},
+							"data": []
+						})
+
 						accountRequests.allDocs({
 							include_docs: true,
 							attachments: true
@@ -322,6 +344,21 @@ angular.module('peerFeedApp', ['luegg.directives', 'oi.multiselect', 'ngCropper'
 								"data": []
 							}]
 						})
+					}
+
+					$scope.generateInvitationCodes = function(num) {
+						random = Base58.encode(nacl.randomBytes(num * 4))
+						random = random.match(/.{1,4}/g)
+						random.splice(num)
+						peerFeed.admin.login({
+							"func": peerFeed.admin.addInvitations,
+							"data": [random, {
+								"func": peerFeed.admin.logout,
+								"data": []
+							}]
+						})
+						$scope.invitationCodes = random
+
 					}
 				}
 			};
@@ -403,53 +440,57 @@ angular.module('peerFeedApp', ['luegg.directives', 'oi.multiselect', 'ngCropper'
 					}
 					$scope.sendFriendRequest = function(user) {
 						date = Date.now()
+						PouchDB(user.peerNode + "/nodeusers").get(user.peerFeedID).then(
+							function(response) {
+								user.peerFeedID = response.peerFeedID
+								var doc = {
+									_id: "friendRequest_1_000" + date,
+									data: {
+										person: $rootScope.peerFeedID,
+										peerFeed: user.peerFeedID,
+										peerNode: $rootScope.peernode,
+										message: user.message,
+										share: new Array(user.peerFeedID)
+									}
+								}
+								console.log(doc)
+								$rootScope.secretDB.put(peerFeed.encryptDoc(doc))
+									.then(function(response) {
+										console.log(response)
+									})
+								if (user.peerNode == peerFeed.peerNode) {
+									target = "p-" + user.peerFeedID.toLowerCase()
+								} else {
+									target = user.peerNode + "/p-" + user.peerFeedID.toLowerCase()
+								}
+								var repDoc = {
+									"_id": "replication_" + $rootScope.peerFeedID.toLowerCase() + hashCode(user.peerFeedID),
+									"source": "s-" + $rootScope.peerFeedID.toLowerCase(),
+									"target": target,
+									"filter": "replica/repfilter",
+									"query_params": {
+										"repid": hashCode(user.peerFeedID)
+									},
+									"continuous": true,
+									// "connection_timeout": 30000,
+									// "retries_per_request": 1000,
+									"user_ctx": $rootScope.userCtx
+								}
+								PouchDB(peerFeed.peerNode + "/_replicator")
+									.put(repDoc)
+									.then(function(res) {
+										//console.log(res)
+									})
+								peerFeed.DB.rel.saveAttr("person", $rootScope.peerFeedID, "share", user.peerFeedID)
+								$rootScope.secretDB.rel.save("friend", {
+									id: user.peerFeedID,
+									peerFeed: $rootScope.peerFeedID,
+									person: user.peerFeedID
+								}).then(function(response) {
+									//console.log(response)
+								})
+							})
 						// console.log(user)
-						var doc = {
-							_id: "friendRequest_1_000" + date,
-							data: {
-								person: $rootScope.peerFeedID,
-								peerFeed: user.peerFeedID,
-								peerNode: $rootScope.peernode,
-								message: user.message,
-								share: new Array(user.peerFeedID)
-							}
-						}
-						console.log(doc)
-						$rootScope.secretDB.put(peerFeed.encryptDoc(doc))
-							.then(function(response) {
-								console.log(response)
-							})
-						if (user.peerNode == peerFeed.peerNode) {
-							target = "p-" + user.peerFeedID.toLowerCase()
-						} else {
-							target = user.peerNode + "/p-" + user.peerFeedID.toLowerCase()
-						}
-						var repDoc = {
-							"_id": "replication_" + $rootScope.peerFeedID.toLowerCase() + hashCode(user.peerFeedID),
-							"source": "s-" + $rootScope.peerFeedID.toLowerCase(),
-							"target": target,
-							"filter": "replica/repfilter",
-							"query_params": {
-								"repid": hashCode(user.peerFeedID)
-							},
-							"continuous": true,
-							// "connection_timeout": 30000,
-							// "retries_per_request": 1000,
-							"user_ctx": $rootScope.userCtx
-						}
-						PouchDB(peerFeed.peerNode + "/_replicator")
-							.put(repDoc)
-							.then(function(res) {
-								//console.log(res)
-							})
-						peerFeed.DB.rel.saveAttr("person", $rootScope.peerFeedID, "share", user.peerFeedID)
-						$rootScope.secretDB.rel.save("friend", {
-							id: user.peerFeedID,
-							peerFeed: $rootScope.peerFeedID,
-							person: user.peerFeedID
-						}).then(function(response) {
-							//console.log(response)
-						})
 					}
 					$scope.acceptFriendRequest = function(user) {
 						// start replication
@@ -549,11 +590,146 @@ angular.module('peerFeedApp', ['luegg.directives', 'oi.multiselect', 'ngCropper'
 					log: log
 				})
 			}
+
 			$rootScope.peernode = $scope.peernode = window.location.origin + "/db"
-			$scope.username = "vasilis"
-			$scope.password = "9411662"
+			// $scope.username = "vasilis"
+			// $scope.password = "9411662"
 			$rootScope.connected = false
 			$rootScope.signup = false
+			var cookie = readCookie("peerFeed")
+			if (cookie) {
+				keys = nacl.box.keyPair.fromSecretKey(Base58.decode(cookie.key))
+
+				console.log(keys)
+				connectToPeerNode(keys, cookie.peerNode)
+			}
+
+			function connectToPeerNode(keys, peerNode) {
+				peerFeed.peerNode = peerNode
+				peerFeed.session.keys = keys
+				peerFeed.session.keyPairReady = true
+				var mypeerFeedID = peerFeed.crypto.getpeerFeedID(peerFeed.session.keys.publicKey)
+				$rootScope.simpleID = mypeerFeedID.toLowerCase()
+				$rootScope.peerFeedID = mypeerFeedID
+				$.couch.urlPrefix = $scope.peernode;
+				peerFeed.session.connected = false
+				PouchDB(peerNode + "/credentials").get("admin").then(function(response) {
+					adminPublicKey = Base58.decode(response.peerFeedID).subarray(0, 32)
+					PouchDB(peerNode + "/credentials").get(mypeerFeedID).then(function(data) {
+						cipher = nacl.util.decodeBase64(data.cipher)
+						nonce = nacl.util.decodeBase64(data.nonce)
+						//console.log(data);
+						credentials = nacl.box.open(cipher, nonce, adminPublicKey, peerFeed.session.keys.secretKey)
+						credentials = nacl.util.encodeUTF8(credentials)
+						couchName = credentials.substring(0, credentials.length / 2)
+						couchPassword = credentials.substring(credentials.length / 2)
+						$.couch.login({
+							name: couchName,
+							password: couchPassword,
+							success: function(data) {
+								console.log(data)
+								delete data.ok
+								$rootScope.userCtx = data
+								peerFeed.DB = $rootScope.secretDB = new PouchDB("secret-" + $rootScope.simpleID)
+								$rootScope.secretDB.setSchema([{
+									singular: 'peerFeed',
+									plural: 'peerFeeds',
+									relations: {
+										friends: {
+											hasMany: "friend"
+										},
+										friendRequests: {
+											hasMany: "friendRequest"
+										}
+									}
+								}, {
+									singular: 'friendRequest',
+									plural: 'friendRequests',
+									relations: {
+										person: {
+											belongsTo: "person"
+										}
+									}
+								}, {
+									singular: 'friend',
+									plural: 'friends',
+									relations: {
+										person: {
+											belongsTo: "person"
+										}
+									}
+								}, {
+									singular: 'person',
+									plural: 'persons',
+									relations: {
+										'posts': {
+											hasMany: {
+												type: 'post',
+												options: {
+													async: true
+												}
+											}
+										},
+										'comments': {
+											hasMany: {
+												type: 'comments',
+												options: {
+													async: true
+												}
+											}
+										}
+									}
+								}, {
+									singular: 'post',
+									plural: 'posts',
+									relations: {
+										'person': {
+											belongsTo: {
+												type: 'person',
+												options: {
+													async: false
+												}
+											}
+										},
+										'comments': {
+											hasMany: {
+												type: 'comment',
+												options: {
+													async: true
+												}
+											}
+										}
+									}
+								}, {
+									singular: 'comment',
+									plural: 'comments',
+									relations: {
+										'post': {
+											belongsTo: {
+												type: 'post',
+												options: {
+													async: true
+												}
+											}
+										}
+									}
+								}]);
+								$rootScope.connected = true;
+								$rootScope.$apply();
+								$rootScope.Log("Connected")
+								if($scope.remember){
+									createCookie("peerFeed", {
+										key: Base58.encode(peerFeed.session.keys.secretKey),
+										peerNode: peerFeed.peerNode
+									}, 3)
+									console.log(peerFeed.session.keys)
+								}
+							},
+							error: function(status) {}
+						});
+					})
+				})
+			}
 			$scope.signIn = function() {
 				console.log($scope.username, $scope.peernode, $scope.password)
 				peerFeed.peerNode = $scope.peernode
@@ -565,126 +741,12 @@ angular.module('peerFeedApp', ['luegg.directives', 'oi.multiselect', 'ngCropper'
 					var keyReadyInterval = setInterval(function() {
 						if (peerFeed.session.keyPairReady) {
 							clearInterval(keyReadyInterval)
-							console.log(peerFeed.session.keys)
-							var mypeerFeedID = peerFeed.crypto.getpeerFeedID(peerFeed.session.keys.publicKey)
-								// $rootScope.Log("peerFeedID:" + mypeerFeedID)
-							$rootScope.simpleID = mypeerFeedID.toLowerCase()
-							$rootScope.peerFeedID = mypeerFeedID
-							$.couch.urlPrefix = $scope.peernode;
-							peerFeed.session.connected = false
-							PouchDB($scope.peernode + "/credentials").get("admin").then(function(response) {
-								adminPublicKey = Base58.decode(response.peerFeedID).subarray(0, 32)
-								PouchDB($scope.peernode + "/credentials").get(mypeerFeedID).then(function(data) {
-									cipher = nacl.util.decodeBase64(data.cipher)
-									nonce = nacl.util.decodeBase64(data.nonce)
-									//console.log(data);
-									credentials = nacl.box.open(cipher, nonce, adminPublicKey, peerFeed.session.keys.secretKey)
-									credentials = nacl.util.encodeUTF8(credentials)
-									couchName = credentials.substring(0, credentials.length / 2)
-									couchPassword = credentials.substring(credentials.length / 2)
-									$.couch.login({
-										name: couchName,
-										password: couchPassword,
-										success: function(data) {
-											console.log(data)
-											delete data.ok
-											$rootScope.userCtx = data
-											peerFeed.DB = $rootScope.secretDB = new PouchDB("secret-" + $rootScope.simpleID)
-											$rootScope.secretDB.setSchema([{
-												singular: 'peerFeed',
-												plural: 'peerFeeds',
-												relations: {
-													friends: {
-														hasMany: "friend"
-													},
-													friendRequests: {
-														hasMany: "friendRequest"
-													}
-												}
-											}, {
-												singular: 'friendRequest',
-												plural: 'friendRequests',
-												relations: {
-													person: {
-														belongsTo: "person"
-													}
-												}
-											}, {
-												singular: 'friend',
-												plural: 'friends',
-												relations: {
-													person: {
-														belongsTo: "person"
-													}
-												}
-											}, {
-												singular: 'person',
-												plural: 'persons',
-												relations: {
-													'posts': {
-														hasMany: {
-															type: 'post',
-															options: {
-																async: true
-															}
-														}
-													},
-													'comments': {
-														hasMany: {
-															type: 'comments',
-															options: {
-																async: true
-															}
-														}
-													}
-												}
-											}, {
-												singular: 'post',
-												plural: 'posts',
-												relations: {
-													'person': {
-														belongsTo: {
-															type: 'person',
-															options: {
-																async: false
-															}
-														}
-													},
-													'comments': {
-														hasMany: {
-															type: 'comment',
-															options: {
-																async: true
-															}
-														}
-													}
-												}
-											}, {
-												singular: 'comment',
-												plural: 'comments',
-												relations: {
-													'post': {
-														belongsTo: {
-															type: 'post',
-															options: {
-																async: true
-															}
-														}
-													}
-												}
-											}]);
-											$rootScope.connected = true;
-											$rootScope.$apply();
-											$rootScope.Log("Connected")
-											console.log(peerFeed.session.keys)
-										},
-										error: function(status) {}
-									});
-								})
-							})
+
+							connectToPeerNode(peerFeed.session.keys, $scope.peernode)
 						}
 					})
 				})
+
 			}
 		}
 	]).controller('SignUpController', ['$scope', '$rootScope',
@@ -695,6 +757,7 @@ angular.module('peerFeedApp', ['luegg.directives', 'oi.multiselect', 'ngCropper'
 				password: "9411662",
 				message: "hello",
 			}
+
 			$scope.signUp = function() {
 				console.log($scope.user)
 				$.couch.urlPrefix = $scope.user.peernode;
@@ -717,6 +780,7 @@ angular.module('peerFeedApp', ['luegg.directives', 'oi.multiselect', 'ngCropper'
 											if ($scope.adminParty) {
 												peerFeed.newPeerNode($scope.user)
 											}
+
 											PouchDB(peerFeed.peerNode + "/credentials").get("admin").then(function(response) {
 												console.log(response.peerFeedID)
 												$rootScope.signup = false;
@@ -747,13 +811,31 @@ angular.module('peerFeedApp', ['luegg.directives', 'oi.multiselect', 'ngCropper'
 															peerFeedID: $rootScope.peerFeedID,
 														}
 													}
-													PouchDB(peerFeed.peerNode + "/accountrequests")
-														.put(peerFeed.encryptDoc(doc)).then(
-															function(r) {
-																console.log(r)
-																alert("Your account request has been made." +
-																	"When the admin sees it you will be informed by email or you can try to login.")
-															})
+
+													if ($scope.user.invitation) {
+														config = {
+															keys: peerFeed.session.keys
+														}
+														proxy = new rtcProxy(config, function() {
+															console.log("connected to websocket")
+															doc = {
+																action: "register",
+																data: {
+																	invitation: $scope.user.invitation,
+																	peerFeedID: $rootScope.peerFeedID
+																}
+															}
+															proxy.ws.send(JSON.stringify(doc))
+														})
+													} else {
+														PouchDB(peerFeed.peerNode + "/accountrequests")
+															.put(peerFeed.encryptDoc(doc)).then(
+																function(r) {
+																	console.log(r)
+																	alert("Your account request has been made." +
+																		"When the admin sees it you will be informed by email or you can try to login.")
+																})
+													}
 												}
 										)
 									}
@@ -769,6 +851,7 @@ angular.module('peerFeedApp', ['luegg.directives', 'oi.multiselect', 'ngCropper'
 			$scope.DB = {}
 			$scope.userID = 1
 			console.log(peerFeed.session.keys)
+			$scope.numit = numit
 			$scope.trustSrc = function(src) {
 				return $sce.trustAsResourceUrl(src);
 			}
@@ -1009,6 +1092,11 @@ peerFeed.newPeerNode = function(user) {
 			console.log(data);
 		}
 	});
+	$.couch.db("invitations").create({
+		success: function(data) {
+			console.log(data);
+		}
+	});
 	$.couch.db("nodeusers").create({
 		success: function(data) {
 			console.log(data);
@@ -1022,7 +1110,7 @@ peerFeed.newPeerNode = function(user) {
 			var adminKeyPair = nacl.box.keyPair.fromSecretKey(peerFeed.admin.seed)
 			var adminNonce = peerFeed.crypto.getNonce()
 			var credentials = peerFeed.util.getRandomCredentials()
-			var cipherWord = nacl.box(nacl.util.decodeUTF8(credentials), adminNonce, peerFeed.session.keys.publicKey, adminKeyPair.secretKey)
+			var cipherWord = nacl.box(nacl.util.decodeUTF8(credentials), adminNonce, adminKeyPair.publicKey, adminKeyPair.secretKey)
 			cipherWord = nacl.util.encodeBase64(cipherWord)
 			adminNonce = nacl.util.encodeBase64(adminNonce)
 			console.log({
@@ -1120,7 +1208,6 @@ peerFeed.session.logout = function(empty) {
 }
 peerFeed.encryptDoc = function(doc) {
 	var header = {}
-	
 
 	mypeerFeedID = peerFeed.crypto.getpeerFeedID(peerFeed.session.keys.publicKey)
 	header._id = doc._id
@@ -1214,7 +1301,7 @@ peerFeed.encryptDoc = function(doc) {
 	return header
 }
 peerFeed.decryptDoc = function(header, keys) {
-	console.log("decrypt "+header._id)
+	console.log("decrypt " + header._id)
 	// cipher = header._attachments.cipher.data
 
 	// data=nacl.util.decodeBase64(data)
@@ -1394,4 +1481,40 @@ function peerpouch() {
 			}
 		}, function() { /*ignore existing*/ });
 	});
+}
+
+function createCookie(name, value, days) {
+	if (typeof value == "object") {
+		value = JSON.stringify(value)
+	}
+	if (days) {
+		var date = new Date();
+		date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+		var expires = "; expires=" + date.toGMTString();
+	} else var expires = "";
+	document.cookie = name + "=" + value + expires + "; path=/";
+}
+
+function readCookie(name) {
+	var nameEQ = name + "=";
+	var ca = document.cookie.split(';');
+	for (var i = 0; i < ca.length; i++) {
+		var c = ca[i];
+		while (c.charAt(0) == ' ') c = c.substring(1, c.length);
+		if (c.indexOf(nameEQ) == 0) {
+			var value = c.substring(nameEQ.length, c.length);
+			try {
+				value = JSON.parse(value);
+				return value
+			} catch (e) {
+				return value
+			}
+
+		}
+	}
+	return null;
+}
+
+function eraseCookie(name) {
+	createCookie(name, "", -1);
 }

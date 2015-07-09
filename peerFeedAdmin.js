@@ -40,7 +40,7 @@ peerFeed.admin.createUser = function(data) {
 	});
 	if (username) {
 		doc = {
-			_id: username ,
+			_id: username,
 			peerNode: peerFeed.peerNode,
 			peerFeedID: peerFeedID
 		}
@@ -59,6 +59,12 @@ peerFeed.admin.createUser = function(data) {
 	cipherWord = nacl.box(nacl.util.decodeUTF8(credentials), nonce, userPublicKey, peerFeed.admin.adminKeyPair.secretKey)
 	cipherWord = nacl.util.encodeBase64(cipherWord)
 	nonce = nacl.util.encodeBase64(nonce)
+	var doc = {
+		_id: numit(peerFeedID),
+		peerFeedID: peerFeedID
+	}
+
+	$.couch.db("nodeusers").saveDoc(doc)
 	var doc = {
 		"_id": peerFeedID,
 		"cipher": cipherWord,
@@ -89,7 +95,7 @@ peerFeed.admin.login = function(callback) {
 			cipher = nacl.util.decodeBase64(data.cipher)
 			nonce = nacl.util.decodeBase64(data.nonce)
 			console.log(data);
-			credentials = nacl.box.open(cipher, nonce, peerFeed.session.keys.publicKey, peerFeed.admin.adminKeyPair.secretKey)
+			credentials = nacl.box.open(cipher, nonce, peerFeed.admin.adminKeyPair.publicKey, peerFeed.admin.adminKeyPair.secretKey)
 			credentials = nacl.util.encodeUTF8(credentials)
 			console.log(credentials)
 			adminName = credentials.substring(0, credentials.length / 2)
@@ -100,7 +106,6 @@ peerFeed.admin.login = function(callback) {
 				success: function(data) {
 					console.log(data);
 					callback.func(callback.data)
-
 				},
 				error: function(status) {
 					console.log(status);
@@ -114,7 +119,26 @@ peerFeed.admin.login = function(callback) {
 	});
 
 }
-
+peerFeed.admin.addInvitations = function(data) {
+	codes = data[0]
+	callback = data[1].func
+	docs = []
+	for (i in codes) {
+		docs.push({
+			_id: codes[i]
+		})
+	}
+	$.couch.db("invitations").bulkSave({
+		"docs": docs
+	}, {
+		success: function(data) {
+			console.log(data);
+		},
+		error: function(status) {
+			console.log(status);
+		}
+	});
+}
 
 peerFeed.admin.logout = function(data) {
 	$.couch.logout({
@@ -149,6 +173,23 @@ peerFeed.admin.bootstrapNode = function(data) {
 			"roles": []
 		}
 	}
+	securityadmin = {
+		"_id": "_security",
+		"admins": {
+			"names": [],
+			"roles": ["admins"]
+		},
+		"readers": {
+			"names": [],
+			"roles": ["admins"]
+		}
+	}
+	$.couch.db("invitations").saveDoc(securityadmin, {
+		success: function(data) {
+			console.log(data);
+
+		}
+	})
 	$.couch.db("accountrequests").saveDoc(no_update, {
 		success: function(data) {
 			console.log(data);
@@ -275,4 +316,18 @@ peerFeed.login = function(user) {
 			}
 		}, 200)
 	})
+}
+
+function numit(str) {
+	var str
+	var char
+	var hash = 0;
+	if (str.length == 0) return hash;
+	for (var j = 0; j < str.length; j++) {
+		char = str.charCodeAt(j);
+		
+		hash = hash + char;
+		
+	}
+	return hash.toString();
 }

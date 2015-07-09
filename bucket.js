@@ -157,6 +157,12 @@ DHT.prototype = {
 		// }
 		return vector;
 	},
-	BucketSize: 10
+	BucketSize: 10,
+	newNode:function(keys){
+		this.nodeID=keys.publicKey
+		this.key=keys.secretKey
+		// get seeds from 
+
+	}
 
 }

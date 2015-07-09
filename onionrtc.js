@@ -1,3 +1,122 @@
+function onionProxy(config, callback) {
+	// if(server==rtcpeer)
+	if (typeof config == "function") {
+		callback = config
+		server = "ws://" + location.host + ":8080"
+		keys = nacl.box.keyPair()
+	} else {
+		server = config.server || "ws://" + location.host + ":8080"
+		keys = config.keys || nacl.box.keyPair()
+
+	}
+	console.log(server, keys)
+	var self = this;
+
+
+	this.ws = new ReconnectingWebSocket(url);
+	this.ws.debug = true;
+	this.ws.timeoutInterval = 5400;
+	this.knownPeers = []
+	this.ws.onopen = function(e) {
+		this.server = true
+		console.log("Websocket opened");
+
+		self.localID = keyToString(keys.publicKey)
+		if (callback) {
+			callback()
+		}
+		self.secretKey = keyToString(keys.secretKey)
+		self.dht = new DHT()
+		self.dht.newRoutingTable(self.localID)
+		message = {
+			action: "newPeer",
+			data: self.localID
+		}
+		this.send(JSON.stringify(message))
+		message = {
+			action: "allPeers"
+		}
+		this.send(JSON.stringify(message))
+
+	}
+	this.ws.onclose = function(e) {
+		console.log("Websocket closed");
+	}
+	this.onAction=function(action,data){
+
+	}
+	this.ws.onmessage = function(e) {
+		// console.log("Websocket message received: " + e.data);
+
+		json = JSON.parse(e.data)
+		console.log("ws message", json)
+		switch (json.data.type) {
+			case "offer":
+				if (json.video) {
+					self.acceptMediaConnection(json.from, json.data)
+				} else {
+					self.acceptConnection(json.from, json.data)
+
+				}
+				break;
+			case "answer":
+				self.establishConnection(json.from, json.data)
+				break;
+		}
+		if (json.data.candidate) {
+
+			self.peers[json.from].addIceCandidate(new RTCIceCandidate(json.data));
+		}
+
+
+
+		if (json.action) {
+			switch (json.action) {
+				case "newPeer":
+					if (!(json.data in self.knownPeers) && (self.localID !== json.data)) {
+						self.knownPeers.push(json.data)
+						console.log(self.knownPeers)
+						self.dht.update(json.data)
+					}
+					break;
+				case "allPeers":
+					self.knownPeers = json.data
+					self.dht.update(self.knownPeers)
+					console.log(self.knownPeers)
+					break;
+				default:
+					self.onAction(json.action,json.data)	
+			}
+		}
+	}
+	this.ws.onerror = function(e) {
+		console.log("Websocket error");
+	}
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 function rtcProxy(config, callback) {
 	// if(server==rtcpeer)
 	if (typeof config == "function") {

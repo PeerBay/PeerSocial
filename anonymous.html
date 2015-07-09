@@ -14,12 +14,18 @@
     <script type="application/javascript" src="crypto/base58.js">
     </script>
     <script src="bucket.js"></script>
-	<script src="wsnegotiation.js">
+	<script src="stable-websocket.js">
+	</script>	
+	<script src="onionrtc.js">
 	</script>	
    
 	<script>
 	server=new rtcProxy(function(){
-
+		server.onAction=function(action,data){
+			if(action=="refresh"){
+				 document.location.reload(true)
+			}
+		}
 
 	})
 
