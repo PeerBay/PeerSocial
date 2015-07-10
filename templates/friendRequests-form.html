@@ -3,16 +3,28 @@
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true" >&times;</button>                 
                 <h4 class="modal-title" >Add a friend</h4> 
             </div>             
-            <div class="modal-body" > 
-                <div >
-                    <p >Enter friend's peerFeedID</p> 
-                    <input type="text"  ng-model="user.peerFeedID"/> 
+            <div class="modal-body row" > 
+                <div class="col-md-6">
+                    <p >Enter friend's smallID</p> 
+                    <input type="text"  ng-model="user.smallID"/>
+                    
                     <p >Enter friend's peerNode</p> 
-                    <input type="text"  ng-model="user.peerNode"/>
+                    <input type="text"  ng-model="user.peerNode" initialvalue value="$root.peernode"/>
                     <p >Send a message</p>
                     <textarea ng-model="user.message" ></textarea>
                     
                 </div>
+      <!--           <div class="col-md-6">
+                    <p >Enter friend's peerNode</p> 
+                    <input type="text"  ng-model="" disabled />
+                    <p >Search him by his name</p> 
+                    <input type="text"  ng-model="" disabled/>
+                    
+                    <p >Send a message</p>
+                    <textarea ng-model="" disabled></textarea>
+                    
+                </div> -->
+
             </div>             
             <div class="modal-footer" > 
                 <button type="button" class="btn btn-default" data-dismiss="modal" >Cancel</button>                 

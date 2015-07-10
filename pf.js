@@ -458,6 +458,7 @@ angular.module('peerFeedApp', ['luegg.directives', 'oi.multiselect', 'ngCropper'
 					}
 					$scope.sendFriendRequest = function(user) {
 						date = Date.now()
+						console.log(user)
 						PouchDB(user.peerNode + "/nodeusers").get(user.smallID).then(
 							function(response) {
 								user.peerFeedID = response.peerFeedID
@@ -770,10 +771,7 @@ angular.module('peerFeedApp', ['luegg.directives', 'oi.multiselect', 'ngCropper'
 	]).controller('SignUpController', ['$scope', '$rootScope',
 		function($scope, $rootScope) {
 			$scope.user = {
-				peernode: window.location.origin + "/db",
-				username: "bob",
-				password: "9411662",
-				message: "hello",
+				peernode: window.location.origin + "/db"
 			}
 
 			$scope.signUp = function() {
@@ -844,6 +842,7 @@ angular.module('peerFeedApp', ['luegg.directives', 'oi.multiselect', 'ngCropper'
 																}
 															}
 															proxy.ws.send(JSON.stringify(doc))
+															$root.signup=false
 														})
 													} else {
 														PouchDB(peerFeed.peerNode + "/accountrequests")
