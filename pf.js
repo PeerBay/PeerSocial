@@ -459,7 +459,6 @@ angular.module('peerFeedApp', ['luegg.directives', 'oi.multiselect', 'ngCropper'
 					$scope.sendFriendRequest = function(user) {
 						date = Date.now()
 						console.log(user)
-						user.peerNode=user.peerNode+"/db"
 						PouchDB(user.peerNode + "/nodeusers").get(user.smallID).then(
 							function(response) {
 								user.peerFeedID = response.peerFeedID
