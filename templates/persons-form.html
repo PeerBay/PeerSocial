@@ -51,7 +51,7 @@
                     <div class="col-md-6">
                         <div class="form-group form-control-default">
                             <label for="datepicker">Date of birth</label>
-                            <input id="datepicker" type="text" class="form-control datepicker" initial-value value="DB.persons[peerFeedID].birthDate" ng-model="neo.birthDate" placeholder="Choose date of birth">
+                            <input disabled id="datepicker" type="text" class="form-control datepicker" initial-value value="DB.persons[peerFeedID].birthDate" ng-model="neo.birthDate" placeholder="Choose date of birth">
                         </div>
                     </div>
                     <div class="col-md-12">
@@ -78,7 +78,7 @@
                     </div>
                     <div class="col-md-12">
                         <div class="form-group form-control-default" >
-                            <label for="">Cover image (not yet supported)</label>
+                            <label for="">Cover image (wide image)</label>
                             <div class="thumbnail" ></div>
                             <div ng-if="neo.coverImage" style="background: #E4E4E4;overflow: hidden;width:100%;height:200px;">
                               <img ng-src="{{neo.coverImage}}" height="200px">
@@ -95,7 +95,13 @@
                             </div>
                         </div>
                     </div>
-               
+                     <div class="col-md-6">
+                        <div class="form-group form-control-default">
+                            <label for="datepicker">Public Profile</label>
+                            <input  id="public" type="checkbox" class="form-control" initial-value value="'nodeusers'"  ng-model="allowpublic" >
+                             <input  id="public" type="text" class="form-control" initial-value value="'nodeusers'"  ng-model="public" >
+                        </div>
+                    </div>
                     <button type="submit" class="btn btn-primary pull-right">Submit</button>
                 </form>
             </div>
