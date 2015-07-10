@@ -203,6 +203,7 @@ angular.module('peerFeedApp', ['luegg.directives', 'oi.multiselect', 'ngCropper'
 					$scope.temp = {}
 					$scope.attach = {}
 					$scope.myImage = ''
+					$scope.public = []
 					$scope.transmit = function(save) {
 						doc = angular.extend($scope.neo, $scope.rel)
 						if (!doc.id) {
@@ -239,7 +240,24 @@ angular.module('peerFeedApp', ['luegg.directives', 'oi.multiselect', 'ngCropper'
 							doc = angular.extend($scope.DB[$attrs.dataform][doc.id], doc)
 						}
 						console.log(doc)
-
+						if($scope.allowpublic) {
+							console.log($rootScope.peernode + "/" + $scope.public)
+							var publicDB = new PouchDB($rootScope.peernode + "/" + $scope.public)
+							var pdoc = JSON.parse(JSON.stringify(doc))
+							pdoc._id = $rootScope.secretDB.rel.makeDocID({
+								"type": $attrs.dataform,
+								"id": pdoc.id
+							});
+							pdoc._rev = pdoc.rev
+							pdoc.data = doc
+							delete pdoc.id
+							delete pdoc.rev
+							console.log(JSON.stringify(pdoc))
+							publicDB.put(pdoc).then(function(response){
+								console.log(response)
+							})
+						}
+						console.log()
 						$rootScope.secretDB.rel.save($attrs.dataform, doc).then(function(res) {
 							console.log(res)
 
@@ -440,7 +458,7 @@ angular.module('peerFeedApp', ['luegg.directives', 'oi.multiselect', 'ngCropper'
 					}
 					$scope.sendFriendRequest = function(user) {
 						date = Date.now()
-						PouchDB(user.peerNode + "/nodeusers").get(user.peerFeedID).then(
+						PouchDB(user.peerNode + "/nodeusers").get(user.smallID).then(
 							function(response) {
 								user.peerFeedID = response.peerFeedID
 								var doc = {
@@ -717,7 +735,7 @@ angular.module('peerFeedApp', ['luegg.directives', 'oi.multiselect', 'ngCropper'
 								$rootScope.connected = true;
 								$rootScope.$apply();
 								$rootScope.Log("Connected")
-								if($scope.remember){
+								if ($scope.remember) {
 									createCookie("peerFeed", {
 										key: Base58.encode(peerFeed.session.keys.secretKey),
 										peerNode: peerFeed.peerNode
