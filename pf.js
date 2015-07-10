@@ -842,7 +842,7 @@ angular.module('peerFeedApp', ['luegg.directives', 'oi.multiselect', 'ngCropper'
 																}
 															}
 															proxy.ws.send(JSON.stringify(doc))
-															$root.signup=false
+															$rootScope.signup=false
 														})
 													} else {
 														PouchDB(peerFeed.peerNode + "/accountrequests")
