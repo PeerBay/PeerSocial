@@ -205,7 +205,7 @@
                             </a>
                         </li>
                         <li>
-                            <a  href="">
+                            <a ng-click="page='managefriends'" >
                                 <i class="fa fa-group">
                                 </i>
                                 
@@ -215,7 +215,7 @@
                             </a>
                         </li>
                         <li>
-                            <a href="">
+                            <a ng-click="page='messages'">
                                 <i class="icon-comment-fill-1">
                                 </i>
                                 
@@ -225,7 +225,7 @@
                             </a>
                         </li>
                         <li>
-                            <a href="">
+                            <a ng-click="logout()">
                                 <i class="icon-unlock-fill">
                                 </i>
                                 
@@ -302,7 +302,7 @@
                                     <div dataform="persons" >
                                         
                                     </div>
-                                    <div datashare></div>
+                                    
                                     <div class="col-md-10 col-lg-8 col-md-offset-1 col-lg-offset-2">
                                         <h4 class="page-section-heading">
                                         Credentials
@@ -348,6 +348,8 @@
                                          <div dataform="posts"></div>
                                          <div datalist="posts" ></div>
                                </div>
+                               <div ng-if="page=='messages'" datalist="messages"></div>
+                               <div ng-if="page=='managefriends'" datashare></div>
                             </div>
                         </div>
                     </div>

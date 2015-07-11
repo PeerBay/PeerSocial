@@ -240,7 +240,7 @@ angular.module('peerFeedApp', ['luegg.directives', 'oi.multiselect', 'ngCropper'
 							doc = angular.extend($scope.DB[$attrs.dataform][doc.id], doc)
 						}
 						console.log(doc)
-						if($scope.allowpublic) {
+						if ($scope.allowpublic) {
 							console.log($rootScope.peernode + "/" + $scope.public)
 							var publicDB = new PouchDB($rootScope.peernode + "/" + $scope.public)
 							var pdoc = JSON.parse(JSON.stringify(doc))
@@ -253,7 +253,7 @@ angular.module('peerFeedApp', ['luegg.directives', 'oi.multiselect', 'ngCropper'
 							delete pdoc.id
 							delete pdoc.rev
 							console.log(JSON.stringify(pdoc))
-							publicDB.put(pdoc).then(function(response){
+							publicDB.put(pdoc).then(function(response) {
 								console.log(response)
 							})
 						}
@@ -842,7 +842,7 @@ angular.module('peerFeedApp', ['luegg.directives', 'oi.multiselect', 'ngCropper'
 																}
 															}
 															proxy.ws.send(JSON.stringify(doc))
-															$rootScope.signup=false
+															$rootScope.signup = false
 														})
 													} else {
 														PouchDB(peerFeed.peerNode + "/accountrequests")
@@ -1099,6 +1099,19 @@ angular.module('peerFeedApp', ['luegg.directives', 'oi.multiselect', 'ngCropper'
 					})
 				}
 			}
+
+			$scope.logout = function() {
+				$.couch.logout({
+					success: function(data) {
+						console.log(data);
+						eraseCookie("peerFeed")
+						$rootScope.connected = false
+						$scope.$apply()
+					}
+				});
+
+			}
+
 		}
 
 	])
@@ -1217,11 +1230,7 @@ peerFeed.session.login = function() {
 	})
 }
 peerFeed.session.logout = function(empty) {
-	$.couch.logout({
-		success: function(data) {
-			//console.log(data);
-		}
-	});
+
 }
 peerFeed.encryptDoc = function(doc) {
 	var header = {}
