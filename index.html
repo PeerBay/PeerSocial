@@ -143,12 +143,12 @@
                                 </a>
                                 <ul class="dropdown-menu" role="menu">
                                     <li class="active">
-                                        <a href="user-private-profile.html">
+                                        <a ng-click="page='editprofile'">
                                             Profile
                                         </a>
                                     </li>
                                     <li>
-                                        <a href="user-private-messages.html">
+                                        <a ng-click="page='messages'">
                                             Messages
                                         </a>
                                     </li>
@@ -159,7 +159,7 @@
                                         
                                     </li>
                                     <li>
-                                        <a href="login.html">
+                                        <a ng-click="logout()">
                                             Logout
                                         </a>
                                     </li>
@@ -284,7 +284,7 @@
                                     </ul>
                                     <ul class="nav navbar-nav  navbar-right ">
                                         <li>
-                                            <a href="login.html">
+                                            <a ng-click="logout()">
                                                 Logout
                                                 <i class="fa fa-fw fa-sign-out">
                                                 </i>
