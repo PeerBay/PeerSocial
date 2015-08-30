@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html class="st-layout ls-top-navbar ls-bottom-footer show-sidebar sidebar-l2" lang="en">
+<!-- <html class="st-layout ls-top-navbar ls-bottom-footer show-sidebar sidebar-l2" lang="en" manifest="peerfeed.appcache"> -->
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>
+        PeerFeed
+    </title>
+    <!-- Vendor CSS BUNDLE
+        Includes styling for all of the 3rd party libraries used with this module, such as Bootstrap, Font Awesome and others.
+        TIP: Using bundles will improve performance by reducing the number of network requests the client needs to make when loading the page. -->
+    <link href="css/all.css" rel="stylesheet">
+    <link href="css/app.css" rel="stylesheet">
+    <link href="css/multiselect.css" rel="stylesheet">
+    <link href="css/ngCropper.all.css" rel="stylesheet">
+</head>
+
+<body ng-app="peerFeedApp">
+    <!-- Wrapper required for sidebar transitions -->
+    <div id="content" class="login " ng-controller="SignInController" ng-hide="$root.connected">
+        <div class="container-fluid ">
+            <div class="lock-container ">
+                <h1>
+                    PeerFeed
+                    </h1>
+               
+                <div class="panel panel-default text-center " style="border-radius: 10%;">
+                    <img src="images/pb.png" class="img-rounded" ng-click="$root.refresh()">
+                    <div class="panel-body">
+                        <form class="form-horizontal" ng-submit="signIn()">
+                            <div class="form-group">
+                                <div class="col-sm-12">
+                                    <input type="email" class="form-control" id="inputEmail" ng-model="username" placeholder="Email">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-sm-12">
+                                    <input type="password" class="form-control" id="inputPassword" ng-model="password" placeholder="Password">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-sm-7 ">
+                                    <label>
+                                        <input type="checkbox" ng-model="remember"> Remember me
+                                    </label>
+                                </div>
+                                <div class="col-sm-5">
+                                    <button type="submit" class="btn btn-default">Sign in <i class="fa fa-fw fa-unlock-alt"></i></button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="st-container" ng-controller="DataController" ng-if="$root.connected">
+        <!-- Fixed navbar -->
+        <div class="navbar navbar-main navbar-primary navbar-fixed-top" role="navigation" ng-init="DB.get('profiles',peerFeedID)">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <a href="#sidebar-menu" data-effect="st-effect-1" data-toggle="sidebar-menu" class="toggle pull-left visible-xs">
+                        <i class="fa fa-ellipsis-v">
+                            </i>
+                    </a>
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#main-nav">
+                        <span class="sr-only">
+                            Toggle navigation
+                        </span>
+                        <span class="icon-bar">
+                        </span>
+                        <span class="icon-bar">
+                        </span>
+                        <span class="icon-bar">
+                        </span>
+                    </button>
+                    <a href="#sidebar-chat" data-toggle="sidebar-menu" data-effect="st-effect-1" class="toggle pull-right visible-xs">
+                        <i class="fa fa-comments">
+                            </i>
+                    </a>
+                    <a class="navbar-brand" href="index.html">
+                        <img src="images/pf.png" height="100%" style="padding:5px" />
+                    </a>
+                </div>
+                <!-- Collect the nav links, forms, and other content for toggling -->
+                <div class="collapse navbar-collapse" id="main-nav">
+                    <ul class="nav navbar-nav navbar-right">
+                        <li class="hidden-xs">
+                            <a href="#sidebar-chat" data-toggle="sidebar-menu" data-effect="st-effect-1">
+                                <i class="fa fa-comments">
+                                    </i>
+                            </a>
+                        </li>
+                        <!-- User -->
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle user" data-toggle="dropdown">
+                                <img ng-src="{{DB.profiles[peerFeedID].userImage}}" alt="img" class="img-circle" width="40" /> {{DB[$root.peerFeedID].name}}
+                                <span class="caret">
+                                    </span>
+                            </a>
+                            <ul class="dropdown-menu" role="menu">
+                                <li class="active">
+                                    <a ng-click="page='editprofile'">
+                                            Profile
+                                        </a>
+                                </li>
+                                <li>
+                                    <a ng-click="page='messages'">
+                                            Messages
+                                        </a>
+                                </li>
+                                <li>
+                                    <a data-toggle="modal" data-target="#admin">
+                                            Admininstrator
+                                        </a>
+                                </li>
+                                <li>
+                                    <a ng-click="logout()">
+                                            Logout
+                                        </a>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+                <!-- /.navbar-collapse -->
+            </div>
+        </div>
+        <div class="modal fade pg-show-modal" id="admin" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog" admin>
+            </div>
+        </div>
+        <!-- Sidebar component with st-effect-1 (set on the toggle button within the navbar) -->
+        <div class="sidebar left sidebar-size-2 sidebar-offset-0 sidebar-visible-desktop sidebar-visible-mobile sidebar-skin-dark" id="sidebar-menu">
+            <div>
+                <div class="sidebar-block">
+                    <div class="profile">
+                        <img ng-src="{{DB.profiles[peerFeedID].userImage}}" alt="people" class="img-circle" />
+                        <h4>
+                            {{$root.DB[$root.peerFeedID].name}}
+                            </h4>
+                    </div>
+                </div>
+                <div class="sidebar-block">
+                    <h4 class="category">
+                    Account
+                    </h4>
+                    <ul class="sidebar-menu">
+                        <li class="active">
+                            <a ng-click="page='editprofile'">
+                                <i class="icon-user-1">
+                                </i>
+                                <span>
+                                    Edit Profile
+                                </span>
+                            </a>
+                        </li>
+                        <li>
+                            <a ng-click="page='managefriends'">
+                                <i class="fa fa-group">
+                                </i>
+                                <span>
+                                    Manage Friends
+                                </span>
+                            </a>
+                        </li>
+                        <li>
+                            <a ng-click="page='messages'">
+                                <i class="icon-comment-fill-1">
+                                </i>
+                                <span>
+                                    Messages
+                                </span>
+                            </a>
+                        </li>
+                        <li>
+                            <a ng-click="logout()">
+                                <i class="icon-unlock-fill">
+                                </i>
+                                <span>
+                                    Logout
+                                </span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                <h4 class="category">About</h4>
+                <div class="sidebar-block">
+                    <ul class="list-about">
+                        <li><i class="fa fa-map-marker"></i>Place: {{DB.profiles[peerFeedID].place}}</li>
+                        <li><i class="fa fa-link"></i> <a href="#">Job: {{DB.profiles[peerFeedID].job}}</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div datalist="chats">
+        </div>
+        <!-- sidebar effects OUTSIDE of st-pusher: -->
+        <!-- st-effect-1, st-effect-2, st-effect-4, st-effect-5, st-effect-9, st-effect-10, st-effect-11, st-effect-12, st-effect-13 -->
+        <!-- content push wrapper -->
+        <div class="st-pusher" id="content" ng-init="page='timeline'">
+            <!-- sidebar effects INSIDE of st-pusher: -->
+            <!-- st-effect-3, st-effect-6, st-effect-7, st-effect-8, st-effect-14 -->
+            <!-- this is the wrapper for the content -->
+            <div class="st-content">
+                <!-- extra div for emulating position:fixed of the menu -->
+                <div class="st-content-inner">
+                    <nav class="navbar navbar-subnav navbar-static-top" role="navigation">
+                        <div class="container-fluid">
+                            <!-- Brand and toggle get grouped for better mobile display -->
+                            <div class="navbar-header">
+                                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#subnav">
+                                    <span class="sr-only">
+                                        Toggle navigation
+                                    </span>
+                                    <span class="fa fa-ellipsis-h">
+                                    </span>
+                                </button>
+                            </div>
+                            <!-- Collect the nav links, forms, and other content for toggling -->
+                            <div class="collapse navbar-collapse" id="subnav">
+                                <ul class="nav navbar-nav ">
+                                    <li>
+                                        <a ng-click="page='timeline'">
+                                            <i class="fa fa-fw icon-ship-wheel">
+                                                </i> My Timeline
+                                        </a>
+                                    </li>
+                                </ul>
+                                <ul class="nav navbar-nav  navbar-right ">
+                                    <li>
+                                        <a ng-click="logout()">
+                                                Logout
+                                                <i class="fa fa-fw fa-sign-out">
+                                                </i>
+                                            </a>
+                                    </li>
+                                </ul>
+                            </div>
+                            <!-- /.navbar-collapse -->
+                        </div>
+                    </nav>
+                    <div class="container-fluid">
+                        <div class="page-section">
+                            <div class="row" ng-if="!$root.DB[peerFeedID]._rev || page=='editprofile'">
+                                <div dataform="profiles">
+                                </div>
+                            </div>
+                            <div class="row" ng-if="page=='timeline'">
+                                <div ng-if="$root.DB[peerFeedID].coverImage" class=" overlay cover-image-full height-300-lg">
+                                    <img ng-src="{{DB.profiles[peerFeedID].coverImage}}" alt="cover" />
+                                    <div class="overlay overlay-full">
+                                        <div class="v-top">
+                                            <a href="#" class="btn btn-cover"><i class="fa fa-pencil"></i></a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div dataform="posts"></div>
+                                <div datalist="posts"></div>
+                            </div>
+                            <div ng-if="page=='messages'" datalist="messages"></div>
+                            <div ng-if="page=='managefriends'" datashare></div>
+                        </div>
+                    </div>
+                </div>
+                <!-- /st-content-inner -->
+            </div>
+            <!-- /st-content -->
+        </div>
+        <!-- /st-pusher -->
+        <!-- Footer -->
+        <footer class="footer">
+            <img src="images/pb.png" height="70%" />
+            <strong>
+                PeerBay
+                </strong>
+        </footer>
+        <!-- // Footer -->
+    </div>
+    <!-- /st-container -->
+    <!-- Inline Script for colors and config objects; used by various external scripts; -->
+    <script>
+    var colors = {
+        "danger-color": "#e74c3c",
+        "success-color": "#81b53e",
+        "warning-color": "#f0ad4e",
+        "inverse-color": "#2c3e50",
+        "info-color": "#2d7cb5",
+        "default-color": "#6e7882",
+        "default-light-color": "#cfd9db",
+        "purple-color": "#9D8AC7",
+        "mustard-color": "#d4d171",
+        "lightred-color": "#e15258",
+        "body-bg": "#f6f6f6"
+    };
+    var config = {
+        theme: "social-2",
+        skins: {
+            "default": {
+                "primary-color": "#16ae9f"
+            },
+            "orange": {
+                "primary-color": "#e74c3c"
+            },
+            "blue": {
+                "primary-color": "#4687ce"
+            },
+            "purple": {
+                "primary-color": "#af86b9"
+            },
+            "brown": {
+                "primary-color": "#c3a961"
+            },
+            "default-nav-inverse": {
+                "color-block": "#242424"
+            }
+        }
+    };
+    </script>
+    <script src="modules/jquery.js">
+    </script>
+    <script src="modules/autobahn.js">
+    </script>
+    <script type="application/javascript" src="modules/pouchdb.js">
+    </script>
+    <script type="application/javascript" src="submodules/pouchdb.relational.js">
+    </script>
+    <script type="application/javascript" src="modules/angular.js">
+    </script>
+    <script type="application/javascript" src="submodules/ui-bootstrap.js">
+    </script>
+    <script type="application/javascript" src="submodules/ngCropper.all.js">
+    </script>
+    <script type="application/javascript" src="submodules/scrollglue.js">
+    </script>
+    <script type="application/javascript" src="submodules/multiselect.js">
+    </script>
+    <script type="application/javascript" src="submodules/multiselect-tpls.js">
+    </script>
+    <script type="application/javascript" src="modules/crypto/nacl-fast.js">
+    </script>
+    <script type="application/javascript" src="modules/crypto/nacl-stream.js">
+    </script>
+    <script type="application/javascript" src="modules/crypto/blake2s.js">
+    </script>
+    <script type="application/javascript" src="modules/crypto/scrypt.js">
+    </script>
+    <script type="application/javascript" src="modules/crypto/base58.js">
+    </script>
+    <script type="application/javascript" src="js/peerFeed.js">
+    </script>
+    <script type="application/javascript" src="js/peerFeedAdmin.js">
+    </script>
+    <script type="application/javascript" src="js/cryptostorage2.js">
+    </script>
+    <script type="application/javascript" src="js/autobahn.rtc.js">
+    </script>
+    <script type="application/javascript" src="js/wamp.rtc.js">
+    </script>
+    <script type="application/javascript" src="js/onion.rtc.js">
+    </script>
+    <script type="application/javascript" src="js/peerbay.js">
+    </script>
+    <script type="application/javascript" src="js/rangy.js">
+    </script>
+    <script type="application/javascript" src="js/pf.js">
+    </script>
+    <!-- // <script src="nacl-fast.js"></script> -->
+    <script src="js/bucket.js"></script>
+
+</body>
+
+</html>

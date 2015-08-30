@@ -1,0 +1,39 @@
+{
+  "name": "PeerBay",
+  "version": "0.5.0",
+  "description": "An anonymous, decentralized and private social network.",
+  "main": "backend.js",
+  "dependencies": {
+    "autobahn": "^0.9.6",
+    "base-58": "^0.0.1",
+    "blake2s": "^1.1.0",
+    "bower": "^1.5.1",
+    "follow": "^0.12.1",
+    "nano": "^6.1.4",
+    "offline-docs": "^1.0.4",
+    "q": "^1.4.1",
+    "randomstring": "^1.0.7",
+    "tweetnacl": "^0.13.1",
+    "webtorrent": "^0.60.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "crossbar start"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/PeerBay/PeerSocial.git"
+  },
+  "keywords": [
+    "anonymous",
+    "social",
+    "decentralized",
+    "privacy"
+  ],
+  "author": "vasilis PeerBay",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/PeerBay/PeerSocial/issues"
+  },
+  "homepage": "https://github.com/PeerBay/PeerSocial"
+}
