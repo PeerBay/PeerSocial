@@ -34,18 +34,33 @@ var Base58 = require("base-58")
 var Q = require("q")
 var follow = require("follow")
 var autobahn = require('autobahn');
-var WebTorrent = require("webtorrent") 
-
-var profiles = couchdb.use("profiles")
+var WebTorrent = require("webtorrent-hybrid")
+var fs = require("fs")
+var requests = couchdb.use("requests")
 var feeds = couchdb.use("feeds")
-
 var client = new WebTorrent()
+process.on('uncaughtException', function(err) {
+    console.error(err);
+    console.log("Node NOT Exiting...");
+});
+var tempFiles = {}
 
-// This challenge callback will authenticate our backend component
-//
 var rtcPeers = {}
 var freePeers = []
+var fs = require('fs');
+fs.readdir('files', function(err, files) {
+    if (err)
+        throw err;
+    for (var index in files) {
+        console.log(files[index]);
+        client.seed("files/"+files[index], function(torrent) {
+            console.log("seeding ", torrent.infoHash)
+        })
+    }
+});
 
+
+// This challenge callback will authenticate our backend component
 function onchallenge(session, method, extra) {
 
     console.log("onchallenge", method, extra);
@@ -61,8 +76,159 @@ function onchallenge(session, method, extra) {
     }
 }
 
+function storeFile(fileData) {
+    var infohash = fileData[0].infohash
+    if (client.get(infohash)) {
+        return {
+            info: "file exists"
+        }
+    }
+    var deferred = Q.defer();
+    if (!(infohash in tempFiles)) {
+        var size = fileData[0].size
+        var name = fileData[0].name
+        tempFiles[infohash] = {
+            data: ""
+        }
+        tempFiles[infohash].name = name
+        tempFiles[infohash].size = size
+        deferred.resolve({
+            infohash: size
+        })
+    } else {
+        var offset = fileData[0].offset
+        var slice = fileData[0].slice
+        tempFiles[infohash].data += slice;
+        console.log(offset, tempFiles[infohash].data.length, slice.length)
+        if ((offset + slice.length) >= tempFiles[infohash].size) {
+            var buffer = new Buffer(tempFiles[infohash].data, "binary");
+            buffer.name = tempFiles[infohash].name
+            console.log("file uploaded")
+            fs.writeFile("files/" + tempFiles[infohash].name, buffer, function(err) {
+                if (err)
+                    throw err;
+            });
+
+            client.seed("files/" + tempFiles[infohash].name,function(torrent) {
+                if (torrent.infoHash == infohash) {
+                    console.log("everything is ok")
+                } else {
+                    console.log("infohash doesnt match")
+                }
+                deferred.resolve({
+                    seed: torrent.infoHash
+                })
+                delete tempFiles[infohash]
+                delete buffer
+            })
+        } else {
+            deferred.resolve({
+                infohash: offset
+            })
+        }
+    }
+    return deferred.promise;
+}
+
+function request(m) {
+    // {
+    //     key:''
+    //     request:{}
+    // }
+    var deferred = Q.defer();
+    doc = m[0].request
+    doc._id = m[0].key + Date.now()
+
+    requests.insert(doc, function(err, body) {
+        // console.log(err, body)
+        if (!err) {
+            deferred.resolve(body)
+        } else {
+            deferred.resolve(err)
+        }
+    })
+    return deferred.promise;
+}
+
+function getNewRequestsIds(feedID) {
+    requests.fetchRevs({}, {
+        "startkey": feedID[0] + "\u9999",
+        "endkey": feedID[0],
+        "descending": true
+    }, function(err, body) {
+        console.log(err)
+        if (!err) {
+            var answer = [];
+            // console.log("docids", body)
+            body.rows.forEach(function(row) {
+                if (row.id) {
+                    answer.push(row.id)
+                }
+            })
+            // console.log("answer", answer)
+
+
+            deferred.resolve(answer)
+        } else {
+            deferred.resolve([])
+
+
+        }
+    })
+    return deferred.promise;
+}
+
+function getRequests(signedRequest) {
+    var pKey = Base58.decode(signedRequest[0].key).subarray(0, 32)
+    var askDocs = {}
+    for (n in signedRequest[0].docids) {
+        docid = nacl.sign.open(signedRequest[0].docids[n], pKey)
+        if (docid && docid.startsWith(signedRequest[0].key)) {
+            askDocs[docid] = signedRequest[0].docids[n]
+        }
+    }
+    if (askDocs.length != 0) {
+        var deferred = Q.defer();
+        feeds.fetch({
+            "keys": Object.keys(askDocs)
+        }, function(err, body) {
+            // console.log(err, body)
+            if (!err) {
+                var answer = [];
+                // console.log(body)
+                if (body.rows) {
+                    body.rows.forEach(function(row) {
+                        if (row.doc) {
+                            answer.push(row.doc)
+                            deleteDocs.push({
+                                "_id": row.doc._id,
+                                "_rev": row.doc._rev,
+                                "viewed": askDocs[row.doc._id]
+                            })
+                        }
+                    })
+                }
+
+
+                deferred.resolve(answer)
+            } else {
+                deferred.resolve([])
+
+                // deferred.r(err)
+            }
+        })
+
+
+
+    } else {
+        deferred.resolve([])
+    }
+    return deferred.promise;
+
+}
+
 function getFeed(feedId) {
-    console.log('getFeed', feedId)
+    // console.log('getFeed', feedId)
     var deferred = Q.defer();
     if (feedId[1]) {
         startkey = feedId[1]
@@ -110,7 +276,7 @@ function getFeedDocIds(feedID) {
 
     }
 
-    feeds.fetch({}, {
+    feeds.fetchRevs({}, {
         "startkey": feedID[0] + startkey,
         "endkey": feedID[0],
         "descending": true,
@@ -119,13 +285,13 @@ function getFeedDocIds(feedID) {
         console.log(err)
         if (!err) {
             var answer = [];
-            console.log("docids", body)
+            // console.log("docids", body)
             body.rows.forEach(function(row) {
                 if (row.id) {
                     answer.push(row.id)
                 }
             })
-            console.log("answer", answer)
+            // console.log("answer", answer)
 
 
             deferred.resolve(answer)
@@ -141,15 +307,15 @@ function getFeedDocIds(feedID) {
 }
 
 function get(docIds) {
-    console.log(docIds)
+    // console.log(docIds)
     var deferred = Q.defer();
     feeds.fetch({
         "keys": docIds
     }, function(err, body) {
-        console.log(err, body)
+        // console.log(err, body)
         if (!err) {
             var answer = [];
-            console.log(body)
+            // console.log(body)
             if (body.rows) {
                 body.rows.forEach(function(row) {
                     if (row.doc) {
@@ -172,32 +338,32 @@ function get(docIds) {
 }
 
 function putwithid(m) {
-    console.log("putwithid", m)
-    var signedDoc = nacl.util.decodeBase64(m[0].signedDoc)
+    // console.log("putwithid", m)
+    var signature = nacl.util.decodeBase64(m[0].signature)
 
-
+    var doc = nacl.util.decodeUTF8(m[0].doc)
     var pKey = Base58.decode(m[0].key).subarray(0, 32)
 
-    var signed = nacl.sign.open(signedDoc, pKey)
-    console.log("signed=", nacl.util.encodeUTF8(signed), nacl.util.encodeBase64(signed))
+    var signed = nacl.sign.detached.verify(doc, signature, pKey)
+    console.log("signature verification :", signed)
     if (signed) {
-        var doc = JSON.parse(nacl.util.encodeUTF8(signed))
-        console.log(doc)
+        var doc = JSON.parse(m[0].doc)
+        // console.log(doc)
         if (doc._id.substr(0, 46) == m[0].key) {
             console.log("verified")
             var deferred = Q.defer();
-            if (doc.handle) {
+            if (doc.handle && doc._id == m[0].key) {
                 feeds.view("rel", "handles", {
                         "key": doc.handle
                     },
                     function(err, body) {
 
-                        console.log(err, body)
+                        // console.log(err, body)
                         if (!err) {
-                            console.log(JSON.stringify(body))
-                            if (body.rows.length == 0 || body.rows[0].value[0].id==m[0].key) {
+                            // console.log(JSON.stringify(body))
+                            if (body.rows.length == 0 || body.rows[0].value[0].id == m[0].key) {
                                 feeds.insert(doc, function(err, body) {
-                                    console.log(err, body)
+                                    // console.log(err, body)
                                     if (!err) {
                                         deferred.resolve(body)
                                     } else {
@@ -215,7 +381,7 @@ function putwithid(m) {
                     })
             } else {
                 feeds.insert(doc, function(err, body) {
-                    console.log(err, body)
+                    // console.log(err, body)
                     if (!err) {
                         deferred.resolve(body)
                     } else {
@@ -238,6 +404,43 @@ function putwithid(m) {
     }
 }
 
+
+function put(m) {
+    console.log("put", m[0].signature)
+    var signature = nacl.util.decodeBase64(m[0].signature)
+    var doc = nacl.util.decodeUTF8(m[0].doc)
+
+    var pKey = Base58.decode(m[0].key).subarray(0, 32)
+
+    var signed = nacl.sign.detached.verify(doc, signature, pKey)
+    console.log("signature: ", signed)
+    if (signed) {
+        var deferred = Q.defer();
+        var doc = JSON.parse(m[0].doc)
+        console.log("verified")
+        // console.log(doc)
+        doc._id = m[0].key + Date.now()
+
+        feeds.insert(doc, function(err, body) {
+            console.log(err, body)
+            if (!err) {
+                deferred.resolve(body)
+            } else {
+                deferred.resolve(err)
+            }
+        })
+
+
+
+        return deferred.promise;
+    } else {
+        return {
+            "error": "signature verification failed"
+        }
+    }
+
+}
+
 function queryHandles(query) {
     console.log("quering handle:", query[0])
     var deferred = Q.defer();
@@ -250,7 +453,7 @@ function queryHandles(query) {
         },
         function(err, body) {
 
-            console.log(err, body)
+            // console.log(err, body)
             if (!err) {
                 deferred.resolve(body.rows)
             } else {
@@ -301,42 +504,6 @@ function tag(tag) {
             }
         })
     return deferred.promise
-}
-
-function put(m) {
-    console.log("put", m)
-    var signedDoc = nacl.util.decodeBase64(m[0].signedDoc)
-
-
-    var pKey = Base58.decode(m[0].key).subarray(0, 32)
-
-    var signed = nacl.sign.open(signedDoc, pKey)
-    console.log("signed=", nacl.util.encodeUTF8(signed), nacl.util.encodeBase64(signed))
-    if (signed) {
-        var deferred = Q.defer();
-        var doc = JSON.parse(nacl.util.encodeUTF8(signed))
-        console.log("verified")
-        console.log(doc)
-        doc._id = m[0].key + Date.now()
-
-        feeds.insert(doc, function(err, body) {
-            console.log(err, body)
-            if (!err) {
-                deferred.resolve(body)
-            } else {
-                deferred.resolve(err)
-            }
-        })
-
-
-
-        return deferred.promise;
-    } else {
-        return {
-            "error": "signature verification failed"
-        }
-    }
-
 }
 
 function validate(doc) {
@@ -433,6 +600,7 @@ connection.onopen = function(session) {
     session.register("getFeed", getFeed)
     session.register("getFeedDocIds", getFeedDocIds)
     session.register("put", put)
+    session.register("storeFile", storeFile)
     session.register("belongsTo", belongsTo)
     session.register("tag", tag)
     follow({

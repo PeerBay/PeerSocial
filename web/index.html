@@ -97,18 +97,18 @@
                 <md-tab label="Messages"></md-tab>
             </md-tabs>
             <div flex layout="column" layout-align="end end" class="md-toolbar-tools">
-                <md-autocomplete md-selected-item="data.search.selectedItem" md-selected-item-change="loadFeedWall(item.value[0].id)" md-search-text="data.searchText" md-items="item in queryHandles(data.searchText)" md-item-text="item.key" md-min-length="3" placeholder="Search a user's handle" md-menu-class="autocomplete-handles-template">
+                <md-autocomplete md-selected-item="data.searchselectedItem" md-selected-item-change="loadFeedWall(item.id)" md-search-text="data.searchText" md-items="item in queryHandles(data.searchText)" md-item-text="item.handle" md-min-length="3" placeholder="Search a user's handle" md-menu-class="autocomplete-handles-template">
                     <md-item-template>
                         <span class="item-title">
                             <ng-md-icon icon="perm_identity"></ng-md-icon>
-                            <span> {{item.value[0].name}} </span>
+                            <span> {{item.name}} </span>
                         </span>
                         <span class="item-metadata">
                             <span class="item-metastat">
-                              Handle:<strong>{{item.key}}</strong> 
+                              Handle:<strong>{{item.handle}}</strong> 
                             </span>
                         <span class="item-metastat">
-                              Location:<strong>{{item.value[0].location}}</strong> 
+                              Location:<strong>{{item.location}}</strong> 
                             </span>
                         </span>
                     </md-item-template>
@@ -145,6 +145,7 @@
             <md-sidenav layout="column" flex class="md-sidenav-left md-whiteframe-z2" md-component-id="left" md-is-locked-open="$mdMedia('gt-md')">
                 <md-toolbar class="md-theme-indigo">
                     <h1 class="md-toolbar-tools">{{data.profile.name}}</h1>
+                    <img alt="noimage" ng-init="getFile(data.profile.profileImage)" ng-src="{{data.files[data.profile.profileImage]}}" class="md-avatar" />
                 </md-toolbar>
                 <md-content layout="column" layout-padding>
                     <md-button flex md-no-ink class="md-primary" ng-click="data.subpage='mywall'">My Page</md-button>
@@ -152,7 +153,7 @@
                     <md-list>
                         <md-subheader flex class="md-no-sticky">Opened Pages</md-subheader>
                         <md-list-item ng-repeat="page in data.openPages" ng-click="">
-                            <img alt="{{ page.feedID }}" ng-src="{{  }}" class="md-avatar" />
+                           
                             <p>{{ data.profiles[page.feedID].name }}</p>
                             <ng-md-icon icon="delete" md-menu-align-target></ng-md-icon>
                         </md-list-item>
@@ -163,18 +164,18 @@
                 <section layout="column">
                     <md-toolbar id="publicpostbox" flex class="md-tall ">
                         <div class="md-toolbar-tools">
-                            <md-autocomplete flex md-input-type="textarea" md-selected-item="data.publicPost.selectedItem" md-search-text="data.publicPost.text" md-items="item in queryPublicPost(data.publicPost.text)" md-item-text="autocompletePublicPost(data.publicPost.text,item.key)" md-min-length="3" md-floating-label="What's happening?" md-menu-class="autocomplete-handles-template">
+                            <md-autocomplete flex md-input-type="textarea" md-selected-item="data.publicPost.selectedItem" md-search-text="data.publicPost.text" md-items="item in queryPublicPost(data.publicPost.text)" md-item-text="autocompletePublicPost(data.publicPost.text,item.handle)" md-min-length="3" md-floating-label="What's happening?" md-menu-class="autocomplete-handles-template">
                                 <md-item-template>
                                     <span class="item-title">
                                             <ng-md-icon icon="perm_identity"></ng-md-icon>
-                                            <span> {{item.value[0].name}} </span>
+                                            <span> {{item.name}} </span>
                                     </span>
                                     <span class="item-metadata">
                                             <span class="item-metastat">
-                                              Handle:<strong>{{item.key}}</strong> 
+                                              Handle:<strong>{{item.handle}}</strong> 
                                             </span>
                                     <span class="item-metastat">
-                                              Location:<strong>{{item.value[0].location}}</strong> 
+                                              Location:<strong>{{item.location}}</strong> 
                                             </span>
                                     </span>
                                 </md-item-template>
@@ -289,18 +290,18 @@
                 <section layout="column">
                     <md-toolbar id="publicpostbox" flex class="md-tall ">
                         <div class="md-toolbar-tools">
-                            <md-autocomplete flex md-input-type="textarea" md-selected-item="data.publicPost.selectedItem" md-search-text="data.publicPost.text" md-items="item in queryPublicPost(data.publicPost.text)" md-item-text="autocompletePublicPost(data.publicPost.text,item.key)" md-min-length="3" md-floating-label="What's happening?" md-menu-class="autocomplete-handles-template">
+                            <md-autocomplete flex md-input-type="textarea" md-selected-item="data.publicPost.selectedItem" md-search-text="data.publicPost.text" md-items="item in queryPublicPost(data.publicPost.text)" md-item-text="autocompletePublicPost(data.publicPost.text,item.handle)" md-min-length="3" md-floating-label="What's happening?" md-menu-class="autocomplete-handles-template">
                                 <md-item-template>
                                     <span class="item-title">
                                             <ng-md-icon icon="perm_identity"></ng-md-icon>
-                                            <span> {{item.value[0].name}} </span>
+                                            <span> {{item.name}} </span>
                                     </span>
                                     <span class="item-metadata">
                                             <span class="item-metastat">
-                                              Handle:<strong>{{item.key}}</strong> 
+                                              Handle:<strong>{{item.handle}}</strong> 
                                             </span>
                                     <span class="item-metastat">
-                                              Location:<strong>{{item.value[0].location}}</strong> 
+                                              Location:<strong>{{item.location}}</strong> 
                                             </span>
                                     </span>
                                 </md-item-template>
@@ -357,6 +358,10 @@
                                 <label>Group information</label>
                                 <textarea ng-model="data.groupForm.info" columns="1" md-maxlength="120"></textarea>
                             </md-input-container>
+                            <md-content class="md-padding autocomplete" layout="column" ng-init="data.groupForm.admins=[]">
+                                <md-contact-chips ng-model="data.groupForm.admins" md-contacts="queryHandles($query)" md-contact-name="name" md-highlight-flags="i" placeholder="To">
+                                </md-contact-chips>
+                            </md-content>
                             <lf-ng-md-file-input lf-files="data.groupForm.files" lf-property="profileImage" lf-placeholder="Pick Group Picture" preview></lf-ng-md-file-input>
                             <md-input-container>
                                 <md-button class="md-raised md-primary" type="submit">Save</md-button>
@@ -425,7 +430,42 @@
 
 
             }).controller('AppCtrl', function($scope, $mdToast, $q) {
+                $scope.getFile = function(infohash) {
+                    if($scope.data.onprogressfiles.indexOf(infohash)==-1){
+                        console.log("getting file:",infohash)
+                        $scope.data.onprogressfiles.push(infohash)
+                        var deferred = $q.defer();  
 
+                        $scope.feed.fileClient.add("magnet:?xt=urn:btih:"+infohash,function(torrent) {
+                            console.log("added torrent",torrent)
+                            if (torrent.files.length == 1) {
+                                torrent.files[0].getBlobURL(function(err, url) {
+                                    if (err) throw err
+                                    $scope.data.files[infohash]=url
+                                    deferred.resolve(url)
+                                })
+
+                            } else {
+                                var urls=[]
+                                torrent.files.forEach(function(file) {
+                                    // Get a url for each file
+                                    file.getBlobURL(function(err, url) {
+                                        if (err) throw err
+
+
+                                        urls.push(url)
+                                        if(urls.length==torrent.files.length){
+                                            $scope.data.files[infohash]=urls
+                                            deferred.resolve(urls)
+                                        }
+                                    })
+                                })
+                            }
+                        })
+                        return deferred.promise
+                        
+                    }
+                }
                 $scope.data = {
                     selectedIndex: 0,
                     secondLocked: true,
@@ -442,7 +482,10 @@
                     publicWall: [],
                     profiles: {},
                     subpage: "mywall",
-                    mywallunread: 0
+                    mywallunread: 0,
+                    search: {},
+                    onprogressfiles:[],
+                    files:{}
                 };
                 $scope.toastPosition = {
                     bottom: true,
@@ -452,7 +495,7 @@
                 };
                 // $scope.torrentClient = new WebTorrent()
                 $scope.createGroup = function() {
-                    console.log($scope.groupForm)
+                    console.log($scope.data.groupForm)
                 }
                 $scope.createProfile = function() {
                     console.log($scope.data.profile)
@@ -556,6 +599,7 @@
                     var deferred = $q.defer();
                     $scope.feed.search("@" + query).then(function(results) {
 
+                        console.log(results)
                         deferred.resolve(results)
                     })
                     return deferred.promise

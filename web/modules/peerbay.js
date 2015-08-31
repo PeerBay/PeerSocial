@@ -11,6 +11,7 @@ function Feed(boxKeys, signKeys) {
     this.boxSignKey = peerFeed.crypto.getpeerFeedID(this.boxSignKeys.publicKey)
     this.settings = {}
     this.mySettings = {}
+    this.fileClient = new WebTorrent()
     return new Promise(function(resolve, reject) {
         if (onion) {
             self.onion = onion
@@ -36,103 +37,194 @@ function Feed(boxKeys, signKeys) {
 }
 
 Feed.prototype = {
-    storeFile:function(file,infohash){
+    storeFiles:function(lfFiles){
+        var self=this;
+        return new Promise(function(resolve,reject){
+            var files={}
+            var idx=0
+            for (i in lfFiles){
+                self.storeFile(lfFiles[i].lfFile).then(function(infohash){
+                    console.log(i)
+                    type=typeof files[lfFiles[i].lfProperty]
+                    switch(type){
+                        case "undefined":
+                            files[lfFiles[i].lfProperty]=infohash
+                            break;
+                        case "string":
+                            files[lfFiles[i].lfProperty]=[files[lfFiles[i].lfProperty],infohash]
+                        case "object":
+                            files[lfFiles[i].lfProperty].push(infohash)        
+                    }
+                    idx++;
+                    if(idx==lfFiles.length){
+                        resolve(files)
+                    }
+                })
+            }
+        })
+    },
+
+    storeFile: function(file) {
         var self = this;
+        console.log(file.size)
+        return new Promise(function(resolve, reject) {
+            self.fileClient.seed(file, function(torrent) {
+                var infohash = torrent.infoHash
+                torrent.destroy()
+                var chunkSize = 15384;
+                self.onion.call("storeFile", [{
+                    infohash: infohash,
+                    size: file.size,
+                    name: file.name
+                }]).then(function(ans) {
+                    console.log(ans)
+                    var sliceFile = function(offset) {
+                        console.log(offset)
+                        var reader = new window.FileReader();
+                        reader.onload = (function() {
+                            return function(e) {
+
+                                self.onion.call("storeFile", [{
+                                    infohash: infohash,
+                                    slice: e.target.result,
+                                    offset: offset
+                                }]).then(function(answer) {
+                                    if (file.size > offset + e.target.result.length) {
+                                        window.setTimeout(sliceFile, 0, offset + chunkSize);
+                                    }
+                                    console.log(offset + e.target.result.length);
+                                    if (answer.seed) {
+                                        resolve(answer.seed)
+                                    }
+                                })
+                            };
+                        })(file);
+                        var slice = file.slice(offset, offset + chunkSize);
+                        reader.readAsBinaryString(slice);
+                    };
+                    sliceFile(0);
+                })
+            })
+
+        })
+
+
+
+
         // send pieces to server with onion call(file,[infohash,piece,index])
         // server seeds the file and asks for 2 or more 
         // online users to seed based on popularity and size
         // files can be unsigned, signed or 
         // encrypted(for groups)
-        function sendPiece(piece,index){
+        function sendPiece(piece, index) {
             // onion call(file,[infohash,piece,index]).then(function(){
-                // piece=file.slice(index,PIECE_SIZE)
-                // check file size to determine 
-                // sendPiece(piece,index+1)
-                // when finished server should return verification
+            // piece=file.slice(index,PIECE_SIZE)
+            // check file size to determine 
+            // sendPiece(piece,index+1)
+            // when finished server should return verification
             // })
         }
     },
-    createPublicGroup:function(groupData){
+    sendRequest: function() {},
+    createPublicGroup: function(groupData) {
         // group encryption is public key signing
         // group data are signed only and public
         // group post are public key signed
         // other then that group rules applied
     },
-    createPrivateChat:function(feedIDs){
+    createPrivateChat: function(feedIDs) {
         // one to (one | many) chat rooms
         // private group rules applied 
     },
-    createPrivateGroup:function(groupData){
-        if(groupData.admins){
+    createPrivateGroup: function(groupData) {
+        if (groupData.admins) {
             groupData.admins.push(self.signKey)
-        }else{
-            groupData.admins=[self.signKey]
+        } else {
+            groupData.admins = [self.signKey]
         }
-        if(groupData.users){
+        if (groupData.users) {
             groupData.users.push(self.signKey)
-        }else{
-            groupData.users=[self.signKey]
+        } else {
+            groupData.users = [self.signKey]
         }
-        groupKeys=nacl.sign.keyPair()
-        groupKey=peerFeed.crypto.getpeerFeedID(groupKeys.publicKey)
-        
-        groupSecret=groupKeys.secretKey.subarray(0, 32)
-        groupData=JSON.stringify(groupData)
-        groupData=nacl.util.decodeUTF8(groupData)
-        nonce=peerFeed.crypto.getNonce()
-        groupData=nacl.secretbox(groupData,nonce,groupSecret)
-        groupData={
-            _id:groupKey
-            nacl.util.encodeBase64(nonce):nacl.util.encodeBase64(groupData)
-        }    
+        groupKeys = nacl.sign.keyPair()
+        groupKey = peerFeed.crypto.getpeerFeedID(groupKeys.publicKey)
 
-        signature = nacl.sign.detached(nacl.util.decodeUTF8(JSON.stringify(doc)),groupKeys.secretKey)
-        signature=nacl.util.encodeBase64(signature)
-        doc={
-            "key":groupKey,
-            "doc":groupData,
-            "signature":signature
+        groupSecret = groupKeys.secretKey.subarray(0, 32)
+        groupData = JSON.stringify(groupData)
+        groupData = nacl.util.decodeUTF8(groupData)
+        nonce = peerFeed.crypto.getNonce()
+        groupData = nacl.secretbox(groupData, nonce, groupSecret)
+        data = {
+            _id: groupKey
         }
-        self.onion.call("putwithid", [doc]).then(function(ans) {
-                        self.settings = settings
-                        self.settings._id = ans.id
-                        self.settings._rev = ans.rev
-                        resolve({})
-                    })
-        this.addSettingValue("groups",groupSecret).then()
+        data[nacl.util.encodeBase64(nonce)] = nacl.util.encodeBase64(groupData)
+
+        // signature = nacl.sign.detached(nacl.util.decodeUTF8(JSON.stringify(doc)), groupKeys.secretKey)
+        // signature = nacl.util.encodeBase64(signature)
+        // doc = {
+        //     "key": groupKey,
+        //     "doc": groupData,
+        //     "signature": signature
+        // }
+        self.onion.call("putwithid", [self.signDoc(data, groupKeys)]).then(function(ans) {
+            console.log(ans)
+        })
+        this.addSettingValue("groups", groupSecret).then(function(a) {
+            console.log(a)
+        })
     },
+
     createProfile: function(profile) {
         // create two docs
         // public profile signid (stores public signed info about user)
         // private settings boxid (stores private encrypted settings of the user)
         var self = this
-        if (!profile._id) {
-            profile._id = this.signKey
-        }
-        if (!profile.boxKey) {
-            profile.boxKey = this.boxKey
-        }
-        profile = JSON.stringify(profile)
-
-        // encpro = nacl.util.decodeUTF8(profile)
-        // signat = nacl.sign.detached(encpro, this.signKeys.secretKey)
-        // strsign = nacl.util.encodeBase64(signat)
-        // sign64 = nacl.util.decodeBase64(strsign)
-        // pKey = Base58.decode(this.signKey).subarray(0, 32)
-        // checksign = nacl.sign.detached.verify(encpro, sign64, pKey)
-        // console.log(checksign)
-        var doc = {
-            signedDoc: nacl.util.encodeBase64(nacl.sign(nacl.util.decodeUTF8(profile), this.signKeys.secretKey)),
-            key: this.signKey
-        }
         return new Promise(function(resolve, reject) {
-            self.onion.call("putwithid", [doc]).then(function(answer) {
-                resolve(answer)
-            })
+            if (!profile._id) {
+                profile._id = self.signKey
+            }
+            if (!profile.boxKey) {
+                profile.boxKey = self.boxKey
+            }
+            if (profile.files) {
 
+                for (i in profile.files) {
+                    self.storeFiles(profile.files).then(function(files) {
+                        for(key in files) profile[key]=files[key]
+                        delete profile.files    
+                        self.onion.call("putwithid", [self.signDoc(profile)]).then(function(answer) {
+                            resolve(answer)
+                        })
+                    })
+                }
+            } else {
+
+
+                self.onion.call("putwithid", [self.signDoc(profile)]).then(function(answer) {
+                    resolve(answer)
+                })
+            }
         })
     },
+    signDoc: function(doc, signKeys) {
+        if (signKeys) {
+            signKey = peerFeed.crypto.getpeerFeedID(signKeys.publicKey)
+        } else {
+            signKeys = this.signKeys
+            signKey = this.signKey
+        }
+        doc = JSON.stringify(doc)
+        signature = nacl.sign.detached(nacl.util.decodeUTF8(doc), signKeys.secretKey)
+        signature = nacl.util.encodeBase64(signature)
+        return {
+            signature: signature,
+            doc: doc,
+            key: signKey
+        }
 
+
+    },
     getSettings: function() {
         var self = this
         return new Promise(function(resolve, reject) {
@@ -167,7 +259,7 @@ Feed.prototype = {
                     console.log(self.settings)
                     var setDocs = []
                     var docidx = {}
-                    
+
 
                     for (set in self.settings.data) {
                         if (set != "creationDate") {
@@ -185,7 +277,7 @@ Feed.prototype = {
                             console.log(self.mySettings)
                             resolve(self.mySettings)
                         })
-                    }else{
+                    } else {
                         resolve({})
                     }
 
@@ -248,37 +340,20 @@ Feed.prototype = {
                     self.mySettings[setting] = sets
                     self.mySettings[setting]._id = ans.id
                     self.mySettings[setting]._rev = ans.rev
-                    var doc = {
-                        signedDoc: nacl.util.encodeBase64(
-                            nacl.sign(
-                                nacl.util.decodeUTF8(
-                                    JSON.stringify(self.encryptDoc(self.settings))
-                                ),
-                                self.boxSignKeys.secretKey)
-                        ),
-                        key: self.boxSignKey
-                    }
 
-                    self.onion.call("putwithid", [doc]).then(function(ans) {
+
+
+                    self.onion.call("putwithid", [self.signDoc(self.encryptDoc(self.settings), self.boxSignKeys)]).then(function(ans) {
                         self.settings._rev = ans.rev
                         resolve(self.mySettings[setting])
-                        
+
                     })
                 })
             } else {
                 self.mySettings[setting].data.push(value)
-                var doc = {
-                    signedDoc: nacl.util.encodeBase64(
-                        nacl.sign(
-                            nacl.util.decodeUTF8(
-                                JSON.stringify(self.encryptDoc(self.mySettings[setting]))
-                            ),
-                            self.boxSignKeys.secretKey)
-                    ),
-                    key: self.boxSignKey
-                }
 
-                self.onion.call("putwithid", [doc]).then(function(ans) {
+
+                self.onion.call("putwithid", [self.signDoc(self.encryptDoc(self.mySettings[setting]), self.boxSignKeys)]).then(function(ans) {
                     self.mySettings[setting]._rev = ans.rev
                     resolve(self.mySettings[setting])
                 })
@@ -313,21 +388,9 @@ Feed.prototype = {
 
     },
     publicPost: function(post, keys) {
-        if (keys) {
-            secretKey = keys.secretKey
-            signKey = peerFeed.crypto.getpeerFeedID(keys.publicKey)
-        } else {
-            secretKey = this.signKeys.secretKey
-            signKey = this.signKey
-        }
         var self = this
-        post = JSON.stringify(post)
-        var doc = {
-            signedDoc: nacl.util.encodeBase64(nacl.sign(nacl.util.decodeUTF8(post), secretKey)),
-            key: signKey
-        }
         return new Promise(function(resolve, reject) {
-            self.onion.call("put", [doc]).then(function(answer) {
+            self.onion.call("put", [self.signDoc(post, keys)]).then(function(answer) {
                 resolve(answer)
             })
 
@@ -338,6 +401,10 @@ Feed.prototype = {
         if (query.startsWith("@")) {
             return new Promise(function(resolve, reject) {
                 self.onion.call("handles", [query.slice(1)]).then(function(results) {
+                    results.forEach(function(doc, idx, theDocs) {
+                        theDocs[idx] = doc.value[0]
+                        theDocs[idx]["handle"] = doc.key
+                    })
                     resolve(results)
                 })
             })
