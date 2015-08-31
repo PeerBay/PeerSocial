@@ -1,0 +1,40 @@
+html,
+body {
+    font-family: 'Roboto', sans-serif;
+    font-size: 14px;
+    /*height: 100%;*/
+    margin: 0px;
+    padding: 0px;
+}
+
+
+
+
+.tabsdemoStaticTabs md-card {
+    width: 500px;
+}
+.profileForm md-card {
+    width: 500px;
+}
+#publicpostbox{
+    width: 500px;
+}
+
+.autocomplete-handles-template li {
+  border-bottom: 1px solid #ccc;
+  height: auto;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  white-space: normal; }
+.autocomplete-handles-template li:last-child {
+  border-bottom-width: 0; }
+ .autocomplete-handles-template .item-title,  .autocomplete-handles-template .item-metadata {
+  display: block;
+  line-height: 2; }
+ .autocomplete-handles-template .item-title md-icon {
+  height: 18px;
+  width: 18px; }
+  #feedtoolbar{
+  	    min-height: 48px;
+  	height: 48px;
+  }
