@@ -34,30 +34,31 @@ var Base58 = require("base-58")
 var Q = require("q")
 var follow = require("follow")
 var autobahn = require('autobahn');
-var WebTorrent = require("webtorrent-hybrid")
+// var WebTorrent = require("webtorrent-hybrid")
 var fs = require("fs")
 var requests = couchdb.use("requests")
 var feeds = couchdb.use("feeds")
-var client = new WebTorrent()
-process.on('uncaughtException', function(err) {
-    console.error(err);
-    console.log("Node NOT Exiting...");
-});
+    // var client = new WebTorrent()
+// process.on('uncaughtException', function(err) {
+//     console.error(err);
+//     console.log("Node NOT Exiting...");
+// });
 var tempFiles = {}
-
+var openFiles = {}
+var openFileSizes = {}
 var rtcPeers = {}
 var freePeers = []
 var fs = require('fs');
-fs.readdir('files', function(err, files) {
-    if (err)
-        throw err;
-    for (var index in files) {
-        console.log(files[index]);
-        client.seed("files/"+files[index], function(torrent) {
-            console.log("seeding ", torrent.infoHash)
-        })
-    }
-});
+// fs.readdir('files', function(err, files) {
+//     if (err)
+//         throw err;
+//     for (var index in files) {
+//         console.log(files[index]);
+//         client.seed("files/"+files[index], function(torrent) {
+//             console.log("seeding ", torrent.infoHash)
+//         })
+//     }
+// });
 
 
 // This challenge callback will authenticate our backend component
@@ -78,11 +79,7 @@ function onchallenge(session, method, extra) {
 
 function storeFile(fileData) {
     var infohash = fileData[0].infohash
-    if (client.get(infohash)) {
-        return {
-            info: "file exists"
-        }
-    }
+
     var deferred = Q.defer();
     if (!(infohash in tempFiles)) {
         var size = fileData[0].size
@@ -104,29 +101,77 @@ function storeFile(fileData) {
             var buffer = new Buffer(tempFiles[infohash].data, "binary");
             buffer.name = tempFiles[infohash].name
             console.log("file uploaded")
-            fs.writeFile("files/" + tempFiles[infohash].name, buffer, function(err) {
+            fs.writeFile("files/" + infohash, buffer, function(err) {
                 if (err)
                     throw err;
+                delete tempFiles[infohash]
+                delete buffer;
+                deferred.resolve({
+                    seed: infohash
+                })
             });
 
-            client.seed("files/" + tempFiles[infohash].name,function(torrent) {
-                if (torrent.infoHash == infohash) {
-                    console.log("everything is ok")
-                } else {
-                    console.log("infohash doesnt match")
-                }
-                deferred.resolve({
-                    seed: torrent.infoHash
-                })
-                delete tempFiles[infohash]
-                delete buffer
-            })
+            // client.seed("files/" + tempFiles[infohash].name,function(torrent) {
+            //     if (torrent.infoHash == infohash) {
+            //         console.log("everything is ok")
+            //     } else {
+            //         console.log("infohash doesnt match")
+            //     }
+            //     deferred.resolve({
+            //         seed: torrent.infoHash
+            //     })
+            //     delete tempFiles[infohash]
+            //     delete buffer
+            // })
         } else {
             deferred.resolve({
                 infohash: offset
             })
         }
     }
+    return deferred.promise;
+}
+
+function getFileSize(fileData) {
+    var hash = fileData[0]
+    console.log("size ",hash)
+    if (openFileSizes[hash]) return openFileSizes[hash]
+    var deferred = Q.defer();
+    fs.stat("files/" + hash, function(err, stats) {
+        if (err) deferred.resolve(err)
+        openFileSizes[hash] = stats.size
+        deferred.resolve(stats.size)
+    });
+    return deferred.promise;
+}
+
+function getFile(fileData) {
+    console.log("filedata req",fileData)
+    var hash = fileData[0]
+    var offset = fileData[1]
+    var length = fileData[2]
+    var deferred = Q.defer();
+    if(offset>=openFileSizes[hash])return ""
+    fs.open("files/" + hash, 'r', function(status, fd) {
+        if (status) {
+            console.log(status.message);
+            deferred.resolve({
+                "error": status.message
+            })
+        }
+        console.log("get file ", hash)
+        // openFiles[hash] = fd
+        if ((offset + length) > openFileSizes[hash]) length = openFileSizes[hash] - offset;
+        console.log(offset, length, openFileSizes[hash])
+        var buffer = new Buffer(length)
+        fs.read(fd, buffer, 0, length, offset, function(err, num) {
+            deferred.resolve(buffer.toString('binary', 0, num));
+        })
+    })
+
+
+
+
     return deferred.promise;
 }
 
@@ -161,11 +206,11 @@ function getNewRequestsIds(feedID) {
             var answer = [];
             // console.log("docids", body)
             body.rows.forEach(function(row) {
-                if (row.id) {
-                    answer.push(row.id)
-                }
-            })
-            // console.log("answer", answer)
+                    if (row.id) {
+                        answer.push(row.id)
+                    }
+                })
+                // console.log("answer", answer)
 
 
             deferred.resolve(answer)
@@ -287,11 +332,11 @@ function getFeedDocIds(feedID) {
             var answer = [];
             // console.log("docids", body)
             body.rows.forEach(function(row) {
-                if (row.id) {
-                    answer.push(row.id)
-                }
-            })
-            // console.log("answer", answer)
+                    if (row.id) {
+                        answer.push(row.id)
+                    }
+                })
+                // console.log("answer", answer)
 
 
             deferred.resolve(answer)
@@ -348,7 +393,7 @@ function putwithid(m) {
     console.log("signature verification :", signed)
     if (signed) {
         var doc = JSON.parse(m[0].doc)
-        // console.log(doc)
+            // console.log(doc)
         if (doc._id.substr(0, 46) == m[0].key) {
             console.log("verified")
             var deferred = Q.defer();
@@ -418,7 +463,7 @@ function put(m) {
         var deferred = Q.defer();
         var doc = JSON.parse(m[0].doc)
         console.log("verified")
-        // console.log(doc)
+            // console.log(doc)
         doc._id = m[0].key + Date.now()
 
         feeds.insert(doc, function(err, body) {
@@ -601,6 +646,8 @@ connection.onopen = function(session) {
     session.register("getFeedDocIds", getFeedDocIds)
     session.register("put", put)
     session.register("storeFile", storeFile)
+    session.register("getFileSize", getFileSize)
+    session.register("getFile", getFile)
     session.register("belongsTo", belongsTo)
     session.register("tag", tag)
     follow({

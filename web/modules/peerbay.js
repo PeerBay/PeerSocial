@@ -11,7 +11,7 @@ function Feed(boxKeys, signKeys) {
     this.boxSignKey = peerFeed.crypto.getpeerFeedID(this.boxSignKeys.publicKey)
     this.settings = {}
     this.mySettings = {}
-    this.fileClient = new WebTorrent()
+        // this.fileClient = new WebTorrent()
     return new Promise(function(resolve, reject) {
         if (onion) {
             self.onion = onion
@@ -37,76 +37,117 @@ function Feed(boxKeys, signKeys) {
 }
 
 Feed.prototype = {
-    storeFiles:function(lfFiles){
-        var self=this;
-        return new Promise(function(resolve,reject){
-            var files={}
-            var idx=0
-            for (i in lfFiles){
-                self.storeFile(lfFiles[i].lfFile).then(function(infohash){
+    storeFiles: function(lfFiles) {
+        var self = this;
+        return new Promise(function(resolve, reject) {
+            var files = {}
+            var idx = 0
+            for (i in lfFiles) {
+                lfFiles[i].lfFile.hash = nacl.util.encodeBase64(nacl.hash(nacl.util.decodeUTF8(lfFiles[i].lfDataUrl)))
+                self.storeFile(lfFiles[i].lfFile).then(function(infohash) {
                     console.log(i)
-                    type=typeof files[lfFiles[i].lfProperty]
-                    switch(type){
+                    type = typeof files[lfFiles[i].lfProperty]
+                    switch (type) {
                         case "undefined":
-                            files[lfFiles[i].lfProperty]=infohash
+                            files[lfFiles[i].lfProperty] = infohash
                             break;
                         case "string":
-                            files[lfFiles[i].lfProperty]=[files[lfFiles[i].lfProperty],infohash]
+                            files[lfFiles[i].lfProperty] = [files[lfFiles[i].lfProperty], infohash]
                         case "object":
-                            files[lfFiles[i].lfProperty].push(infohash)        
+                            files[lfFiles[i].lfProperty].push(infohash)
                     }
                     idx++;
-                    if(idx==lfFiles.length){
+                    if (idx == lfFiles.length) {
                         resolve(files)
                     }
                 })
             }
         })
     },
+    getFile: function(infohash) {
+        var self = this;
 
+        return new Promise(function(resolve, reject) {
+
+
+            var chunkSize = 15384;
+            self.onion.call("getFileSize", [infohash]).then(function(size) {
+                if (!size) resolve(null)
+                console.log(size)
+                var file = ""
+                var appendFile = function(offset) {
+                    // if (size < offset){offset=size}
+
+                    if (offset >= size) {
+                        resolve("data:image/png;base64,"+btoa(file))
+                        return;
+                    }
+
+                    if ((offset + chunkSize) > size) chunkSize = size - offset
+                    console.log(offset, chunkSize, size)
+                    self.onion.call("getFile", [infohash, offset, chunkSize]).then(function(chunk) {
+                        file += chunk
+                        console.log("file size ",file.length,size)
+                        if (file.length==size) {
+                            resolve("data:image/png;base64,"+btoa(file))
+                            return;
+                        }
+                        appendFile(offset + chunkSize)
+                    })
+                }
+                appendFile(0)
+
+            })
+
+
+        })
+
+    },
     storeFile: function(file) {
         var self = this;
         console.log(file.size)
         return new Promise(function(resolve, reject) {
-            self.fileClient.seed(file, function(torrent) {
-                var infohash = torrent.infoHash
-                torrent.destroy()
-                var chunkSize = 15384;
-                self.onion.call("storeFile", [{
-                    infohash: infohash,
-                    size: file.size,
-                    name: file.name
-                }]).then(function(ans) {
-                    console.log(ans)
-                    var sliceFile = function(offset) {
-                        console.log(offset)
-                        var reader = new window.FileReader();
-                        reader.onload = (function() {
-                            return function(e) {
 
-                                self.onion.call("storeFile", [{
-                                    infohash: infohash,
-                                    slice: e.target.result,
-                                    offset: offset
-                                }]).then(function(answer) {
-                                    if (file.size > offset + e.target.result.length) {
-                                        window.setTimeout(sliceFile, 0, offset + chunkSize);
-                                    }
-                                    console.log(offset + e.target.result.length);
-                                    if (answer.seed) {
-                                        resolve(answer.seed)
-                                    }
-                                })
-                            };
-                        })(file);
-                        var slice = file.slice(offset, offset + chunkSize);
-                        reader.readAsBinaryString(slice);
-                    };
-                    sliceFile(0);
-                })
+
+
+
+            var infohash = file.hash
+
+            var chunkSize = 15384;
+            self.onion.call("storeFile", [{
+                infohash: infohash,
+                size: file.size,
+                name: file.name
+            }]).then(function(ans) {
+                console.log(ans)
+                var sliceFile = function(offset) {
+                    console.log(offset)
+                    var reader = new window.FileReader();
+                    reader.onload = (function() {
+                        return function(e) {
+
+                            self.onion.call("storeFile", [{
+                                infohash: infohash,
+                                slice: e.target.result,
+                                offset: offset
+                            }]).then(function(answer) {
+                                if (file.size > offset + e.target.result.length) {
+                                    window.setTimeout(sliceFile, 0, offset + chunkSize);
+                                }
+                                console.log(offset + e.target.result.length);
+                                if (answer.seed) {
+                                    resolve(answer.seed)
+                                }
+                            })
+                        };
+                    })(file);
+                    var slice = file.slice(offset, offset + chunkSize);
+                    reader.readAsBinaryString(slice);
+                };
+                sliceFile(0);
             })
-
         })
+
 
 
 
@@ -191,8 +232,8 @@ Feed.prototype = {
 
                 for (i in profile.files) {
                     self.storeFiles(profile.files).then(function(files) {
-                        for(key in files) profile[key]=files[key]
-                        delete profile.files    
+                        for (key in files) profile[key] = files[key]
+                        delete profile.files
                         self.onion.call("putwithid", [self.signDoc(profile)]).then(function(answer) {
                             resolve(answer)
                         })
@@ -312,7 +353,7 @@ Feed.prototype = {
 
         return new Promise(function(resolve, reject) {
             self.onion.call("getFeedDocIds", [feedID, before]).then(function(docs) {
-                console.log(docs)
+                // console.log(docs)
                 idx = docs.indexOf(feedID)
                 docs.splice(idx, idx)
                 docs.forEach(function(docid, i, theDocs) {
@@ -373,7 +414,7 @@ Feed.prototype = {
     get: function(docIds) {
 
         var self = this
-        console.log("getting", docIds)
+            // console.log("getting", docIds)
         return new Promise(function(resolve, reject) {
             if (docIds[0]) {
                 self.onion.call("get", docIds).then(function(docs) {
