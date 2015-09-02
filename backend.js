@@ -34,31 +34,127 @@ var Base58 = require("base-58")
 var Q = require("q")
 var follow = require("follow")
 var autobahn = require('autobahn');
+var FeedParser = require('feedparser')
+var extractor = require('unfluff');
+var readability = require('node-readability');
+var webrequest = require('request');
 // var WebTorrent = require("webtorrent-hybrid")
 var fs = require("fs")
+var http = require('http');
+
+
 var requests = couchdb.use("requests")
 var feeds = couchdb.use("feeds")
     // var client = new WebTorrent()
-// process.on('uncaughtException', function(err) {
-//     console.error(err);
-//     console.log("Node NOT Exiting...");
-// });
+    // process.on('uncaughtException', function(err) {
+    //     console.error(err);
+    //     console.log("Node NOT Exiting...");
+    // });
 var tempFiles = {}
 var openFiles = {}
 var openFileSizes = {}
 var rtcPeers = {}
 var freePeers = []
 var fs = require('fs');
-// fs.readdir('files', function(err, files) {
-//     if (err)
-//         throw err;
-//     for (var index in files) {
-//         console.log(files[index]);
-//         client.seed("files/"+files[index], function(torrent) {
-//             console.log("seeding ", torrent.infoHash)
-//         })
-//     }
-// });
+var files = {}
+var downloading = {}
+
+fs.readdir('files', function(err, lfiles) {
+    if (err)
+        throw err;
+    for (var index in lfiles) {
+        console.log(lfiles[index]);
+        files[lfiles[index]] = true
+    }
+});
+var download = function(uri, filename, cb) {
+    console.log("downloading ", uri)
+    var f = fs.createWriteStream("files/" + filename)
+    f.on('error', function(err) {
+        console.log(err, uri);
+    });
+
+    f.on('close', function() {
+
+        console.log("finished downloading: ", uri, this.path);
+
+    });
+    var r = http.get(uri, function(response) {
+        response.pipe(f);
+        f.on('finish', function() {
+            f.close(cb); // close() is async, call cb after close completes.
+        });
+    }).on('error', function(err) { // Handle errors
+        fs.unlink("files/" + filename); // Delete the file async. (But we don't check the result)
+        if (cb) cb(err.message);
+    });
+
+    // webrequest.head(uri, function(err, res, body) {
+    // });
+};
+
+function getRssFeeds(rssLinks) {
+    console.log("getRss", rssLinks)
+    var deferred = Q.defer();
+    var feedparser = new FeedParser();
+    var articles = []
+    for (i in rssLinks) {
+        console.log("getting ", rssLinks[i])
+        webrequest(rssLinks[i]).on('error', function(error) {
+            // handle any request errors
+            deferred.resolve(error)
+        }).on('response', function(res) {
+            var stream = this;
+
+            if (res.statusCode != 200) return this.emit('error', new Error('Bad status code'));
+
+            stream.pipe(feedparser);
+        });
+    }
+    feedparser.on('error', function(error) {
+        // always handle errors
+        deferred.resolve(error)
+    });
+    feedparser.on('readable', function() {
+        // This is where the action is!
+        var stream = this,
+            meta = this.meta // **NOTE** the "meta" is always available in the context of the feedparser instance
+            ,
+            item;
+        // console.log(stream.response.caseless.dict.etag)
+        while (item = stream.read()) {
+            // console.log(item)
+            image = ""
+            if (typeof item.image == "string") {
+                image = nacl.util.encodeBase64(nacl.hash(nacl.util.decodeUTF8(item.image)))
+                image = image.split("/").join("")
+                if (!files[image]) {
+                    downloading[image] = true
+                    download(item.image, image, function() {
+                        console.log("image loaded")
+                        files[image] = true
+                        delete downloading[image]
+                    })
+                }
+            }
+            articles.push({
+                "link": item.link,
+                "summary": item.summary,
+                "title": item.title,
+                "image": image,
+                "date": item.date
+
+            })
+        }
+    });
+    feedparser.on('end', function() {
+        console.log("feed ended")
+        deferred.resolve(articles)
+    })
+    return deferred.promise
+}
+
+
 
 
 // This challenge callback will authenticate our backend component
@@ -106,6 +202,7 @@ function storeFile(fileData) {
                     throw err;
                 delete tempFiles[infohash]
                 delete buffer;
+                files[infohash] = true
                 deferred.resolve({
                     seed: infohash
                 })
@@ -130,52 +227,127 @@ function storeFile(fileData) {
         }
     }
     return deferred.promise;
+    var deferred = Q.defer();
+}
+
+function getArticle(link) {
+    var deferred = Q.defer();
+    webrequest(link[0], function(error, response, html) {
+        if (!error && response.statusCode == 200) {
+            // console.log(html);
+            data = extractor(html, 'en');
+            if (!data.text) {
+                readability(html, function(err, doc, meta) {
+                    data.text = doc.content
+                    doc.close();
+                    if (typeof data.image == "string") {
+                        image = nacl.util.encodeBase64(nacl.hash(nacl.util.decodeUTF8(data.image)))
+                        image = image.split("/").join("")
+                        if (!files[image]) {
+                            downloading[image] = true
+                            download(data.image, image, function() {
+                                console.log("image loaded")
+                                files[image] = true
+                                delete downloading[image]
+                            })
+                        }
+                        data.image = image
+                        deferred.resolve(data)
+                    }
+                });
+
+            } else {
+                if (typeof data.image == "string") {
+                    image = nacl.util.encodeBase64(nacl.hash(nacl.util.decodeUTF8(data.image)))
+                    image = image.split("/").join("")
+                    if (!files[image]) {
+                        downloading[image] = true
+                        download(data.image, image, function() {
+                            console.log("image loaded")
+                            files[image] = true
+                            delete downloading[image]
+                        })
+                    }
+                    data.image = image
+                }
+                deferred.resolve(data)
+            }
+        }
+
+
+    });
+    return deferred.promise;
+
 }
 
 function getFileSize(fileData) {
     var hash = fileData[0]
-    console.log("size ",hash)
-    if (openFileSizes[hash]) return openFileSizes[hash]
     var deferred = Q.defer();
-    fs.stat("files/" + hash, function(err, stats) {
-        if (err) deferred.resolve(err)
-        openFileSizes[hash] = stats.size
-        deferred.resolve(stats.size)
-    });
+    console.log("size ", hash)
+    var fileReadyInterval = setInterval(function() {
+        // console.log("downloading",hash)
+        if (hash in downloading) {
+            console.log(downloading)
+        } else {
+            clearInterval(fileReadyInterval)
+            if (hash in files) {
+                console.log(hash)
+                if (openFileSizes[hash]) return openFileSizes[hash]
+                fs.stat("files/" + hash, function(err, stats) {
+                    if (err) deferred.resolve(err)
+                    openFileSizes[hash] = stats.size
+                    deferred.resolve(stats.size)
+                });
+            } else {
+                deferred.resolve(0)
+            }
+
+        }
+    }, 200)
     return deferred.promise;
+
 }
 
 function getFile(fileData) {
-    console.log("filedata req",fileData)
+    console.log("filedata req", fileData)
     var hash = fileData[0]
-    var offset = fileData[1]
-    var length = fileData[2]
+
     var deferred = Q.defer();
-    if(offset>=openFileSizes[hash])return ""
-    fs.open("files/" + hash, 'r', function(status, fd) {
-        if (status) {
-            console.log(status.message);
-            deferred.resolve({
-                "error": status.message
-            })
+    var fileReadyInterval = setInterval(function() {
+        if (downloading[hash]) {
+            
+        } else {
+            clearInterval(fileReadyInterval)
+            if (!files[hash]) {
+                deferred.resolve(0)
+            } else {
+                var offset = fileData[1]
+                var length = fileData[2]
+                if (offset >= openFileSizes[hash]) return ""
+                fs.open("files/" + hash, 'r', function(status, fd) {
+                    if (status) {
+                        console.log(status.message);
+                        deferred.resolve({
+                            "error": status.message
+                        })
+                    }
+                    console.log("get file ", hash)
+                        // openFiles[hash] = fd
+                    if ((offset + length) > openFileSizes[hash]) length = openFileSizes[hash] - offset;
+                    console.log(offset, length, openFileSizes[hash])
+                    var buffer = new Buffer(length)
+                    fs.read(fd, buffer, 0, length, offset, function(err, num) {
+                        deferred.resolve(buffer.toString('binary', 0, num));
+                    })
+                })
+            }
+
         }
-        console.log("get file ", hash)
-        // openFiles[hash] = fd
-        if ((offset + length) > openFileSizes[hash]) length = openFileSizes[hash] - offset;
-        console.log(offset, length, openFileSizes[hash])
-        var buffer = new Buffer(length)
-        fs.read(fd, buffer, 0, length, offset, function(err, num) {
-            deferred.resolve(buffer.toString('binary', 0, num));
-        })
-    })
-
-
-
-
+    }, 200)
     return deferred.promise;
 }
 
-function request(m) {
+function askPeer(m) {
     // {
     //     key:''
     //     request:{}
@@ -383,7 +555,7 @@ function get(docIds) {
 }
 
 function putwithid(m) {
-    // console.log("putwithid", m)
+    console.log("putwithid", m)
     var signature = nacl.util.decodeBase64(m[0].signature)
 
     var doc = nacl.util.decodeUTF8(m[0].doc)
@@ -394,7 +566,7 @@ function putwithid(m) {
     if (signed) {
         var doc = JSON.parse(m[0].doc)
             // console.log(doc)
-        if (doc._id.substr(0, 46) == m[0].key) {
+        if (doc._id.substr(0, 45) == m[0].key) {
             console.log("verified")
             var deferred = Q.defer();
             if (doc.handle && doc._id == m[0].key) {
@@ -648,6 +820,8 @@ connection.onopen = function(session) {
     session.register("storeFile", storeFile)
     session.register("getFileSize", getFileSize)
     session.register("getFile", getFile)
+    session.register("getRssFeeds", getRssFeeds)
+    session.register("getArticle", getArticle)
     session.register("belongsTo", belongsTo)
     session.register("tag", tag)
     follow({
@@ -656,7 +830,7 @@ connection.onopen = function(session) {
         include_docs: true
     }, function(err, change) {
         if (!err) {
-            session.publish(change.id.substring(0, 46), [change.id])
+            session.publish(change.id.substr(0, 45), [change.id])
             console.log("Got change number " + change.id);
             if (change.doc.tags) {
                 change.doc.tags.forEach(function(tag) {

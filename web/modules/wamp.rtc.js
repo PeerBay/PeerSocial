@@ -42,6 +42,9 @@ var Exit = function(address) {
             onchallenge: onchallenge
         });
 
+        self.connection.onclose=function(){
+            self.onclose()
+        }
         self.connection.onopen = function(ses, details) {
             console.log("exit connected", ses)
             ses.rtcKey = self.rtcKey
@@ -72,6 +75,7 @@ var Exit = function(address) {
 
 
             })
+            self.onconnection(self)
             resolve(self)
         }
         self.connection.open()
@@ -98,6 +102,7 @@ Exit.prototype = {
             'OfferToReceiveVideo': false
         }
     },
+    onclose:function(){},
     onconnection: function() {
 
 

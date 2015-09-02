@@ -1,0 +1,1165 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+			[
+				"news",
+				"newsForm"
+			],
+			[
+				"add",
+				"addSettingValue"
+			],
+			[
+				"ng-cl",
+				"ng-click	AngularJS"
+			],
+			[
+				"fee",
+				"feedparser"
+			],
+			[
+				"open",
+				"openFileSizes"
+			],
+			[
+				"file",
+				"fileData"
+			],
+			[
+				"in",
+				"infoHash"
+			],
+			[
+				"store",
+				"storeFile"
+			],
+			[
+				"doc",
+				"docid"
+			],
+			[
+				"sign",
+				"signature"
+			],
+			[
+				"encode",
+				"encodeUTF8"
+			],
+			[
+				"grou",
+				"groupKey"
+			],
+			[
+				"si",
+				"signKeys"
+			],
+			[
+				"for",
+				"forEach"
+			],
+			[
+				"groupK",
+				"groupKey"
+			],
+			[
+				"group",
+				"groupData"
+			],
+			[
+				"follo",
+				"following"
+			],
+			[
+				"crea",
+				"creationDate"
+			],
+			[
+				"bo",
+				"boxSignKeys"
+			],
+			[
+				"value",
+				"value	AngularJS"
+			],
+			[
+				"mywall",
+				"mywallunread"
+			],
+			[
+				"sub",
+				"subarray"
+			],
+			[
+				"b",
+				"boxSignKeys"
+			],
+			[
+				"box",
+				"boxKey"
+			],
+			[
+				"feedId",
+				"feedID"
+			],
+			[
+				"get",
+				"getLength"
+			],
+			[
+				"feedID",
+				"feedID"
+			],
+			[
+				"publi",
+				"publicPost"
+			],
+			[
+				"tex",
+				"textarea"
+			],
+			[
+				"md-a",
+				"md-autocomplete"
+			],
+			[
+				"md",
+				"md-button"
+			],
+			[
+				"$sc",
+				"$scope	AngularJS"
+			],
+			[
+				"md-ca",
+				"md-card-content"
+			],
+			[
+				"req",
+				"req"
+			],
+			[
+				"pape",
+				"paper-material"
+			],
+			[
+				"paper",
+				"paper-button"
+			],
+			[
+				"iro",
+				"iron-form"
+			],
+			[
+				"subs",
+				"subscriptions"
+			],
+			[
+				"w",
+				"with"
+			],
+			[
+				"publ",
+				"publish"
+			],
+			[
+				"d",
+				"don"
+			],
+			[
+				"route",
+				"route"
+			],
+			[
+				"proto",
+				"prototype"
+			],
+			[
+				"session",
+				"sessionKey"
+			],
+			[
+				"leache",
+				"leachers"
+			],
+			[
+				"pr",
+				"procedure"
+			],
+			[
+				"peer",
+				"peerID"
+			],
+			[
+				"sess",
+				"session"
+			],
+			[
+				"messa",
+				"message"
+			],
+			[
+				"conne",
+				"connection"
+			],
+			[
+				"inde",
+				"indexOf"
+			],
+			[
+				"rtcp",
+				"rtcpeers"
+			],
+			[
+				"onme",
+				"onmessage"
+			],
+			[
+				"rtc",
+				"rtcKey"
+			],
+			[
+				"secre",
+				"secretKey"
+			],
+			[
+				"s",
+				"signIn"
+			],
+			[
+				"ke",
+				"keyPair"
+			],
+			[
+				"key",
+				"keyBytes"
+			],
+			[
+				"create",
+				"createCookie"
+			],
+			[
+				"connectT",
+				"connectToPeerNode"
+			],
+			[
+				"cookie",
+				"cookie"
+			],
+			[
+				"pee",
+				"peerFeedID"
+			],
+			[
+				"invi",
+				"invitations"
+			],
+			[
+				"admin",
+				"adminKeyPair"
+			],
+			[
+				"client",
+				"client"
+			],
+			[
+				"keyT",
+				"keyToUint"
+			],
+			[
+				"keyTo",
+				"keyToString"
+			],
+			[
+				"i",
+				"angular.injector"
+			],
+			[
+				"decode",
+				"decodeUTF8"
+			],
+			[
+				"new",
+				"newMessage"
+			],
+			[
+				"wild",
+				"WildEmitter"
+			],
+			[
+				"connect",
+				"connected"
+			],
+			[
+				"random",
+				"randomOnionTo"
+			],
+			[
+				"onion",
+				"onionTo"
+			],
+			[
+				"direct",
+				"directive	Angular.js"
+			],
+			[
+				"true",
+				"true"
+			],
+			[
+				"createO",
+				"createOnionRoute"
+			],
+			[
+				"action",
+				"angular.isFunction"
+			],
+			[
+				"F",
+				"FBI_FORMATS	statement"
+			],
+			[
+				"piece",
+				"piece_priority"
+			],
+			[
+				"las",
+				"last_piece	statement"
+			],
+			[
+				"info",
+				"info_hash"
+			],
+			[
+				"range",
+				"range_start"
+			],
+			[
+				"None",
+				"None	keyword"
+			],
+			[
+				"bytes",
+				"bytes_read	statement"
+			],
+			[
+				"reque",
+				"request_uri	statement"
+			],
+			[
+				"first",
+				"first_piece	statement"
+			],
+			[
+				"firs",
+				"first_byte"
+			],
+			[
+				"torrent_",
+				"torrent_handle"
+			],
+			[
+				"save",
+				"save-path"
+			],
+			[
+				"shown",
+				"shownName"
+			],
+			[
+				"friendRequestA",
+				"friendRequestsAccepted"
+			],
+			[
+				"friendReq",
+				"friendRequestsAccepted"
+			],
+			[
+				"friend",
+				"friendRequests"
+			],
+			[
+				"peerN",
+				"peerNode"
+			],
+			[
+				"root",
+				"$rootScope	AngularJS"
+			],
+			[
+				"peerfeed",
+				"peerFeed"
+			],
+			[
+				"log",
+				"angular: $log.log"
+			],
+			[
+				"id",
+				"angular: inheritedData"
+			],
+			[
+				"peerNode",
+				"peerNodeURL"
+			],
+			[
+				"peerFeedID",
+				"peerFeedID"
+			],
+			[
+				"contro",
+				"controller	Angular.js"
+			],
+			[
+				"encry",
+				"encryptDoc"
+			],
+			[
+				"hash",
+				"hashCodes"
+			],
+			[
+				"$app",
+				"angular: $apply"
+			],
+			[
+				"$root",
+				"$rootScope	AngularJS"
+			],
+			[
+				"ev",
+				"angular: $eval"
+			],
+			[
+				"h",
+				"h6	Tag"
+			],
+			[
+				"DIV",
+				"div"
+			],
+			[
+				"DI",
+				"data-list"
+			],
+			[
+				"D",
+				"div"
+			],
+			[
+				"dire",
+				"directive	Angular.js"
+			],
+			[
+				"di",
+				"directive	Angular.js"
+			],
+			[
+				"mod",
+				"angular.module"
+			],
+			[
+				"controlle",
+				"angular: $controllerProvider"
+			],
+			[
+				"control",
+				"$controller	AngularJS"
+			],
+			[
+				"co",
+				"angular: controller"
+			]
+		]
+	},
+	"buffers":
+	[
+		{
+			"file": "web/index.html",
+			"settings":
+			{
+				"buffer_size": 46701,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "web/modules/peerbay.js",
+			"settings":
+			{
+				"buffer_size": 23721,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"contents": "var extractor = require('unfluff');\nvar read = require('node-readability');\nvar request = require('request');\nvar feedparser = require(\"feedparser\")\nvar data;\nvar feedurl = \"http://tvxs.gr/feeds/all/feed.xml\"\nvar FeedParser = require('feedparser')\n\n\nvar req = request(feedurl)\nvar req2 = request(\"http://feeds.mashable.com/Mashable\")\nvar feedparser = new FeedParser();\n\n// function feedSince(uri, lastModified, etag) {\n//     var reqObj = {\n//         'uri': uri,\n//         'headers': {\n//             'If-Modified-Since': lastModified,\n//             'If-None-Match': etag\n//         }\n//     };\n//     var req = request(reqObj)\n//     req.on('error', function(error) {\n//         // handle any request errors\n//     });\n\n//     req.on('response', function(res) {\n//         var stream = this;\n//         if (res.statusCode == 304) return this.emit('info', \"nothing changed\");\n//         if (res.statusCode != 200) return this.emit('error', new Error('Bad status code'));\n//         stream.pipe(feedparser);\n//         feedSince(uri,res.caseless.dict[\"last-modified\"],res.caseless.dict[\"etag\"])\n//     });\n\n\n// }\nreq.on('error', function(error) {\n    // handle any request errors\n});\n\nreq.on('response', function(res) {\n    var stream = this;\n\n    if (res.statusCode != 200) return this.emit('error', new Error('Bad status code'));\n\n    stream.pipe(feedparser);\n});\nreq2.on('response', function(res) {\n    var stream = this;\n\n    if (res.statusCode != 200) return this.emit('error', new Error('Bad status code'));\n    console.log(res.headers[\"last-modified\"])\n    stream.pipe(feedparser);\n});\n\n\nfeedparser.on('error', function(error) {\n    // always handle errors\n});\nfeedparser.on('readable', function() {\n    // This is where the action is!\n    var stream = this,\n        meta = this.meta // **NOTE** the \"meta\" is always available in the context of the feedparser instance\n        ,\n        item;\n    // console.log(stream.response.caseless.dict.etag)\n    while (item = stream.read()) {\n        console.log(item.link,item.orig);\n    }\n});\nfeedparser.on('end',function(){\n  console.log(\"feed ended\")\n})\n// request(url, function (error, response, html) {\n//   if (!error && response.statusCode == 200) {\n//     // console.log(html);\n//     data = extractor(html,'en');\n//     if(!data.text){\n//       read(html, function(err, article, meta) {\n//         // Main Article\n//         // console.log(article.content);\n//         data.text=article.content\n//         data.read=article\n//         // Title\n//         // console.log(article.title);\n\n//         // // HTML Source Code\n//         // console.log(article.html);\n//         // // DOM\n//         // console.log(article.document);\n\n//         // // Response Object from Request Lib\n//         // console.log(meta);\n\n//         // Close article to clean up jsdom and prevent leaks\n//         article.close();\n//       });\n\n//     }\n//   }\n// });\n",
+			"file": "testrssreadable.js",
+			"file_size": 2903,
+			"file_write_time": 130856019146477906,
+			"settings":
+			{
+				"buffer_size": 2901,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"contents": "///////////////////////////////////////////////////////////////////////////////\n//\n//  Copyright (C) 2014, Tavendo GmbH and/or collaborators. All rights reserved.\n//\n//  Redistribution and use in source and binary forms, with or without\n//  modification, are permitted provided that the following conditions are met:\n//\n//  1. Redistributions of source code must retain the above copyright notice,\n//     this list of conditions and the following disclaimer.\n//\n//  2. Redistributions in binary form must reproduce the above copyright notice,\n//     this list of conditions and the following disclaimer in the documentation\n//     and/or other materials provided with the distribution.\n//\n//  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS \"AS IS\"\n//  AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE\n//  IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE\n//  ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE\n//  LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR\n//  CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF\n//  SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS\n//  INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN\n//  CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)\n//  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE\n//  POSSIBILITY OF SUCH DAMAGE.\n//\n///////////////////////////////////////////////////////////////////////////////\nvar util = require('util');\nvar couchdb = require('nano')(\"http://localhost:5984\");\nvar nacl = require('tweetnacl');\nvar randomstring = require('randomstring');\nvar BLAKE2s = require(\"blake2s\");\nvar Base58 = require(\"base-58\")\nvar Q = require(\"q\")\nvar follow = require(\"follow\")\nvar autobahn = require('autobahn');\nvar FeedParser = require('feedparser')\nvar extractor = require('unfluff');\nvar readability = require('node-readability');\nvar webrequest = require('request');\n// var WebTorrent = require(\"webtorrent-hybrid\")\nvar fs = require(\"fs\")\nvar http = require('http');\n\n\nvar requests = couchdb.use(\"requests\")\nvar feeds = couchdb.use(\"feeds\")\n    // var client = new WebTorrent()\n    // process.on('uncaughtException', function(err) {\n    //     console.error(err);\n    //     console.log(\"Node NOT Exiting...\");\n    // });\nvar tempFiles = {}\nvar openFiles = {}\nvar openFileSizes = {}\nvar rtcPeers = {}\nvar freePeers = []\nvar fs = require('fs');\nvar files = {}\nvar downloading = {}\n\nfs.readdir('files', function(err, lfiles) {\n    if (err)\n        throw err;\n    for (var index in lfiles) {\n        console.log(lfiles[index]);\n        files[lfiles[index]] = true\n    }\n});\nvar download = function(uri, filename, cb) {\n    console.log(\"downloading \", uri)\n    var f = fs.createWriteStream(\"files/\" + filename)\n    f.on('error', function(err) {\n        console.log(err, uri);\n    });\n\n    f.on('close', function() {\n\n        console.log(\"finished downloading: \", uri, this.path);\n\n    });\n    var r = http.get(uri, function(response) {\n        response.pipe(f);\n        f.on('finish', function() {\n            f.close(cb); // close() is async, call cb after close completes.\n        });\n    }).on('error', function(err) { // Handle errors\n        fs.unlink(\"files/\" + filename); // Delete the file async. (But we don't check the result)\n        if (cb) cb(err.message);\n    });\n\n    // webrequest.head(uri, function(err, res, body) {\n    // });\n};\n\nfunction getRssFeeds(rssLinks) {\n    console.log(\"getRss\", rssLinks)\n    var deferred = Q.defer();\n    var feedparser = new FeedParser();\n    var articles = []\n    rssLinks.forEach(function(link) {\n        var req = webrequest(link)\n        req.on('error', function(error) {\n            // handle any request errors\n            deferred.resolve(error)\n        });\n\n        req.on('response', function(res) {\n            var stream = this;\n\n            if (res.statusCode != 200) return this.emit('error', new Error('Bad status code'));\n\n            stream.pipe(feedparser);\n        });\n    })\n    feedparser.on('error', function(error) {\n        // always handle errors\n        deferred.resolve(error)\n    });\n    feedparser.on('readable', function() {\n        // This is where the action is!\n        var stream = this,\n            meta = this.meta // **NOTE** the \"meta\" is always available in the context of the feedparser instance\n            ,\n            item;\n        // console.log(stream.response.caseless.dict.etag)\n        while (item = stream.read()) {\n            // console.log(item)\n            image = \"\"\n            if (typeof item.image == \"string\") {\n                image = nacl.util.encodeBase64(nacl.hash(nacl.util.decodeUTF8(item.image)))\n                if (!files[image]) {\n                    downloading[image] = true\n                    download(item.image, image, function() {\n                        console.log(\"image loaded\")\n                        files[image] = true\n                        delete downloading[image]\n                    })\n                }\n            }\n            articles.push({\n                \"link\": item.link,\n                \"summary\": item.summary,\n                \"title\": item.title,\n                \"image\": image,\n                \"date\": item.date\n\n            })\n        }\n    });\n    feedparser.on('end', function() {\n        console.log(\"feed ended\")\n        deferred.resolve(articles)\n    })\n    return deferred.promise\n}\n\n\n\n\n// This challenge callback will authenticate our backend component\nfunction onchallenge(session, method, extra) {\n\n    console.log(\"onchallenge\", method, extra);\n\n    if (method === \"wampcra\") {\n\n        console.log(\"authenticating via '\" + method + \"' and challenge '\" + extra.challenge + \"'\" + autobahn.auth_cra.sign(process.argv[5], extra.challenge));\n\n        return autobahn.auth_cra.sign(process.argv[5], extra.challenge);\n\n    } else {\n        throw \"don't know how to authenticate using '\" + method + \"'\";\n    }\n}\n\nfunction storeFile(fileData) {\n    var infohash = fileData[0].infohash\n\n    var deferred = Q.defer();\n    if (!(infohash in tempFiles)) {\n        var size = fileData[0].size\n        var name = fileData[0].name\n        tempFiles[infohash] = {\n            data: \"\"\n        }\n        tempFiles[infohash].name = name\n        tempFiles[infohash].size = size\n        deferred.resolve({\n            infohash: size\n        })\n    } else {\n        var offset = fileData[0].offset\n        var slice = fileData[0].slice\n        tempFiles[infohash].data += slice;\n        console.log(offset, tempFiles[infohash].data.length, slice.length)\n        if ((offset + slice.length) >= tempFiles[infohash].size) {\n            var buffer = new Buffer(tempFiles[infohash].data, \"binary\");\n            buffer.name = tempFiles[infohash].name\n            console.log(\"file uploaded\")\n            fs.writeFile(\"files/\" + infohash, buffer, function(err) {\n                if (err)\n                    throw err;\n                delete tempFiles[infohash]\n                delete buffer;\n                files[infohash] = true\n                deferred.resolve({\n                    seed: infohash\n                })\n            });\n\n            // client.seed(\"files/\" + tempFiles[infohash].name,function(torrent) {\n            //     if (torrent.infoHash == infohash) {\n            //         console.log(\"everything is ok\")\n            //     } else {\n            //         console.log(\"infohash doesnt match\")\n            //     }\n            //     deferred.resolve({\n            //         seed: torrent.infoHash\n            //     })\n            //     delete tempFiles[infohash]\n            //     delete buffer\n            // })\n        } else {\n            deferred.resolve({\n                infohash: offset\n            })\n        }\n    }\n    return deferred.promise;\n    var deferred = Q.defer();\n}\n\nfunction getArticle(link) {\n    var deferred = Q.defer();\n    webrequest(link[0], function(error, response, html) {\n        if (!error && response.statusCode == 200) {\n            // console.log(html);\n            data = extractor(html, 'en');\n            if (!data.text) {\n                readability(html, function(err, doc, meta) {\n                    data.text = doc.content\n                    doc.close();\n                    if (typeof data.image == \"string\") {\n                        image = nacl.util.encodeBase64(nacl.hash(nacl.util.decodeUTF8(data.image)))\n                        if (!files[image]) {\n                            downloading[image] = true\n                            download(data.image, image, function() {\n                                console.log(\"image loaded\")\n                                files[image] = true\n                                delete downloading[image]\n                            })\n                        }\n                        data.image = image\n                        deferred.resolve(data)\n                    }\n                });\n\n            } else {\n                if (typeof data.image == \"string\") {\n                    image = nacl.util.encodeBase64(nacl.hash(nacl.util.decodeUTF8(data.image)))\n                    if (!files[image]) {\n                        downloading[image] = true\n                        download(data.image, image, function() {\n                            console.log(\"image loaded\")\n                            files[image] = true\n                            delete downloading[image]\n                        })\n                    }\n                    data.image = image\n                }\n                deferred.resolve(data)\n            }\n        }\n\n\n    });\n    return deferred.promise;\n\n}\n\nfunction getFileSize(fileData) {\n    var hash = fileData[0]\n    console.log(\"size \", hash)\n    if (files[hash]) {\n        if (openFileSizes[hash]) return openFileSizes[hash]\n        var deferred = Q.defer();\n        fs.stat(\"files/\" + hash, function(err, stats) {\n            if (err) deferred.resolve(err)\n            openFileSizes[hash] = stats.size\n            deferred.resolve(stats.size)\n        });\n    } else {\n        deferred.resolve(0)\n    }\n    return deferred.promise;\n}\n\nfunction getFile(fileData) {\n\n    console.log(\"filedata req\", fileData)\n    var hash = fileData[0]\n    if (!files[hash]) return \"\"\n    var offset = fileData[1]\n    var length = fileData[2]\n    var deferred = Q.defer();\n    if (offset >= openFileSizes[hash]) return \"\"\n    fs.open(\"files/\" + hash, 'r', function(status, fd) {\n        if (status) {\n            console.log(status.message);\n            deferred.resolve({\n                \"error\": status.message\n            })\n        }\n        console.log(\"get file \", hash)\n            // openFiles[hash] = fd\n        if ((offset + length) > openFileSizes[hash]) length = openFileSizes[hash] - offset;\n        console.log(offset, length, openFileSizes[hash])\n        var buffer = new Buffer(length)\n        fs.read(fd, buffer, 0, length, offset, function(err, num) {\n            deferred.resolve(buffer.toString('binary', 0, num));\n        })\n    })\n\n\n\n\n    return deferred.promise;\n}\n\nfunction request(m) {\n    // {\n    //     key:''\n    //     request:{}\n    // }\n    var deferred = Q.defer();\n    doc = m[0].request\n    doc._id = m[0].key + Date.now()\n\n    requests.insert(doc, function(err, body) {\n        // console.log(err, body)\n        if (!err) {\n            deferred.resolve(body)\n        } else {\n            deferred.resolve(err)\n        }\n    })\n    return deferred.promise;\n}\n\nfunction getNewRequestsIds(feedID) {\n    requests.fetchRevs({}, {\n        \"startkey\": feedID[0] + \"\\u9999\",\n        \"endkey\": feedID[0],\n        \"descending\": true\n    }, function(err, body) {\n        console.log(err)\n        if (!err) {\n            var answer = [];\n            // console.log(\"docids\", body)\n            body.rows.forEach(function(row) {\n                    if (row.id) {\n                        answer.push(row.id)\n                    }\n                })\n                // console.log(\"answer\", answer)\n\n\n            deferred.resolve(answer)\n        } else {\n            deferred.resolve([])\n\n\n        }\n    })\n    return deferred.promise;\n}\n\nfunction getRequests(signedRequest) {\n    var pKey = Base58.decode(signedRequest[0].key).subarray(0, 32)\n    var askDocs = {}\n    for (n in signedRequest[0].docids) {\n        docid = nacl.sign.open(signedRequest[0].docids[n], pKey)\n        if (docid && docid.startsWith(signedRequest[0].key)) {\n            askDocs[docid] = signedRequest[0].docids[n]\n        }\n    }\n    if (askDocs.length != 0) {\n        var deferred = Q.defer();\n        feeds.fetch({\n            \"keys\": Object.keys(askDocs)\n        }, function(err, body) {\n            // console.log(err, body)\n            if (!err) {\n                var answer = [];\n                // console.log(body)\n                if (body.rows) {\n                    body.rows.forEach(function(row) {\n                        if (row.doc) {\n                            answer.push(row.doc)\n                            deleteDocs.push({\n                                \"_id\": row.doc._id,\n                                \"_rev\": row.doc._rev,\n                                \"viewed\": askDocs[row.doc._id]\n                            })\n                        }\n                    })\n                }\n\n\n                deferred.resolve(answer)\n            } else {\n                deferred.resolve([])\n\n                // deferred.r(err)\n            }\n        })\n\n\n\n    } else {\n        deferred.resolve([])\n    }\n    return deferred.promise;\n\n}\n\nfunction getFeed(feedId) {\n    // console.log('getFeed', feedId)\n    var deferred = Q.defer();\n    if (feedId[1]) {\n        startkey = feedId[1]\n    } else {\n        startkey = \"1\\u9999\"\n\n    }\n\n    feeds.fetch({}, {\n        \"startkey\": feedId[0] + startkey,\n        \"endkey\": feedId[0],\n        \"descending\": true,\n        \"limit\": 3,\n        \"include_docs\": true\n    }, function(err, body) {\n        console.log(err)\n        if (!err) {\n            var answer = [];\n            body.rows.forEach(function(row) {\n                if (row.doc) {\n                    answer.push(row.doc)\n                }\n            })\n\n\n            deferred.resolve(answer)\n        } else {\n            deferred.resolve({})\n\n\n        }\n    })\n\n\n    return deferred.promise;\n}\n\nfunction getFeedDocIds(feedID) {\n    console.log('getFeedDocIds', feedID)\n    var deferred = Q.defer();\n    if (feedID[1]) {\n        startkey = feedID[1]\n    } else {\n        startkey = \"1\\u9999\"\n\n    }\n\n    feeds.fetchRevs({}, {\n        \"startkey\": feedID[0] + startkey,\n        \"endkey\": feedID[0],\n        \"descending\": true,\n        \"limit\": 5\n    }, function(err, body) {\n        console.log(err)\n        if (!err) {\n            var answer = [];\n            // console.log(\"docids\", body)\n            body.rows.forEach(function(row) {\n                    if (row.id) {\n                        answer.push(row.id)\n                    }\n                })\n                // console.log(\"answer\", answer)\n\n\n            deferred.resolve(answer)\n        } else {\n            deferred.resolve({})\n\n\n        }\n    })\n\n\n    return deferred.promise;\n}\n\nfunction get(docIds) {\n    // console.log(docIds)\n    var deferred = Q.defer();\n    feeds.fetch({\n        \"keys\": docIds\n    }, function(err, body) {\n        // console.log(err, body)\n        if (!err) {\n            var answer = [];\n            // console.log(body)\n            if (body.rows) {\n                body.rows.forEach(function(row) {\n                    if (row.doc) {\n                        answer.push(row.doc)\n                    }\n                })\n            }\n\n\n            deferred.resolve(answer)\n        } else {\n            deferred.resolve([])\n\n            // deferred.r(err)\n        }\n    })\n\n\n    return deferred.promise;\n}\n\nfunction putwithid(m) {\n    // console.log(\"putwithid\", m)\n    var signature = nacl.util.decodeBase64(m[0].signature)\n\n    var doc = nacl.util.decodeUTF8(m[0].doc)\n    var pKey = Base58.decode(m[0].key).subarray(0, 32)\n\n    var signed = nacl.sign.detached.verify(doc, signature, pKey)\n    console.log(\"signature verification :\", signed)\n    if (signed) {\n        var doc = JSON.parse(m[0].doc)\n            // console.log(doc)\n        if (doc._id.substr(0, 46) == m[0].key) {\n            console.log(\"verified\")\n            var deferred = Q.defer();\n            if (doc.handle && doc._id == m[0].key) {\n                feeds.view(\"rel\", \"handles\", {\n                        \"key\": doc.handle\n                    },\n                    function(err, body) {\n\n                        // console.log(err, body)\n                        if (!err) {\n                            // console.log(JSON.stringify(body))\n                            if (body.rows.length == 0 || body.rows[0].value[0].id == m[0].key) {\n                                feeds.insert(doc, function(err, body) {\n                                    // console.log(err, body)\n                                    if (!err) {\n                                        deferred.resolve(body)\n                                    } else {\n                                        deferred.resolve(err)\n                                    }\n                                })\n                            } else {\n                                deferred.resolve({\n                                    \"error\": \"Handle \" + doc.handle + \" is already used\"\n                                })\n                            }\n                        } else {\n                            deferred.resolve(err)\n                        }\n                    })\n            } else {\n                feeds.insert(doc, function(err, body) {\n                    // console.log(err, body)\n                    if (!err) {\n                        deferred.resolve(body)\n                    } else {\n                        deferred.resolve(err)\n                    }\n                })\n            }\n\n\n            return deferred.promise;\n        } else {\n            return {\n                \"error\": \"Document id doesn't match public key\"\n            }\n        }\n    } else {\n        return {\n            \"error\": \"Signature verification failed\"\n        }\n    }\n}\n\n\nfunction put(m) {\n    console.log(\"put\", m[0].signature)\n    var signature = nacl.util.decodeBase64(m[0].signature)\n    var doc = nacl.util.decodeUTF8(m[0].doc)\n\n    var pKey = Base58.decode(m[0].key).subarray(0, 32)\n\n    var signed = nacl.sign.detached.verify(doc, signature, pKey)\n    console.log(\"signature: \", signed)\n    if (signed) {\n        var deferred = Q.defer();\n        var doc = JSON.parse(m[0].doc)\n        console.log(\"verified\")\n            // console.log(doc)\n        doc._id = m[0].key + Date.now()\n\n        feeds.insert(doc, function(err, body) {\n            console.log(err, body)\n            if (!err) {\n                deferred.resolve(body)\n            } else {\n                deferred.resolve(err)\n            }\n        })\n\n\n\n        return deferred.promise;\n    } else {\n        return {\n            \"error\": \"signature verification failed\"\n        }\n    }\n\n}\n\nfunction queryHandles(query) {\n    console.log(\"quering handle:\", query[0])\n    var deferred = Q.defer();\n    feeds.view(\"rel\", \"handles\", {\n            \"startkey\": query[0],\n            \"endkey\": query[0] + \"\\u9999\",\n            \"reduce\": true,\n            \"group\": true,\n            \"limit\": 5\n        },\n        function(err, body) {\n\n            // console.log(err, body)\n            if (!err) {\n                deferred.resolve(body.rows)\n            } else {\n                deferred.reject(err)\n            }\n        })\n    return deferred.promise\n}\n\nfunction belongsTo(threadIds) {\n    console.log(threadIds)\n    var deferred = Q.defer();\n    feeds.view(\"rel\", \"belongs\", {\n            \"keys\": threadIds,\n            \"reduce\": true,\n            \"group\": true\n        },\n        function(err, body) {\n            var answer = {};\n            console.log(err, body)\n            if (!err) {\n                body.rows.forEach(function(doc) {\n                    answer[doc.key] = doc.value\n                });\n                deferred.resolve(answer)\n            }\n        })\n    return deferred.promise\n}\n\nfunction tag(tag) {\n    console.log(tag[0])\n    var deferred = Q.defer();\n    feeds.view(\"rel\", \"tag\", {\n            \"key\": tag[0],\n            \"reduce\": true,\n            \"group\": true\n        },\n        function(err, body) {\n            var answer = {};\n            console.log(err, body)\n            if (!err) {\n                body.rows.forEach(function(doc) {\n                    answer[doc.key] = doc.value\n                });\n\n                deferred.resolve(answer)\n            }\n        })\n    return deferred.promise\n}\n\nfunction validate(doc) {\n    var userKey = nacl.util.decodeUTF8(doc._id.substr(0, 44))\n    var sign = doc.sign;\n    delete doc.sign;\n    doc = JSON.stringify(doc)\n    doc = nacl.util.decodeUTF8(doc)\n    return nacl.sign.detached.verify(doc, sign, userKey)\n\n    // if(nacl.sign.detached.verify(doc,doc._id.substr(0,44)){\n\n    // }\n\n}\n\nvar connection = new autobahn.Connection({\n    url: process.argv[2],\n    realm: process.argv[3],\n\n    // The following authentication information is for authenticating\n    // our backend component\n    //\n    authid: process.argv[4],\n    authmethods: [\"wampcra\"],\n    onchallenge: onchallenge\n});\nvar randomProperty = function(obj) {\n    var keys = Object.keys(obj)\n    return obj[keys[keys.length * Math.random() << 0]];\n};\n\nconnection.onopen = function(session) {\n    console.log(\"backend connected\");\n\n    function on_event_join(p, f, l) {\n        if (p[0].authid.length == 44) {\n            rtcPeers[p[0].session] = {\n                authid: p[0].authid\n            }\n            freePeers.push(p[0].authid)\n                // console.log(\"join\", rtcPeers[p[0].session])\n        }\n        // console.log(\"register \",session._subscriptions)\n    }\n\n    function on_event_leave(p, f, l) {\n        console.log(\"leave\", rtcPeers[p[0]])\n        freePeers.splice(freePeers.indexOf(rtcPeers[p[0]].authid), 1)\n        delete rtcPeers[p[0]]\n    }\n    session.subscribe('wamp.session.on_join', on_event_join).then(\n        function(subscription) {\n            //console.log('Subscription succeeded', subscription);\n\n        },\n        function(error) {\n            // console.log('Subscription failed', error);\n        }\n    );\n    setInterval(function() {\n        session.publish(\"hola\", [Date.now()])\n\n    }, 10000)\n    session.subscribe('wamp.session.on_leave', on_event_leave).then(\n        function(subscription) {\n            // console.log('Subscription succeeded', subscription.topic);\n        },\n        function(error) {\n            // console.log('Subscription failed', error);\n        }\n    );\n\n    session.register(\"disallowLeachers\", function(req) {\n        freePeers.splice(freePeers.indexOf(req[0]), 1)\n    })\n    session.register(\"allowLeachers\", function(req) {\n        if (freePeers.indexOf(req[0]) == -1) {\n            freePeers.push(req[0])\n        }\n    })\n    session.register(\"test\", function(data) {\n        console.log(\"test called with :\", data)\n        return {\n            \"test\": \"success\"\n        }\n    })\n    session.register(\"handles\", queryHandles)\n    session.register(\"putwithid\", putwithid)\n    session.register(\"randomPeer\", randomPeer)\n    session.register(\"randomPeers\", randomPeers)\n    session.register(\"sharedKey\", sharedKey)\n    session.register(\"get\", get)\n    session.register(\"getFeed\", getFeed)\n    session.register(\"getFeedDocIds\", getFeedDocIds)\n    session.register(\"put\", put)\n    session.register(\"storeFile\", storeFile)\n    session.register(\"getFileSize\", getFileSize)\n    session.register(\"getFile\", getFile)\n    session.register(\"getRssFeeds\", getRssFeeds)\n    session.register(\"getArticle\", getArticle)\n    session.register(\"belongsTo\", belongsTo)\n    session.register(\"tag\", tag)\n    follow({\n        db: \"http://127.0.0.1:5984/feeds\",\n        since: \"now\",\n        include_docs: true\n    }, function(err, change) {\n        if (!err) {\n            session.publish(change.id.substring(0, 46), [change.id])\n            console.log(\"Got change number \" + change.id);\n            if (change.doc.tags) {\n                change.doc.tags.forEach(function(tag) {\n                    session.publish(\"tag-\" + tag, [change.id])\n                })\n            }\n            if (change.doc.mentions) {\n                change.doc.mentions.forEach(function(mentioned) {\n                    session.publish(\"mentions-\" + mentioned, [change.id])\n                })\n            }\n\n        }\n    })\n\n\n};\nvar seed = nacl.randomBytes(32)\n\nfunction sharedKey() {\n    return nacl.util.encodeUTF8(seed)\n}\n\nfunction randomPeers(l) {\n\n    if (freePeers.length <= 3) {\n        return []\n    }\n    console.log(\"freePeers length:\", freePeers.length)\n    var u = []\n    if (l[0] >= 5) {\n        l[0] = 5\n    }\n    for (var i = 0; i < l[0]; i++) {\n        console.log(\"random peer\")\n        u.push(freePeers[freePeers.length * Math.random() << 0])\n    }\n    console.log(l[0], \" random Peers:\", u)\n    return u\n}\n\nfunction randomPeer() {\n    return freePeers[freePeers.length * Math.random() << 0]\n}\n\nconnection.onclose = function(reason, details) {\n    console.log(\"Connection lost:\", reason, details);\n}\n\n\nconnection.open();\n\n\n// nano.prototype.allDocs=function(qs,callback){\n//     if (typeof qs === 'function') {\n//         callback = qs;\n//         qs = {};\n//       }\n\n\n\n//       return relax({\n//         db: dbName,\n//         path: '_all_docs',\n//         method: 'POST',\n//         qs: qs,\n//         body: docNames\n//       }, callback);\n// }\n",
+			"file": "backend.js",
+			"file_size": 25704,
+			"file_write_time": 130856128140554686,
+			"settings":
+			{
+				"buffer_size": 25704,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "web/modules/wamp.rtc.js",
+			"settings":
+			{
+				"buffer_size": 9143,
+				"line_ending": "Unix"
+			}
+		}
+	],
+	"build_system": "",
+	"build_system_choices":
+	[
+	],
+	"build_varint": "",
+	"command_palette":
+	{
+		"height": 117.0,
+		"last_filter": "Package Control:ins",
+		"selected_items":
+		[
+			[
+				"Package Control:ins",
+				"Package Control: Install Package"
+			],
+			[
+				"Package Control: ",
+				"Package Control: Remove Package"
+			],
+			[
+				"Package Control: ins",
+				"Package Control: Install Package"
+			],
+			[
+				"Package Control: INS",
+				"Package Control: Install Package"
+			],
+			[
+				"Package Control: disc",
+				"Package Control: Discover Packages"
+			],
+			[
+				"Snippet: ",
+				"Snippet: Angular.js"
+			],
+			[
+				"Package Control:",
+				"Package Control: Install Package"
+			],
+			[
+				"Package Contr",
+				"Package Control: Install Package"
+			]
+		],
+		"width": 746.0
+	},
+	"console":
+	{
+		"height": 139.0,
+		"history":
+		[
+			"join_lines",
+			"help",
+			"l",
+			"5+4",
+			"5=4",
+			"python",
+			"esvalidate /home/vasilis/projects/PeerBay/peerFeed/backbone/pf.js",
+			"ngdirective",
+			"import urllib.request,os,hashlib; h = 'eb2297e1a458f27d836c04bb0cbaf282' + 'd0e7a3098092775ccb37ca9d6b2e4b7d'; pf = 'Package Control.sublime-package'; ipp = sublime.installed_packages_path(); urllib.request.install_opener( urllib.request.build_opener( urllib.request.ProxyHandler()) ); by = urllib.request.urlopen( 'http://packagecontrol.io/' + pf.replace(' ', '%20')).read(); dh = hashlib.sha256(by).hexdigest(); print('Error validating download (got %s instead of %s), please try manual install' % (dh, h)) if dh != h else open(os.path.join( ipp, pf), 'wb' ).write(by)"
+		]
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"expanded_folders":
+	[
+		"/home/vasilis/projects/PeerBay/PeerSocial/PeerSocial/web",
+		"/home/vasilis/projects/PeerBay/PeerSocial/PeerSocial/web/bower_components",
+		"/home/vasilis/projects/PeerBay/PeerSocial/PeerSocial/web/bower_components/lf-ng-md-fileinput",
+		"/home/vasilis/projects/PeerBay/PeerSocial/PeerSocial/web/bower_components/lf-ng-md-fileinput/dist",
+		"/home/vasilis/projects/PeerBay/PeerSocial/PeerSocial/web/modules"
+	],
+	"file_history":
+	[
+		"/home/vasilis/projects/PeerBay/PeerSocial/PeerSocial/testfiletor.js",
+		"/home/vasilis/.config/sublime-text-3/Packages/User/CommandOnSave.sublime-settings",
+		"/home/vasilis/projects/PeerBay/PeerSocial/PeerSocial/web/bower_components/lf-ng-md-fileinput/dist/lf-ng-md-file-input.js",
+		"/home/vasilis/projects/PeerBay/PeerSocial/PeerSocial/web/modules/delivery.js",
+		"/home/vasilis/projects/PeerBay/PeerSocial/PeerSocial/web/modules/wamp.rtc.js",
+		"/home/vasilis/projects/PeerBay/PeerSocial/PeerSocial/web/modules/create-torrent.js",
+		"/home/vasilis/projects/PeerBay/final/server/node/server.js",
+		"/home/vasilis/projects/PeerBay/PeerSocial/server.js",
+		"/home/vasilis/projects/PeerBay/nodefeed/web/material-start/app/modules/wamp.rtc.js",
+		"/home/vasilis/projects/PeerBay/nodefeed/web/material-start/app/modules/mdautocomplete.textarea.js",
+		"/home/vasilis/projects/PeerBay/nodefeed/web/material-start/app/bower_components/angular-material/angular-material.css",
+		"/home/vasilis/projects/PeerBay/nodefeed/web/material-start/app/modules/onion.rtc.js",
+		"/home/vasilis/projects/PeerBay/nodefeed/package.json",
+		"/home/vasilis/projects/PeerBay/nodefeed/backend.js",
+		"/home/vasilis/projects/PeerBay/nodefeed/web/material-start/app/assets/app.css",
+		"/home/vasilis/projects/PeerBay/nodefeed/web/material-start/app/modules/peerbay.js",
+		"/home/vasilis/projects/PeerBay/nodefeed/web/material-start/app/index.html",
+		"/home/vasilis/projects/PeerBay/nodefeed/web/material-start/app/bower_components/lf-ng-md-fileinput/dist/lf-ng-md-file-input.js",
+		"/home/vasilis/projects/PeerBay/nodefeed/web/material-start/app/modules/virtual-repeater-notify.js",
+		"/home/vasilis/projects/PeerBay/nodefeed/web/material-start/app/bower_components/angular-material/angular-material.js",
+		"/home/vasilis/projects/PeerBay/nodefeed/web/material-start/app/modules/webtorrent.min.js",
+		"/home/vasilis/projects/PeerBay/peerNode/testing/couchdb/rel/haproxy.cfg",
+		"/home/vasilis/projects/PeerBay/nodefeed/web/material-start/app/bower_components/lf-ng-md-fileinput/dist/web-tor-file-input.js",
+		"/home/vasilis/projects/PeerBay/final/server/web/test.html",
+		"/home/vasilis/projects/PeerBay/final/server/web/index.html",
+		"/home/vasilis/projects/PeerBay/final/server/web/templates/posts-form.html",
+		"/home/vasilis/projects/PeerBay/final/server/web/templates/posts-list.html",
+		"/home/vasilis/projects/PeerBay/peerNode/testing/crossbarexamples/authenticate/wampcradynamic/nodejs/web/js/bucket.js",
+		"/home/vasilis/projects/PeerBay/PeerSocial/wsnegotiation.js",
+		"/home/vasilis/projects/PeerBay/final/server/web/js/peerfeedLib.js",
+		"/home/vasilis/projects/PeerBay/peerNode/testing/crossbarexamples/authenticate/wampcradynamic/nodejs/web/indexold.html",
+		"/home/vasilis/projects/PeerBay/peerNode/testing/crossbarexamples/authenticate/wampcradynamic/nodejs/web/js/pf.js",
+		"/home/vasilis/projects/PeerBay/peerNode/testing/crossbarexamples/authenticate/wampcradynamic/nodejs/web/js/peerbay.js",
+		"/home/vasilis/projects/PeerBay/peerNode/testing/crossbarexamples/authenticate/wampcradynamic/nodejs/web/js/autobahn.rtc.js",
+		"/home/vasilis/projects/PeerBay/peerNode/testing/crossbarexamples/authenticate/wampcradynamic/nodejs/web/js/onion.rtc.js",
+		"/home/vasilis/projects/PeerBay/peerNode/testing/crossbarexamples/authenticate/wampcradynamic/nodejs/web/js/wamp.rtc.js",
+		"/home/vasilis/projects/PeerBay/peerNode/testing/crossbarexamples/authenticate/wampcradynamic/nodejs/authenticator.js",
+		"/home/vasilis/projects/PeerBay/peerNode/testing/crossbarexamples/authenticate/wampcradynamic/nodejs/backend.js",
+		"/home/vasilis/projects/PeerBay/peerNode/testing/crossbarexamples/authenticate/wampcradynamic/nodejs/.crossbar/config.json",
+		"/home/vasilis/projects/PeerBay/peerNode/testing/crossbarexamples/authenticate/wampcradynamic/nodejs/web/js/rtconionpubsub.js",
+		"/home/vasilis/projects/PeerBay/peerNode/testing/crossbarexamples/authenticate/wampcradynamic/nodejs/web/js/peerfeedLib.js",
+		"/home/vasilis/projects/PeerBay/nodefeed/web/material-start/app/src/users/UserController.js",
+		"/home/vasilis/projects/PeerBay/peerNode/testing/crossbarexamples/authenticate/wampcradynamic/nodejs/web/js/peerFeed.js",
+		"/home/vasilis/projects/PeerBay/peerNode/testing/crossbarexamples/authenticate/wampcradynamic/nodejs/web/index.html",
+		"/home/vasilis/projects/PeerBay/peerNode/testing/crossbarexamples/authenticate/wampcradynamic/nodejs/web/css/app.css",
+		"/home/vasilis/projects/PeerBay/peerNode/testing/crossbarexamples/authenticate/wampcradynamic/nodejs/web/templates/messages-list.html",
+		"/home/vasilis/projects/PeerBay/peerNode/testing/crossbarexamples/authenticate/wampcradynamic/nodejs/web/templates/friends-2-list.html",
+		"/home/vasilis/projects/PeerBay/peerNode/testing/crossbarexamples/authenticate/wampcradynamic/nodejs/web/polymer/finished/post-card.html",
+		"/home/vasilis/projects/PeerBay/peerNode/testing/crossbarexamples/authenticate/wampcradynamic/nodejs/web/polymer/messages.json",
+		"/home/vasilis/projects/PeerBay/peerNode/testing/crossbarexamples/authenticate/wampcradynamic/nodejs/web/polymer/post-list.html",
+		"/home/vasilis/projects/PeerBay/peerNode/testing/crossbarexamples/authenticate/wampcradynamic/nodejs/web/polymer/post-single.html",
+		"/home/vasilis/projects/PeerBay/peerNode/testing/crossbarexamples/authenticate/wampcradynamic/nodejs/web/polymer/app.js",
+		"/home/vasilis/projects/PeerBay/peerNode/testing/crossbarexamples/authenticate/wampcradynamic/nodejs/web/polymer/index.html",
+		"/home/vasilis/projects/PeerBay/peerNode/testing/crossbarexamples/authenticate/wampcradynamic/nodejs/web/polymer/step-1/index.html",
+		"/home/vasilis/projects/PeerBay/peerNode/testing/crossbarexamples/authenticate/wampcradynamic/nodejs/web/polymer/finished/index.html",
+		"/home/vasilis/projects/PeerBay/peerNode/testing/crossbarexamples/authenticate/wampcradynamic/nodejs/web/polymer/peerfeed/index.html",
+		"/home/vasilis/projects/PeerBay/peerNode/testing/crossbarexamples/authenticate/wampcradynamic/nodejs/web/modules/pouchdb.js",
+		"/home/vasilis/projects/PeerBay/peerNode/testing/crossbarexamples/authenticate/wampcradynamic/nodejs/web/js/rangy.js",
+		"/home/vasilis/projects/PeerBay/peerNode/testing/crossbarexamples/authenticate/wampcradynamic/nodejs/web/js/pouch.peerbay.js",
+		"/home/vasilis/projects/PeerBay/peerNode/testing/mesh/examples/5_browser/server.js",
+		"/home/vasilis/projects/PeerBay/final/server/web/js/pf.js",
+		"/home/vasilis/projects/PeerBay/PeerSocial/bucket.js",
+		"/home/vasilis/Desktop/listarevekka.txt",
+		"/home/vasilis/projects/PeerBay/final/server/node/hello.js",
+		"/home/vasilis/projects/PeerBay/final/server/web/js/peerFeed.js",
+		"/home/vasilis/projects/PeerBay/final/server/.crossbar/config.json",
+		"/home/vasilis/projects/PeerBay/PeerSocial/all.js",
+		"/home/vasilis/projects/PeerBay/final/server/web/templates/profiles-form.html",
+		"/home/vasilis/projects/PeerBay/final/server/web/modules/crypto/nacl-fast.js",
+		"/home/vasilis/projects/PeerBay/final/signin.tag",
+		"/home/vasilis/Desktop/PeerEconomy.txt",
+		"/home/vasilis/projects/PeerBay/peerFeed/rtconion/couch-test.js",
+		"/home/vasilis/projects/PeerBay/PeerSocial/templates/admin.html",
+		"/home/vasilis/projects/PeerBay/PeerSocial/peerFeedAdmin.js",
+		"/home/vasilis/projects/PeerBay/PeerSocial/anonymous.html",
+		"/home/vasilis/projects/PeerBay/PeerSocial/onionrtc.js",
+		"/home/vasilis/projects/PeerBay/PeerSocial/peerFeed.js",
+		"/home/vasilis/projects/PeerBay/final/lib/autobahn.js",
+		"/home/vasilis/projects/PeerBay/PeerSocial/client.js",
+		"/home/vasilis/projects/PeerBay/peerNode/hello/hello/web/mockhttp.js",
+		"/home/vasilis/projects/PeerBay/final/server.js",
+		"/home/vasilis/projects/PeerBay/peerFeed/rtconion/ws-server.js",
+		"/home/vasilis/projects/PeerBay/PeerSocial/templates/persons-form.html",
+		"/home/vasilis/projects/PeerBay/PeerSocial/templates/messages-list.html",
+		"/home/vasilis/projects/PeerBay/PeerSocial/index.html",
+		"/home/vasilis/projects/PeerBay/PeerSocial/msgpack.js",
+		"/home/vasilis/projects/PeerBay/PeerSocial/pf.js",
+		"/home/vasilis/projects/PeerBay/final/index.html",
+		"/home/vasilis/projects/PeerBay/final/server/web/css/app.css",
+		"/home/vasilis/.config/sublime-text-3/Packages/User/Default (Linux).sublime-keymap",
+		"/home/vasilis/.config/sublime-text-3/Packages/HTML-CSS-JS Prettify/Default (Linux).sublime-keymap",
+		"/home/vasilis/.config/sublime-text-3/Packages/Javascript Beautify/Default (Linux).sublime-keymap",
+		"/home/vasilis/.config/sublime-text-3/Packages/User/SublimeServer.sublime-settings",
+		"/home/vasilis/Desktop/z",
+		"/home/vasilis/projects/PeerBay/PeerSocial/templates/friendRequests-form.html",
+		"/home/vasilis/projects/PeerBay/peerFeed/social/user-private-users.html",
+		"/home/vasilis/projects/PeerBay/PeerSocial/templates/friends-2-list.html",
+		"/home/vasilis/projects/PeerBay/peerFeed/social/user-private-messages.html",
+		"/home/vasilis/projects/PeerBay/PeerSocial/templates/posts-form.html",
+		"/home/vasilis/projects/PeerBay/PeerSocial/stable-websocket.js",
+		"/home/vasilis/projects/PeerBay/PeerSocial/pouchdb.relational.js",
+		"/home/vasilis/projects/PeerBay/peerFeed/testing/ngCropper/demo/ngCropper.all.js",
+		"/home/vasilis/projects/PeerBay/PeerSocial/couchdb.js",
+		"/home/vasilis/projects/PeerBay/PeerSocial/css/app.css",
+		"/home/vasilis/projects/PeerBay/PeerSocial/peerfeed.appcache",
+		"/home/vasilis/projects/PeerBay/PeerSocial/multiselect-tpls.js",
+		"/home/vasilis/projects/PeerBay/PeerSocial/multiselect.js",
+		"/home/vasilis/projects/PeerBay/PeerSocial/css/all.css",
+		"/home/vasilis/projects/PeerBay/peerFeed/testing/ngCropper/demo/demo.js",
+		"/home/vasilis/projects/PeerBay/peerFeed/testing/ngCropper/demo/index.html",
+		"/home/vasilis/.config/sublime-text-3/Packages/User/HTMLBeautify.sublime-settings",
+		"/home/vasilis/.config/sublime-text-3/Packages/HTMLBeautify/HTMLBeautify.sublime-settings",
+		"/run/user/1000/gvfs/sftp:host=asterix.stinpriza.org,port=23345,user=peerbay/home/peerbay/websocket-server/ws-server.js",
+		"/home/vasilis/projects/PeerBay/peerFeed/scraper/readability/index.html",
+		"/run/user/1000/gvfs/sftp:host=asterix.stinpriza.org,port=23345,user=peerbay/home/peerbay/PeerSocial/wsnegotiation.js",
+		"/home/vasilis/.config/sublime-text-3/Packages/Web Inspector/Default (Linux).sublime-keymap",
+		"/home/vasilis/.config/sublime-text-3/Packages/SideBarGit/SideBarGit.sublime-settings",
+		"/home/vasilis/projects/PeerBay/peerFeed/backbone/comments-form.html",
+		"/home/vasilis/projects/PeerBay/peerFeed/backbone/comments-list.html",
+		"/home/vasilis/projects/PeerBay/peerFeed/social/templates/comments-form.html",
+		"/home/vasilis/projects/PeerBay/peerFeed/social/templates/comments-list.html",
+		"/home/vasilis/projects/PeerBay/peerFeed/social/templates/posts-list.html",
+		"/home/vasilis/projects/PeerBay/peerFeed/social/index.html.1",
+		"/home/vasilis/projects/PeerBay/peerFeed/social/templates/posts-form.html",
+		"/home/vasilis/projects/PeerBay/peerFeed/social/app.js",
+		"/home/vasilis/projects/PeerBay/peerFeed/social/bootstrap-select.js",
+		"/home/vasilis/projects/PeerBay/peerFeed/social/angular-bootstrap-select.js",
+		"/home/vasilis/projects/PeerBay/peerFeed/social/templates/friends-list.html"
+	],
+	"find":
+	{
+		"height": 35.0
+	},
+	"find_in_files":
+	{
+		"height": 93.0,
+		"where_history":
+		[
+			"/home/vasilis/projects/PeerBay/peerNode/testing/crossbarexamples/authenticate/wampcradynamic/nodejs",
+			"/home/vasilis/projects/PeerBay/peerFeed/backbone"
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": false,
+		"find_history":
+		[
+			"request",
+			"order",
+			"webkit",
+			"rtcpeer",
+			"local",
+			"docids",
+			"console",
+			"?",
+			"search",
+			"nonce",
+			"createTor",
+			"show",
+			"octicon",
+			"md-autocomplete-wrap",
+			"warn",
+			"MdAutocomplete",
+			"autocomple",
+			"textarea",
+			"virtualrepeat",
+			"virtual",
+			"autocomplete",
+			"$rootscope.put",
+			"right",
+			"answer",
+			"=\"\"",
+			"images/people",
+			"images/woman-5",
+			"images/lock-1",
+			"images",
+			"lock",
+			"images",
+			"profile",
+			"signin",
+			"paper",
+			"utils",
+			"utils.",
+			"utils = ",
+			"utils.call",
+			"Channe",
+			"onmessa",
+			"channel",
+			"rtcKey",
+			"send",
+			"reqID",
+			"sendRequest",
+			"twi",
+			"I am",
+			"I",
+			"true",
+			"I",
+			"leachchannel",
+			"self.exit.rtcKey",
+			"master",
+			"testroute",
+			"testro",
+			"console",
+			"self.exit.",
+			"exit",
+			"tube",
+			"_tube",
+			"onconne",
+			"PeerPouchDB._shareInitializersByName",
+			"id = fun",
+			"PouchDB.uuid()",
+			"uuid",
+			"Pouch",
+			"_shareInitializersByName",
+			"Promise.all(Object.keys(doc._attachments).map(function (k",
+			"return Promise.all(Object.keys(doc._attachments).map(function (key)",
+			"\n  Object.keys(atts).forEach(function (filename) {\n    var att = atts[filename];\n    att.data = b64StringToBluffer(att.data, att.content_type);\n  });\n}",
+			"function readAttachmentsAsBlobOrBuffer(row) {\n  var atts = row.doc && row.doc._attachments;\n  if (!atts) {\n    return;\n  }\n  Object.keys(atts).forEach(function (filename) {\n    var att = atts[filename];\n    att.data = b64StringToBluffer(att.data, att.content_type);\n  });\n}",
+			"function readAttachmentsAsBlobOrBuffer(row) {\n  var atts = row.doc && row.doc._attachments;\n  if (!atts) {\n    return;\n  }\n  Object.keys(atts).forEach(function (filename) {\n    var att = atts[filename];\n    att.data = b64StringToBluffer(att.data, att.content_type);\n  });\n}\n",
+			"      method: 'POST',\n      url: genDBUrl(host, '_revs_diff'),",
+			"method: 'DE",
+			"httppouch",
+			"changes",
+			"req",
+			"rtcke",
+			"candida",
+			"call",
+			"rtckey",
+			"&list=FL6N6BHHM1xkH_8PD27kKpHQ",
+			"rtcchanne",
+			"={};\n",
+			"F",
+			"f",
+			"user",
+			"url",
+			"peerFeed.se",
+			"substr",
+			"sign",
+			"validate",
+			"deferred",
+			"editpro",
+			"persons",
+			"profile",
+			"subscribeMentions",
+			"ctrl+alt+shift",
+			"ctrl+alt+shift+f",
+			"get",
+			"Search",
+			"timeline",
+			"sign",
+			"logout",
+			"persons",
+			"requ",
+			"$rootScope.peernode",
+			"peerFeed.peernode",
+			"publ",
+			"nodeusers",
+			"numit",
+			"trustSrc",
+			"url",
+			"signup",
+			"peernode",
+			"db(\"invitations\")",
+			"proxy",
+			"cipher",
+			"save",
+			"_saveA",
+			"get",
+			"getValue",
+			"oiUtils.getValue",
+			"displayFn",
+			"displayFn ",
+			"interpolate",
+			"getLabel",
+			"displayFn"
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": false,
+		"replace_history":
+		[
+			"_reqID",
+			"_sendRequest",
+			"PouchDB.utils.uuid()",
+			"PouchDB",
+			"",
+			"profiles",
+			"",
+			"findClosest",
+			"update",
+			"newRoutingTable",
+			"prefixLen",
+			"less",
+			"equals",
+			"span",
+			"user",
+			"connected",
+			"SignInController"
+		],
+		"reverse": false,
+		"show_context": true,
+		"use_buffer2": true,
+		"whole_word": false,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"selected": 3,
+			"sheets":
+			[
+				{
+					"buffer": 0,
+					"file": "web/index.html",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 46701,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								25736,
+								25736
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/HTML/HTML.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 5060.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 2,
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "web/modules/peerbay.js",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 23721,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								3747,
+								3747
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 1217.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 3,
+					"type": "text"
+				},
+				{
+					"buffer": 2,
+					"file": "testrssreadable.js",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 2901,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								2901,
+								2901
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 1149.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 4,
+					"type": "text"
+				},
+				{
+					"buffer": 3,
+					"file": "backend.js",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 25704,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								2991,
+								2991
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 1037.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"type": "text"
+				},
+				{
+					"buffer": 4,
+					"file": "web/modules/wamp.rtc.js",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 9143,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
+					"type": "text"
+				}
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 34.0
+	},
+	"input":
+	{
+		"height": 33.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"output.exec":
+	{
+		"height": 27.0
+	},
+	"output.find_results":
+	{
+		"height": 0.0
+	},
+	"output.unsaved_changes":
+	{
+		"height": 27.0
+	},
+	"pinned_build_system": "",
+	"project": "peerbay.sublime-project",
+	"replace":
+	{
+		"height": 64.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+			[
+				"",
+				"web/material-start/app/modules/mdautocomplete.textarea.js"
+			]
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 500.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 380.0
+	},
+	"select_symbol":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"selected_group": 0,
+	"settings":
+	{
+	},
+	"show_minimap": true,
+	"show_open_files": false,
+	"show_tabs": true,
+	"side_bar_visible": true,
+	"side_bar_width": 335.0,
+	"status_bar_visible": true,
+	"template_settings":
+	{
+	}
+}

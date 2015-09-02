@@ -1,0 +1,70 @@
+0 info it worked if it ends with ok
+1 verbose cli [ '/usr/bin/node', '/usr/bin/npm', 'install', 'stringhash' ]
+2 info using npm@1.4.28
+3 info using node@v0.10.37
+4 verbose node symlink /usr/bin/node
+5 warn package.json offline-docs@1.0.4 No repository field.
+6 verbose readDependencies using package.json deps
+7 verbose cache add [ 'stringhash', null ]
+8 verbose cache add name=undefined spec="stringhash" args=["stringhash",null]
+9 verbose parsed url { protocol: null,
+9 verbose parsed url   slashes: null,
+9 verbose parsed url   auth: null,
+9 verbose parsed url   host: null,
+9 verbose parsed url   port: null,
+9 verbose parsed url   hostname: null,
+9 verbose parsed url   hash: null,
+9 verbose parsed url   search: null,
+9 verbose parsed url   query: null,
+9 verbose parsed url   pathname: 'stringhash',
+9 verbose parsed url   path: 'stringhash',
+9 verbose parsed url   href: 'stringhash' }
+10 silly lockFile b43a216b-stringhash stringhash
+11 verbose lock stringhash /home/vasilis/.npm/b43a216b-stringhash.lock
+12 silly lockFile b43a216b-stringhash stringhash
+13 silly lockFile b43a216b-stringhash stringhash
+14 verbose addNamed [ 'stringhash', '' ]
+15 verbose addNamed [ null, '*' ]
+16 silly lockFile 0db8b266-stringhash stringhash@
+17 verbose lock stringhash@ /home/vasilis/.npm/0db8b266-stringhash.lock
+18 silly addNameRange { name: 'stringhash', range: '*', hasData: false }
+19 verbose request where is /stringhash
+20 verbose request registry https://registry.npmjs.org/
+21 verbose request id 1fd4c611fcfc8e8b
+22 verbose url raw /stringhash
+23 verbose url resolving [ 'https://registry.npmjs.org/', './stringhash' ]
+24 verbose url resolved https://registry.npmjs.org/stringhash
+25 verbose request where is https://registry.npmjs.org/stringhash
+26 info trying registry request attempt 1 at 20:15:43
+27 http GET https://registry.npmjs.org/stringhash
+28 http 404 https://registry.npmjs.org/stringhash
+29 silly registry.get cb [ 404,
+29 silly registry.get   { 'content-type': 'application/json',
+29 silly registry.get     'cache-control': 'max-age=0',
+29 silly registry.get     'content-length': '2',
+29 silly registry.get     'accept-ranges': 'bytes',
+29 silly registry.get     date: 'Tue, 01 Sep 2015 17:15:45 GMT',
+29 silly registry.get     via: '1.1 varnish',
+29 silly registry.get     age: '0',
+29 silly registry.get     connection: 'keep-alive',
+29 silly registry.get     'x-served-by': 'cache-fra1239-FRA',
+29 silly registry.get     'x-cache': 'MISS',
+29 silly registry.get     'x-cache-hits': '0',
+29 silly registry.get     'x-timer': 'S1441127744.832498,VS0,VE188' } ]
+30 silly lockFile 0db8b266-stringhash stringhash@
+31 silly lockFile 0db8b266-stringhash stringhash@
+32 error 404 Not Found
+32 error 404
+32 error 404 'stringhash' is not in the npm registry.
+32 error 404 You should bug the author to publish it
+32 error 404 It was specified as a dependency of 'PeerBay'
+32 error 404
+32 error 404 Note that you can also install from a
+32 error 404 tarball, folder, or http url, or git url.
+33 error System Linux 3.16.0-38-generic
+34 error command "/usr/bin/node" "/usr/bin/npm" "install" "stringhash"
+35 error cwd /home/vasilis/projects/PeerBay/PeerSocial/PeerSocial
+36 error node -v v0.10.37
+37 error npm -v 1.4.28
+38 error code E404
+39 verbose exit [ 1, true ]

@@ -1,0 +1,1122 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+			[
+				"news",
+				"newsForm"
+			],
+			[
+				"add",
+				"addSettingValue"
+			],
+			[
+				"ng-cl",
+				"ng-click	AngularJS"
+			],
+			[
+				"fee",
+				"feedparser"
+			],
+			[
+				"open",
+				"openFileSizes"
+			],
+			[
+				"file",
+				"fileData"
+			],
+			[
+				"in",
+				"infoHash"
+			],
+			[
+				"store",
+				"storeFile"
+			],
+			[
+				"doc",
+				"docid"
+			],
+			[
+				"sign",
+				"signature"
+			],
+			[
+				"encode",
+				"encodeUTF8"
+			],
+			[
+				"grou",
+				"groupKey"
+			],
+			[
+				"si",
+				"signKeys"
+			],
+			[
+				"for",
+				"forEach"
+			],
+			[
+				"groupK",
+				"groupKey"
+			],
+			[
+				"group",
+				"groupData"
+			],
+			[
+				"follo",
+				"following"
+			],
+			[
+				"crea",
+				"creationDate"
+			],
+			[
+				"bo",
+				"boxSignKeys"
+			],
+			[
+				"value",
+				"value	AngularJS"
+			],
+			[
+				"mywall",
+				"mywallunread"
+			],
+			[
+				"sub",
+				"subarray"
+			],
+			[
+				"b",
+				"boxSignKeys"
+			],
+			[
+				"box",
+				"boxKey"
+			],
+			[
+				"feedId",
+				"feedID"
+			],
+			[
+				"get",
+				"getLength"
+			],
+			[
+				"feedID",
+				"feedID"
+			],
+			[
+				"publi",
+				"publicPost"
+			],
+			[
+				"tex",
+				"textarea"
+			],
+			[
+				"md-a",
+				"md-autocomplete"
+			],
+			[
+				"md",
+				"md-button"
+			],
+			[
+				"$sc",
+				"$scope	AngularJS"
+			],
+			[
+				"md-ca",
+				"md-card-content"
+			],
+			[
+				"req",
+				"req"
+			],
+			[
+				"pape",
+				"paper-material"
+			],
+			[
+				"paper",
+				"paper-button"
+			],
+			[
+				"iro",
+				"iron-form"
+			],
+			[
+				"subs",
+				"subscriptions"
+			],
+			[
+				"w",
+				"with"
+			],
+			[
+				"publ",
+				"publish"
+			],
+			[
+				"d",
+				"don"
+			],
+			[
+				"route",
+				"route"
+			],
+			[
+				"proto",
+				"prototype"
+			],
+			[
+				"session",
+				"sessionKey"
+			],
+			[
+				"leache",
+				"leachers"
+			],
+			[
+				"pr",
+				"procedure"
+			],
+			[
+				"peer",
+				"peerID"
+			],
+			[
+				"sess",
+				"session"
+			],
+			[
+				"messa",
+				"message"
+			],
+			[
+				"conne",
+				"connection"
+			],
+			[
+				"inde",
+				"indexOf"
+			],
+			[
+				"rtcp",
+				"rtcpeers"
+			],
+			[
+				"onme",
+				"onmessage"
+			],
+			[
+				"rtc",
+				"rtcKey"
+			],
+			[
+				"secre",
+				"secretKey"
+			],
+			[
+				"s",
+				"signIn"
+			],
+			[
+				"ke",
+				"keyPair"
+			],
+			[
+				"key",
+				"keyBytes"
+			],
+			[
+				"create",
+				"createCookie"
+			],
+			[
+				"connectT",
+				"connectToPeerNode"
+			],
+			[
+				"cookie",
+				"cookie"
+			],
+			[
+				"pee",
+				"peerFeedID"
+			],
+			[
+				"invi",
+				"invitations"
+			],
+			[
+				"admin",
+				"adminKeyPair"
+			],
+			[
+				"client",
+				"client"
+			],
+			[
+				"keyT",
+				"keyToUint"
+			],
+			[
+				"keyTo",
+				"keyToString"
+			],
+			[
+				"i",
+				"angular.injector"
+			],
+			[
+				"decode",
+				"decodeUTF8"
+			],
+			[
+				"new",
+				"newMessage"
+			],
+			[
+				"wild",
+				"WildEmitter"
+			],
+			[
+				"connect",
+				"connected"
+			],
+			[
+				"random",
+				"randomOnionTo"
+			],
+			[
+				"onion",
+				"onionTo"
+			],
+			[
+				"direct",
+				"directive	Angular.js"
+			],
+			[
+				"true",
+				"true"
+			],
+			[
+				"createO",
+				"createOnionRoute"
+			],
+			[
+				"action",
+				"angular.isFunction"
+			],
+			[
+				"F",
+				"FBI_FORMATS	statement"
+			],
+			[
+				"piece",
+				"piece_priority"
+			],
+			[
+				"las",
+				"last_piece	statement"
+			],
+			[
+				"info",
+				"info_hash"
+			],
+			[
+				"range",
+				"range_start"
+			],
+			[
+				"None",
+				"None	keyword"
+			],
+			[
+				"bytes",
+				"bytes_read	statement"
+			],
+			[
+				"reque",
+				"request_uri	statement"
+			],
+			[
+				"first",
+				"first_piece	statement"
+			],
+			[
+				"firs",
+				"first_byte"
+			],
+			[
+				"torrent_",
+				"torrent_handle"
+			],
+			[
+				"save",
+				"save-path"
+			],
+			[
+				"shown",
+				"shownName"
+			],
+			[
+				"friendRequestA",
+				"friendRequestsAccepted"
+			],
+			[
+				"friendReq",
+				"friendRequestsAccepted"
+			],
+			[
+				"friend",
+				"friendRequests"
+			],
+			[
+				"peerN",
+				"peerNode"
+			],
+			[
+				"root",
+				"$rootScope	AngularJS"
+			],
+			[
+				"peerfeed",
+				"peerFeed"
+			],
+			[
+				"log",
+				"angular: $log.log"
+			],
+			[
+				"id",
+				"angular: inheritedData"
+			],
+			[
+				"peerNode",
+				"peerNodeURL"
+			],
+			[
+				"peerFeedID",
+				"peerFeedID"
+			],
+			[
+				"contro",
+				"controller	Angular.js"
+			],
+			[
+				"encry",
+				"encryptDoc"
+			],
+			[
+				"hash",
+				"hashCodes"
+			],
+			[
+				"$app",
+				"angular: $apply"
+			],
+			[
+				"$root",
+				"$rootScope	AngularJS"
+			],
+			[
+				"ev",
+				"angular: $eval"
+			],
+			[
+				"h",
+				"h6	Tag"
+			],
+			[
+				"DIV",
+				"div"
+			],
+			[
+				"DI",
+				"data-list"
+			],
+			[
+				"D",
+				"div"
+			],
+			[
+				"dire",
+				"directive	Angular.js"
+			],
+			[
+				"di",
+				"directive	Angular.js"
+			],
+			[
+				"mod",
+				"angular.module"
+			],
+			[
+				"controlle",
+				"angular: $controllerProvider"
+			],
+			[
+				"control",
+				"$controller	AngularJS"
+			],
+			[
+				"co",
+				"angular: controller"
+			]
+		]
+	},
+	"buffers":
+	[
+		{
+			"contents": "[SideBarGit@SublimeText cloudifyplugin/] git diff HEAD --no-color -- .\n\n# Improve this command, the output or the tab title by posting here:\n# http://www.sublimetext.com/forum/viewtopic.php?f=5&t=3405\n# Tip: F5 will run the command again and refresh the contents of this tab\n\nNot a git repository\nTo compare two paths outside a working tree:\nusage: git diff [--no-index] <path> <path>",
+			"settings":
+			{
+				"buffer_size": 384,
+				"line_ending": "Unix",
+				"name": "Diff: cloudifyplugin.diff",
+				"scratch": true
+			}
+		},
+		{
+			"contents": "[SideBarGit@SublimeText cloudify_test_plugin/] git diff HEAD --no-color -- .\n\n# Improve this command, the output or the tab title by posting here:\n# http://www.sublimetext.com/forum/viewtopic.php?f=5&t=3405\n# Tip: F5 will run the command again and refresh the contents of this tab\n\nNot a git repository\nTo compare two paths outside a working tree:\nusage: git diff [--no-index] <path> <path>",
+			"settings":
+			{
+				"buffer_size": 390,
+				"line_ending": "Unix",
+				"name": "Diff: cloudify_test_plugin.diff",
+				"scratch": true
+			}
+		},
+		{
+			"file": "/home/vasilis/projects/Mistio/cloudifyplugin/cloudify_test_plugin/tests/test_cloudify_test_plugin.py",
+			"settings":
+			{
+				"buffer_size": 1524,
+				"line_ending": "Unix"
+			}
+		}
+	],
+	"build_system": "",
+	"build_system_choices":
+	[
+	],
+	"build_varint": "",
+	"command_palette":
+	{
+		"height": 117.0,
+		"last_filter": "Package Control:ins",
+		"selected_items":
+		[
+			[
+				"Package Control:ins",
+				"Package Control: Install Package"
+			],
+			[
+				"Package Control: ",
+				"Package Control: Remove Package"
+			],
+			[
+				"Package Control: ins",
+				"Package Control: Install Package"
+			],
+			[
+				"Package Control: INS",
+				"Package Control: Install Package"
+			],
+			[
+				"Package Control: disc",
+				"Package Control: Discover Packages"
+			],
+			[
+				"Snippet: ",
+				"Snippet: Angular.js"
+			],
+			[
+				"Package Control:",
+				"Package Control: Install Package"
+			],
+			[
+				"Package Contr",
+				"Package Control: Install Package"
+			]
+		],
+		"width": 746.0
+	},
+	"console":
+	{
+		"height": 139.0,
+		"history":
+		[
+			"join_lines",
+			"help",
+			"l",
+			"5+4",
+			"5=4",
+			"python",
+			"esvalidate /home/vasilis/projects/PeerBay/peerFeed/backbone/pf.js",
+			"ngdirective",
+			"import urllib.request,os,hashlib; h = 'eb2297e1a458f27d836c04bb0cbaf282' + 'd0e7a3098092775ccb37ca9d6b2e4b7d'; pf = 'Package Control.sublime-package'; ipp = sublime.installed_packages_path(); urllib.request.install_opener( urllib.request.build_opener( urllib.request.ProxyHandler()) ); by = urllib.request.urlopen( 'http://packagecontrol.io/' + pf.replace(' ', '%20')).read(); dh = hashlib.sha256(by).hexdigest(); print('Error validating download (got %s instead of %s), please try manual install' % (dh, h)) if dh != h else open(os.path.join( ipp, pf), 'wb' ).write(by)"
+		]
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"expanded_folders":
+	[
+		"/home/vasilis/projects/Mistio/cloudifyplugin",
+		"/home/vasilis/projects/Mistio/cloudifyplugin/cloudify_test_plugin",
+		"/home/vasilis/projects/Mistio/cloudifyplugin/cloudify_test_plugin/tests",
+		"/home/vasilis/projects/Mistio/cloudifyplugin/cloudify_test_plugin/tests/blueprint"
+	],
+	"file_history":
+	[
+		"/home/vasilis/projects/PeerBay/PeerSocial/PeerSocial/testfiletor.js",
+		"/home/vasilis/.config/sublime-text-3/Packages/User/CommandOnSave.sublime-settings",
+		"/home/vasilis/projects/PeerBay/PeerSocial/PeerSocial/web/bower_components/lf-ng-md-fileinput/dist/lf-ng-md-file-input.js",
+		"/home/vasilis/projects/PeerBay/PeerSocial/PeerSocial/web/modules/delivery.js",
+		"/home/vasilis/projects/PeerBay/PeerSocial/PeerSocial/web/modules/wamp.rtc.js",
+		"/home/vasilis/projects/PeerBay/PeerSocial/PeerSocial/web/modules/create-torrent.js",
+		"/home/vasilis/projects/PeerBay/final/server/node/server.js",
+		"/home/vasilis/projects/PeerBay/PeerSocial/server.js",
+		"/home/vasilis/projects/PeerBay/nodefeed/web/material-start/app/modules/wamp.rtc.js",
+		"/home/vasilis/projects/PeerBay/nodefeed/web/material-start/app/modules/mdautocomplete.textarea.js",
+		"/home/vasilis/projects/PeerBay/nodefeed/web/material-start/app/bower_components/angular-material/angular-material.css",
+		"/home/vasilis/projects/PeerBay/nodefeed/web/material-start/app/modules/onion.rtc.js",
+		"/home/vasilis/projects/PeerBay/nodefeed/package.json",
+		"/home/vasilis/projects/PeerBay/nodefeed/backend.js",
+		"/home/vasilis/projects/PeerBay/nodefeed/web/material-start/app/assets/app.css",
+		"/home/vasilis/projects/PeerBay/nodefeed/web/material-start/app/modules/peerbay.js",
+		"/home/vasilis/projects/PeerBay/nodefeed/web/material-start/app/index.html",
+		"/home/vasilis/projects/PeerBay/nodefeed/web/material-start/app/bower_components/lf-ng-md-fileinput/dist/lf-ng-md-file-input.js",
+		"/home/vasilis/projects/PeerBay/nodefeed/web/material-start/app/modules/virtual-repeater-notify.js",
+		"/home/vasilis/projects/PeerBay/nodefeed/web/material-start/app/bower_components/angular-material/angular-material.js",
+		"/home/vasilis/projects/PeerBay/nodefeed/web/material-start/app/modules/webtorrent.min.js",
+		"/home/vasilis/projects/PeerBay/peerNode/testing/couchdb/rel/haproxy.cfg",
+		"/home/vasilis/projects/PeerBay/nodefeed/web/material-start/app/bower_components/lf-ng-md-fileinput/dist/web-tor-file-input.js",
+		"/home/vasilis/projects/PeerBay/final/server/web/test.html",
+		"/home/vasilis/projects/PeerBay/final/server/web/index.html",
+		"/home/vasilis/projects/PeerBay/final/server/web/templates/posts-form.html",
+		"/home/vasilis/projects/PeerBay/final/server/web/templates/posts-list.html",
+		"/home/vasilis/projects/PeerBay/peerNode/testing/crossbarexamples/authenticate/wampcradynamic/nodejs/web/js/bucket.js",
+		"/home/vasilis/projects/PeerBay/PeerSocial/wsnegotiation.js",
+		"/home/vasilis/projects/PeerBay/final/server/web/js/peerfeedLib.js",
+		"/home/vasilis/projects/PeerBay/peerNode/testing/crossbarexamples/authenticate/wampcradynamic/nodejs/web/indexold.html",
+		"/home/vasilis/projects/PeerBay/peerNode/testing/crossbarexamples/authenticate/wampcradynamic/nodejs/web/js/pf.js",
+		"/home/vasilis/projects/PeerBay/peerNode/testing/crossbarexamples/authenticate/wampcradynamic/nodejs/web/js/peerbay.js",
+		"/home/vasilis/projects/PeerBay/peerNode/testing/crossbarexamples/authenticate/wampcradynamic/nodejs/web/js/autobahn.rtc.js",
+		"/home/vasilis/projects/PeerBay/peerNode/testing/crossbarexamples/authenticate/wampcradynamic/nodejs/web/js/onion.rtc.js",
+		"/home/vasilis/projects/PeerBay/peerNode/testing/crossbarexamples/authenticate/wampcradynamic/nodejs/web/js/wamp.rtc.js",
+		"/home/vasilis/projects/PeerBay/peerNode/testing/crossbarexamples/authenticate/wampcradynamic/nodejs/authenticator.js",
+		"/home/vasilis/projects/PeerBay/peerNode/testing/crossbarexamples/authenticate/wampcradynamic/nodejs/backend.js",
+		"/home/vasilis/projects/PeerBay/peerNode/testing/crossbarexamples/authenticate/wampcradynamic/nodejs/.crossbar/config.json",
+		"/home/vasilis/projects/PeerBay/peerNode/testing/crossbarexamples/authenticate/wampcradynamic/nodejs/web/js/rtconionpubsub.js",
+		"/home/vasilis/projects/PeerBay/peerNode/testing/crossbarexamples/authenticate/wampcradynamic/nodejs/web/js/peerfeedLib.js",
+		"/home/vasilis/projects/PeerBay/nodefeed/web/material-start/app/src/users/UserController.js",
+		"/home/vasilis/projects/PeerBay/peerNode/testing/crossbarexamples/authenticate/wampcradynamic/nodejs/web/js/peerFeed.js",
+		"/home/vasilis/projects/PeerBay/peerNode/testing/crossbarexamples/authenticate/wampcradynamic/nodejs/web/index.html",
+		"/home/vasilis/projects/PeerBay/peerNode/testing/crossbarexamples/authenticate/wampcradynamic/nodejs/web/css/app.css",
+		"/home/vasilis/projects/PeerBay/peerNode/testing/crossbarexamples/authenticate/wampcradynamic/nodejs/web/templates/messages-list.html",
+		"/home/vasilis/projects/PeerBay/peerNode/testing/crossbarexamples/authenticate/wampcradynamic/nodejs/web/templates/friends-2-list.html",
+		"/home/vasilis/projects/PeerBay/peerNode/testing/crossbarexamples/authenticate/wampcradynamic/nodejs/web/polymer/finished/post-card.html",
+		"/home/vasilis/projects/PeerBay/peerNode/testing/crossbarexamples/authenticate/wampcradynamic/nodejs/web/polymer/messages.json",
+		"/home/vasilis/projects/PeerBay/peerNode/testing/crossbarexamples/authenticate/wampcradynamic/nodejs/web/polymer/post-list.html",
+		"/home/vasilis/projects/PeerBay/peerNode/testing/crossbarexamples/authenticate/wampcradynamic/nodejs/web/polymer/post-single.html",
+		"/home/vasilis/projects/PeerBay/peerNode/testing/crossbarexamples/authenticate/wampcradynamic/nodejs/web/polymer/app.js",
+		"/home/vasilis/projects/PeerBay/peerNode/testing/crossbarexamples/authenticate/wampcradynamic/nodejs/web/polymer/index.html",
+		"/home/vasilis/projects/PeerBay/peerNode/testing/crossbarexamples/authenticate/wampcradynamic/nodejs/web/polymer/step-1/index.html",
+		"/home/vasilis/projects/PeerBay/peerNode/testing/crossbarexamples/authenticate/wampcradynamic/nodejs/web/polymer/finished/index.html",
+		"/home/vasilis/projects/PeerBay/peerNode/testing/crossbarexamples/authenticate/wampcradynamic/nodejs/web/polymer/peerfeed/index.html",
+		"/home/vasilis/projects/PeerBay/peerNode/testing/crossbarexamples/authenticate/wampcradynamic/nodejs/web/modules/pouchdb.js",
+		"/home/vasilis/projects/PeerBay/peerNode/testing/crossbarexamples/authenticate/wampcradynamic/nodejs/web/js/rangy.js",
+		"/home/vasilis/projects/PeerBay/peerNode/testing/crossbarexamples/authenticate/wampcradynamic/nodejs/web/js/pouch.peerbay.js",
+		"/home/vasilis/projects/PeerBay/peerNode/testing/mesh/examples/5_browser/server.js",
+		"/home/vasilis/projects/PeerBay/final/server/web/js/pf.js",
+		"/home/vasilis/projects/PeerBay/PeerSocial/bucket.js",
+		"/home/vasilis/Desktop/listarevekka.txt",
+		"/home/vasilis/projects/PeerBay/final/server/node/hello.js",
+		"/home/vasilis/projects/PeerBay/final/server/web/js/peerFeed.js",
+		"/home/vasilis/projects/PeerBay/final/server/.crossbar/config.json",
+		"/home/vasilis/projects/PeerBay/PeerSocial/all.js",
+		"/home/vasilis/projects/PeerBay/final/server/web/templates/profiles-form.html",
+		"/home/vasilis/projects/PeerBay/final/server/web/modules/crypto/nacl-fast.js",
+		"/home/vasilis/projects/PeerBay/final/signin.tag",
+		"/home/vasilis/Desktop/PeerEconomy.txt",
+		"/home/vasilis/projects/PeerBay/peerFeed/rtconion/couch-test.js",
+		"/home/vasilis/projects/PeerBay/PeerSocial/templates/admin.html",
+		"/home/vasilis/projects/PeerBay/PeerSocial/peerFeedAdmin.js",
+		"/home/vasilis/projects/PeerBay/PeerSocial/anonymous.html",
+		"/home/vasilis/projects/PeerBay/PeerSocial/onionrtc.js",
+		"/home/vasilis/projects/PeerBay/PeerSocial/peerFeed.js",
+		"/home/vasilis/projects/PeerBay/final/lib/autobahn.js",
+		"/home/vasilis/projects/PeerBay/PeerSocial/client.js",
+		"/home/vasilis/projects/PeerBay/peerNode/hello/hello/web/mockhttp.js",
+		"/home/vasilis/projects/PeerBay/final/server.js",
+		"/home/vasilis/projects/PeerBay/peerFeed/rtconion/ws-server.js",
+		"/home/vasilis/projects/PeerBay/PeerSocial/templates/persons-form.html",
+		"/home/vasilis/projects/PeerBay/PeerSocial/templates/messages-list.html",
+		"/home/vasilis/projects/PeerBay/PeerSocial/index.html",
+		"/home/vasilis/projects/PeerBay/PeerSocial/msgpack.js",
+		"/home/vasilis/projects/PeerBay/PeerSocial/pf.js",
+		"/home/vasilis/projects/PeerBay/final/index.html",
+		"/home/vasilis/projects/PeerBay/final/server/web/css/app.css",
+		"/home/vasilis/.config/sublime-text-3/Packages/User/Default (Linux).sublime-keymap",
+		"/home/vasilis/.config/sublime-text-3/Packages/HTML-CSS-JS Prettify/Default (Linux).sublime-keymap",
+		"/home/vasilis/.config/sublime-text-3/Packages/Javascript Beautify/Default (Linux).sublime-keymap",
+		"/home/vasilis/.config/sublime-text-3/Packages/User/SublimeServer.sublime-settings",
+		"/home/vasilis/Desktop/z",
+		"/home/vasilis/projects/PeerBay/PeerSocial/templates/friendRequests-form.html",
+		"/home/vasilis/projects/PeerBay/peerFeed/social/user-private-users.html",
+		"/home/vasilis/projects/PeerBay/PeerSocial/templates/friends-2-list.html",
+		"/home/vasilis/projects/PeerBay/peerFeed/social/user-private-messages.html",
+		"/home/vasilis/projects/PeerBay/PeerSocial/templates/posts-form.html",
+		"/home/vasilis/projects/PeerBay/PeerSocial/stable-websocket.js",
+		"/home/vasilis/projects/PeerBay/PeerSocial/pouchdb.relational.js",
+		"/home/vasilis/projects/PeerBay/peerFeed/testing/ngCropper/demo/ngCropper.all.js",
+		"/home/vasilis/projects/PeerBay/PeerSocial/couchdb.js",
+		"/home/vasilis/projects/PeerBay/PeerSocial/css/app.css",
+		"/home/vasilis/projects/PeerBay/PeerSocial/peerfeed.appcache",
+		"/home/vasilis/projects/PeerBay/PeerSocial/multiselect-tpls.js",
+		"/home/vasilis/projects/PeerBay/PeerSocial/multiselect.js",
+		"/home/vasilis/projects/PeerBay/PeerSocial/css/all.css",
+		"/home/vasilis/projects/PeerBay/peerFeed/testing/ngCropper/demo/demo.js",
+		"/home/vasilis/projects/PeerBay/peerFeed/testing/ngCropper/demo/index.html",
+		"/home/vasilis/.config/sublime-text-3/Packages/User/HTMLBeautify.sublime-settings",
+		"/home/vasilis/.config/sublime-text-3/Packages/HTMLBeautify/HTMLBeautify.sublime-settings",
+		"/run/user/1000/gvfs/sftp:host=asterix.stinpriza.org,port=23345,user=peerbay/home/peerbay/websocket-server/ws-server.js",
+		"/home/vasilis/projects/PeerBay/peerFeed/scraper/readability/index.html",
+		"/run/user/1000/gvfs/sftp:host=asterix.stinpriza.org,port=23345,user=peerbay/home/peerbay/PeerSocial/wsnegotiation.js",
+		"/home/vasilis/.config/sublime-text-3/Packages/Web Inspector/Default (Linux).sublime-keymap",
+		"/home/vasilis/.config/sublime-text-3/Packages/SideBarGit/SideBarGit.sublime-settings",
+		"/home/vasilis/projects/PeerBay/peerFeed/backbone/comments-form.html",
+		"/home/vasilis/projects/PeerBay/peerFeed/backbone/comments-list.html",
+		"/home/vasilis/projects/PeerBay/peerFeed/social/templates/comments-form.html",
+		"/home/vasilis/projects/PeerBay/peerFeed/social/templates/comments-list.html",
+		"/home/vasilis/projects/PeerBay/peerFeed/social/templates/posts-list.html",
+		"/home/vasilis/projects/PeerBay/peerFeed/social/index.html.1",
+		"/home/vasilis/projects/PeerBay/peerFeed/social/templates/posts-form.html",
+		"/home/vasilis/projects/PeerBay/peerFeed/social/app.js",
+		"/home/vasilis/projects/PeerBay/peerFeed/social/bootstrap-select.js",
+		"/home/vasilis/projects/PeerBay/peerFeed/social/angular-bootstrap-select.js",
+		"/home/vasilis/projects/PeerBay/peerFeed/social/templates/friends-list.html"
+	],
+	"find":
+	{
+		"height": 25.0
+	},
+	"find_in_files":
+	{
+		"height": 93.0,
+		"where_history":
+		[
+			"/home/vasilis/projects/PeerBay/peerNode/testing/crossbarexamples/authenticate/wampcradynamic/nodejs",
+			"/home/vasilis/projects/PeerBay/peerFeed/backbone"
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": false,
+		"find_history":
+		[
+			"request",
+			"order",
+			"webkit",
+			"rtcpeer",
+			"local",
+			"docids",
+			"console",
+			"?",
+			"search",
+			"nonce",
+			"createTor",
+			"show",
+			"octicon",
+			"md-autocomplete-wrap",
+			"warn",
+			"MdAutocomplete",
+			"autocomple",
+			"textarea",
+			"virtualrepeat",
+			"virtual",
+			"autocomplete",
+			"$rootscope.put",
+			"right",
+			"answer",
+			"=\"\"",
+			"images/people",
+			"images/woman-5",
+			"images/lock-1",
+			"images",
+			"lock",
+			"images",
+			"profile",
+			"signin",
+			"paper",
+			"utils",
+			"utils.",
+			"utils = ",
+			"utils.call",
+			"Channe",
+			"onmessa",
+			"channel",
+			"rtcKey",
+			"send",
+			"reqID",
+			"sendRequest",
+			"twi",
+			"I am",
+			"I",
+			"true",
+			"I",
+			"leachchannel",
+			"self.exit.rtcKey",
+			"master",
+			"testroute",
+			"testro",
+			"console",
+			"self.exit.",
+			"exit",
+			"tube",
+			"_tube",
+			"onconne",
+			"PeerPouchDB._shareInitializersByName",
+			"id = fun",
+			"PouchDB.uuid()",
+			"uuid",
+			"Pouch",
+			"_shareInitializersByName",
+			"Promise.all(Object.keys(doc._attachments).map(function (k",
+			"return Promise.all(Object.keys(doc._attachments).map(function (key)",
+			"\n  Object.keys(atts).forEach(function (filename) {\n    var att = atts[filename];\n    att.data = b64StringToBluffer(att.data, att.content_type);\n  });\n}",
+			"function readAttachmentsAsBlobOrBuffer(row) {\n  var atts = row.doc && row.doc._attachments;\n  if (!atts) {\n    return;\n  }\n  Object.keys(atts).forEach(function (filename) {\n    var att = atts[filename];\n    att.data = b64StringToBluffer(att.data, att.content_type);\n  });\n}",
+			"function readAttachmentsAsBlobOrBuffer(row) {\n  var atts = row.doc && row.doc._attachments;\n  if (!atts) {\n    return;\n  }\n  Object.keys(atts).forEach(function (filename) {\n    var att = atts[filename];\n    att.data = b64StringToBluffer(att.data, att.content_type);\n  });\n}\n",
+			"      method: 'POST',\n      url: genDBUrl(host, '_revs_diff'),",
+			"method: 'DE",
+			"httppouch",
+			"changes",
+			"req",
+			"rtcke",
+			"candida",
+			"call",
+			"rtckey",
+			"&list=FL6N6BHHM1xkH_8PD27kKpHQ",
+			"rtcchanne",
+			"={};\n",
+			"F",
+			"f",
+			"user",
+			"url",
+			"peerFeed.se",
+			"substr",
+			"sign",
+			"validate",
+			"deferred",
+			"editpro",
+			"persons",
+			"profile",
+			"subscribeMentions",
+			"ctrl+alt+shift",
+			"ctrl+alt+shift+f",
+			"get",
+			"Search",
+			"timeline",
+			"sign",
+			"logout",
+			"persons",
+			"requ",
+			"$rootScope.peernode",
+			"peerFeed.peernode",
+			"publ",
+			"nodeusers",
+			"numit",
+			"trustSrc",
+			"url",
+			"signup",
+			"peernode",
+			"db(\"invitations\")",
+			"proxy",
+			"cipher",
+			"save",
+			"_saveA",
+			"get",
+			"getValue",
+			"oiUtils.getValue",
+			"displayFn",
+			"displayFn ",
+			"interpolate",
+			"getLabel",
+			"displayFn"
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": false,
+		"replace_history":
+		[
+			"_reqID",
+			"_sendRequest",
+			"PouchDB.utils.uuid()",
+			"PouchDB",
+			"",
+			"profiles",
+			"",
+			"findClosest",
+			"update",
+			"newRoutingTable",
+			"prefixLen",
+			"less",
+			"equals",
+			"span",
+			"user",
+			"connected",
+			"SignInController"
+		],
+		"reverse": false,
+		"show_context": true,
+		"use_buffer2": true,
+		"whole_word": false,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"selected": 2,
+			"sheets":
+			[
+				{
+					"buffer": 0,
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 384,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"SideBarGitBackground": false,
+							"SideBarGitCommand":
+							[
+								"git",
+								"diff",
+								"HEAD",
+								"--no-color",
+								"--",
+								"."
+							],
+							"SideBarGitIsASideBarGitTab": true,
+							"SideBarGitItem": "/home/vasilis/projects/Mistio/cloudifyplugin",
+							"SideBarGitModal": false,
+							"SideBarGitNoResults": "No differences to show",
+							"SideBarGitSyntaxFile": "Packages/Diff/Diff.tmLanguage",
+							"SideBarGitTitle": "Diff: cloudifyplugin.diff",
+							"SideBarGitToStatusBar": false,
+							"default_dir": "/home/vasilis/projects/Mistio",
+							"encoding": "UTF-8",
+							"fallback_encoding": "UTF-8",
+							"syntax": "Packages/Diff/Diff.tmLanguage",
+							"word_wrap": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 2,
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 390,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"SideBarGitBackground": false,
+							"SideBarGitCommand":
+							[
+								"git",
+								"diff",
+								"HEAD",
+								"--no-color",
+								"--",
+								"."
+							],
+							"SideBarGitIsASideBarGitTab": true,
+							"SideBarGitItem": "/home/vasilis/projects/Mistio/cloudifyplugin/cloudify_test_plugin",
+							"SideBarGitModal": false,
+							"SideBarGitNoResults": "No differences to show",
+							"SideBarGitSyntaxFile": "Packages/Diff/Diff.tmLanguage",
+							"SideBarGitTitle": "Diff: cloudify_test_plugin.diff",
+							"SideBarGitToStatusBar": false,
+							"default_dir": "/home/vasilis/projects/Mistio/cloudifyplugin",
+							"encoding": "UTF-8",
+							"fallback_encoding": "UTF-8",
+							"syntax": "Packages/Diff/Diff.tmLanguage",
+							"word_wrap": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
+					"type": "text"
+				},
+				{
+					"buffer": 2,
+					"file": "/home/vasilis/projects/Mistio/cloudifyplugin/cloudify_test_plugin/tests/test_cloudify_test_plugin.py",
+					"semi_transient": true,
+					"settings":
+					{
+						"buffer_size": 1524,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1099,
+								1099
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Python/Python.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": -0.0,
+						"translation.y": 51.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"type": "text"
+				}
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 25.0
+	},
+	"input":
+	{
+		"height": 33.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"output.exec":
+	{
+		"height": 27.0
+	},
+	"output.find_results":
+	{
+		"height": 0.0
+	},
+	"output.unsaved_changes":
+	{
+		"height": 27.0
+	},
+	"pinned_build_system": "",
+	"project": "mistio.sublime-project",
+	"replace":
+	{
+		"height": 46.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+			[
+				"",
+				"web/material-start/app/modules/mdautocomplete.textarea.js"
+			]
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 500.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 380.0
+	},
+	"select_symbol":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"selected_group": 0,
+	"settings":
+	{
+	},
+	"show_minimap": true,
+	"show_open_files": false,
+	"show_tabs": true,
+	"side_bar_visible": true,
+	"side_bar_width": 335.0,
+	"status_bar_visible": true,
+	"template_settings":
+	{
+	}
+}

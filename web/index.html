@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-    <title>Angular Material - Starter App</title>
+    <title>PeerFeed</title>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="description" content="">
@@ -153,7 +153,6 @@
                     <md-list>
                         <md-subheader flex class="md-no-sticky">Opened Pages</md-subheader>
                         <md-list-item ng-repeat="page in data.openPages" ng-click="">
-                           
                             <p>{{ data.profiles[page.feedID].name }}</p>
                             <ng-md-icon icon="delete" md-menu-align-target></ng-md-icon>
                         </md-list-item>
@@ -386,6 +385,25 @@
                 </md-content>
             </md-sidenav>
         </md-content>
+        <md-content layout="column" ng-if="data.selectedIndex==2" ng-init="getNewsFeed()" layout-padding layout-align="start center">
+            <md-input-container>
+                <label>Enter Rss Feed</label>
+                <input name="rssfeed" ng-model="data.newsForm.rsslink" type="url">
+            </md-input-container>
+            <md-button ng-click="addRssFeed()">Add</md-button>
+            <md-card-content >
+                <md-card flex="25" layout="column" ng-repeat="article in data.news | orderBy:'date'">
+                    <img ng-init="getFile(article.image)" ng-src="{{data.files[article.image]}}" class="md-card-image" alt="image caption">
+                    <md-card-content ng-click="getArticle(article.link)">
+                        <h2>{{article.title}}</h2>
+                        <div>{{article.summary}}</div>
+                    </md-card-content>
+                    <md-card-footer>
+                        {{article.link}}
+                    </md-card-footer>
+                </md-card>
+            </md-card-content>
+        </md-content>
     </section>
     <script src="./bower_components/angular/angular.js"></script>
     <script src="./bower_components/angular-animate/angular-animate.js"></script>
@@ -404,7 +422,7 @@
     <script src="modules/onion.rtc.js"></script>
     <script src="modules/peerbay.js"></script>
     <script src="modules/peerFeed.js"></script>
-    <script src="modules/webtorrent.min.js"></script>
+
     <script type="text/javascript">
     (function() {
         'use strict';
@@ -429,42 +447,108 @@
                     .accentPalette('indigo');
 
 
-            }).controller('AppCtrl', function($scope, $mdToast, $q) {
+            }).controller('AppCtrl', function($scope, $mdToast, $mdDialog, $q) {
                 $scope.getFile = function(infohash) {
-                    if($scope.data.onprogressfiles.indexOf(infohash)==-1){
-                        console.log("getting file:",infohash)
+
+                    if ($scope.data.onprogressfiles.indexOf(infohash) == -1 && !$scope.data.files[infohash] && infohash) {
+                        console.log("getting file:", infohash)
                         $scope.data.onprogressfiles.push(infohash)
-                        var deferred = $q.defer();  
-
-                        $scope.feed.fileClient.add("magnet:?xt=urn:btih:"+infohash,function(torrent) {
-                            console.log("added torrent",torrent)
-                            if (torrent.files.length == 1) {
-                                torrent.files[0].getBlobURL(function(err, url) {
-                                    if (err) throw err
-                                    $scope.data.files[infohash]=url
-                                    deferred.resolve(url)
-                                })
-
-                            } else {
-                                var urls=[]
-                                torrent.files.forEach(function(file) {
-                                    // Get a url for each file
-                                    file.getBlobURL(function(err, url) {
-                                        if (err) throw err
-
-
-                                        urls.push(url)
-                                        if(urls.length==torrent.files.length){
-                                            $scope.data.files[infohash]=urls
-                                            deferred.resolve(urls)
-                                        }
-                                    })
-                                })
-                            }
+                        var deferred = $q.defer();
+                        $scope.feed.getFile(infohash).then(function(file) {
+                            console.log("file loaded")
+                            $scope.data.files[infohash] = file
+                            $scope.$apply()
                         })
                         return deferred.promise
-                        
+
                     }
+                }
+                $scope.getNewsFeed=function(){
+                    $scope.data.settings.news.data.forEach(function(rss){
+
+                        $scope.feed.getRssFeeds([rss]).then(function(articles) {
+                            console.log(articles)
+                            articles.forEach(function(article){
+                                if($scope.data.newsLinks.indexOf(article.link)==-1){
+                                    $scope.data.news.push(article)
+                                    $scope.data.newsLinks.push(article.link)
+                                }
+                                                                                            
+                            })
+                            $scope.$apply()
+
+                        })
+                        
+                    })
+                }
+                $scope.addRssFeed = function() {
+                    $scope.feed.addSettingValue("news", $scope.data.newsForm.rsslink).then(function(da) {
+                        console.log(da)
+
+                    })
+                    var link = $scope.data.newsForm.rsslink
+                    $scope.feed.getRssFeeds([link]).then(function(articles) {
+                        articles.forEach(function(article){
+                            if($scope.data.newsLinks.indexOf(article.link)==-1){
+                                $scope.data.news.push(article)
+                                $scope.data.newsLinks.push(article.link)
+                            }
+                                                                                        
+                        })
+
+                    })
+                    $scope.data.newsForm.rsslink=""
+                }
+                $scope.getArticle = function(link) {
+
+
+                    $mdDialog.show({
+                        clickOutsideToClose: true,
+                        scope: $scope, // use parent scope in template
+                        preserveScope: true, // do not forget this if use parent scope
+                        // Since GreetingController is instantiated with ControllerAs syntax
+                        // AND we are passing the parent '$scope' to the dialog, we MUST
+                        // use 'vm.<xxx>' in the template markup
+                        template: '<md-dialog>' +
+                            '  <md-dialog-content>' +
+                            '<md-card flex="75" >' +
+                            '<img  ng-src="{{data.files[data.newsPost.image]}}" class="md-card-image" alt="image caption">' +
+                            '<md-card-content >' +
+                            '<h2>{{data.newsPost.title}}</h2>' +
+                            '<p>{{data.newsPost.text}}</p>' +
+                            '</md-card-content>' +
+                            '<md-card-footer>' +
+                            '{{data.newsPost.canonicalLink}}' +
+                            '</md-card-footer>' +
+                            ' </md-card>' +
+                            '  </md-dialog-content>' +
+                            '</md-dialog>',
+
+                        controller: function DialogController($scope, $mdDialog) {
+                            if (!$scope.data.newsPosts[link]) {
+                                $scope.feed.getArticle(link).then(function(article) {
+                                    console.log(article)
+                                    $scope.data.newsPosts[link]=article
+                                    $scope.data.newsPost=article
+                                    $scope.feed.getFile(article.image).then(function(img) {
+                                        $scope.data.newsPosts[link].image = img
+                                        $scope.$apply()
+                                    })
+                                    $scope.$apply()
+                                    $scope.closeDialog = function() {
+                                        $mdDialog.hide();
+                                    }
+
+                                });
+                            }else{
+                                $scope.data.newsPost=$scope.data.newsPosts[link]
+                            }
+                        }
+                    })
+
+
+
+
                 }
                 $scope.data = {
                     selectedIndex: 0,
@@ -484,8 +568,12 @@
                     subpage: "mywall",
                     mywallunread: 0,
                     search: {},
-                    onprogressfiles:[],
-                    files:{}
+                    onprogressfiles: [],
+                    files: {},
+                    newsForm: {},
+                    news: [],
+                    newsPosts:{},
+                    newsLinks:[]
                 };
                 $scope.toastPosition = {
                     bottom: true,
@@ -581,7 +669,7 @@
                                 })
 
                             }
-                        })
+                        }, 500)
                     })
                 }
                 $scope.getProfile = function(feedID) {
@@ -690,13 +778,13 @@
                     $scope.feed.getFeedDocIds(feedID).then(
                         function(ans) {
                             self.index = self.index.concat(ans)
-                            console.log(self.index)
-                            console.log(ans)
+                                // console.log(self.index)
+                                // console.log(ans)
                             self.index.sort(function(a, b) {
                                 return parseFloat(b.date) - parseFloat(a.date);
                             });
-                            console.log(self.index)
-                                // self.getItemAtIndex(0)
+                            // console.log(self.index)
+                            // self.getItemAtIndex(0)
                         })
                     $scope.feed.follow(feedID, function(data) {
                         $scope.data.mywallunread++
@@ -705,7 +793,7 @@
                         self.index.sort(function(a, b) {
                             return parseFloat(b.date) - parseFloat(a.date);
                         });
-                        console.log(self.index)
+                        // console.log(self.index)
                     })
                 }
                 DynamicWall.prototype.getItemAtIndex = function(index) {

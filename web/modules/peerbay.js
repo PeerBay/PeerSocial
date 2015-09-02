@@ -44,6 +44,7 @@ Feed.prototype = {
             var idx = 0
             for (i in lfFiles) {
                 lfFiles[i].lfFile.hash = nacl.util.encodeBase64(nacl.hash(nacl.util.decodeUTF8(lfFiles[i].lfDataUrl)))
+                lfFiles[i].lfFile.hash = lfFiles[i].lfFile.hash.split("/").join("")
                 self.storeFile(lfFiles[i].lfFile).then(function(infohash) {
                     console.log(i)
                     type = typeof files[lfFiles[i].lfProperty]
@@ -72,14 +73,15 @@ Feed.prototype = {
 
             var chunkSize = 15384;
             self.onion.call("getFileSize", [infohash]).then(function(size) {
-                if (!size) resolve(null)
+
                 console.log(size)
+                // if (!size) resolve(size)
                 var file = ""
                 var appendFile = function(offset) {
                     // if (size < offset){offset=size}
 
                     if (offset >= size) {
-                        resolve("data:image/png;base64,"+btoa(file))
+                        resolve("data:image/png;base64," + btoa(file))
                         return;
                     }
 
@@ -87,12 +89,14 @@ Feed.prototype = {
                     console.log(offset, chunkSize, size)
                     self.onion.call("getFile", [infohash, offset, chunkSize]).then(function(chunk) {
                         file += chunk
-                        console.log("file size ",file.length,size)
-                        if (file.length==size) {
-                            resolve("data:image/png;base64,"+btoa(file))
-                            return;
+                        console.log("file size ", file.length, size)
+                        if (file.length == size) {
+                            resolve("data:image/png;base64," + btoa(file))
+                           // console.log(file)
+                            // return;
+                        } else {
+                            appendFile(offset + chunkSize)
                         }
-                        appendFile(offset + chunkSize)
                     })
                 }
                 appendFile(0)
@@ -102,6 +106,14 @@ Feed.prototype = {
 
         })
 
+    },
+    getArticle: function(link) {
+        var self = this;
+        return new Promise(function(resolve, reject) {
+            self.onion.call("getArticle", [link]).then(function(ans) {
+                resolve(ans)
+            })
+        })
     },
     storeFile: function(file) {
         var self = this;
@@ -166,6 +178,18 @@ Feed.prototype = {
             // })
         }
     },
+    getRssFeeds: function(rssLinks) {
+        console.log(rssLinks)
+
+        var self = this;
+        return new Promise(function(resolve, reject) {
+            self.onion.call("getRssFeeds", rssLinks).then(function(articles) {
+                resolve(articles)
+            })
+
+        })
+    },
+
     sendRequest: function() {},
     createPublicGroup: function(groupData) {
         // group encryption is public key signing
@@ -376,6 +400,7 @@ Feed.prototype = {
                 var sets = {
                     data: [value]
                 }
+                console.log("new setting property", setting)
                 self.publicPost(self.encryptDoc(sets), self.boxSignKeys).then(function(ans) {
                     self.settings.data[setting] = ans.id
                     self.mySettings[setting] = sets
@@ -391,13 +416,17 @@ Feed.prototype = {
                     })
                 })
             } else {
-                self.mySettings[setting].data.push(value)
+                console.log("add ", value, " to ", setting)
+                if (self.mySettings[setting].data.indexOf(value) == -1) {
+                    self.mySettings[setting].data.push(value)
 
 
-                self.onion.call("putwithid", [self.signDoc(self.encryptDoc(self.mySettings[setting]), self.boxSignKeys)]).then(function(ans) {
-                    self.mySettings[setting]._rev = ans.rev
-                    resolve(self.mySettings[setting])
-                })
+                    self.onion.call("putwithid", [self.signDoc(self.encryptDoc(self.mySettings[setting]), self.boxSignKeys)]).then(function(ans) {
+                        console.log(ans)
+                        self.mySettings[setting]._rev = ans.rev
+                        resolve(self.mySettings[setting])
+                    })
+                }
             }
         })
     },

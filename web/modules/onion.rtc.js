@@ -7,6 +7,9 @@ var Onion = function() {
     self = this
     new Exit().then(
         function(exit) {
+            exit.onclose=function(){
+                
+            }
             exit.onleacher = function(channel) {
                 if (Object.keys(self.leachers).length >= 6) {
                     exit.wssession.call("disallowLeachers", [exit.rtcKey])
@@ -21,6 +24,7 @@ var Onion = function() {
                         exit.wssession.call("allowLeachers", [exit.rtcKey])
                     }
                 }
+
                 self.leachers[channel.peerID].register("map", function(data) {
                     return Object.keys(self.seeds)
                 })
