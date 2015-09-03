@@ -96,7 +96,10 @@ var download = function(uri, filename, cb) {
 function getRssFeeds(rssLinks) {
     console.log("getRss", rssLinks)
     var deferred = Q.defer();
-    var feedparser = new FeedParser();
+    var feedparser = new FeedParser({
+        "normalize": true,
+        "addmeta": false
+    });
     var articles = []
     for (i in rssLinks) {
         console.log("getting ", rssLinks[i])
@@ -122,9 +125,17 @@ function getRssFeeds(rssLinks) {
             ,
             item;
         // console.log(stream.response.caseless.dict.etag)
+        var imgregex = /<img[^>]+src="(http:\/\/[^">]+)"/g;
         while (item = stream.read()) {
-            // console.log(item)
+
             image = ""
+
+            if (img = imgregex.exec(item.summary)) {
+                item.image = img[1]
+            } else if(img = imgregex.exec(item.description)) {
+                item.image = img[1]
+            }
+
             if (typeof item.image == "string") {
                 image = nacl.util.encodeBase64(nacl.hash(nacl.util.decodeUTF8(item.image)))
                 image = image.split("/").join("")
@@ -142,7 +153,8 @@ function getRssFeeds(rssLinks) {
                 "summary": item.summary,
                 "title": item.title,
                 "image": image,
-                "date": item.date
+                "date": item.date,
+                "description":item.description
 
             })
         }
@@ -236,9 +248,13 @@ function getArticle(link) {
         if (!error && response.statusCode == 200) {
             // console.log(html);
             data = extractor(html, 'en');
+
             if (!data.text) {
                 readability(html, function(err, doc, meta) {
                     data.text = doc.content
+                    o = extractor(data.text, "en")
+                    data.otext = o.content
+                    data.oimage = o.image
                     doc.close();
                     if (typeof data.image == "string") {
                         image = nacl.util.encodeBase64(nacl.hash(nacl.util.decodeUTF8(data.image)))
@@ -284,26 +300,29 @@ function getFileSize(fileData) {
     var hash = fileData[0]
     var deferred = Q.defer();
     console.log("size ", hash)
-    var fileReadyInterval = setInterval(function() {
-        // console.log("downloading",hash)
+    console.log(fileSizeReadyInterval)
+    var fileSizeReadyInterval = setInterval(function() {
+
         if (hash in downloading) {
-            console.log(downloading)
+
         } else {
-            clearInterval(fileReadyInterval)
+            clearInterval(fileSizeReadyInterval)
+            delete fileSizeReadyInterval
             if (hash in files) {
+                if (hash in openFileSizes) deferred.resolve(openFileSizes[hash])
                 console.log(hash)
-                if (openFileSizes[hash]) return openFileSizes[hash]
                 fs.stat("files/" + hash, function(err, stats) {
-                    if (err) deferred.resolve(err)
-                    openFileSizes[hash] = stats.size
-                    deferred.resolve(stats.size)
+                    if (err) {deferred.resolve(err)}else{
+                                        openFileSizes[hash] = stats.size
+                                        console.log("size", stats.size)
+                                        deferred.resolve(stats.size)}
                 });
             } else {
                 deferred.resolve(0)
             }
 
         }
-    }, 200)
+    }, 500)
     return deferred.promise;
 
 }
@@ -314,31 +333,36 @@ function getFile(fileData) {
 
     var deferred = Q.defer();
     var fileReadyInterval = setInterval(function() {
-        if (downloading[hash]) {
-            
+        if (hash in downloading) {
+            console.log("downloading")
         } else {
             clearInterval(fileReadyInterval)
-            if (!files[hash]) {
+            if (!(hash in files)) {
                 deferred.resolve(0)
             } else {
                 var offset = fileData[1]
                 var length = fileData[2]
                 if (offset >= openFileSizes[hash]) return ""
                 fs.open("files/" + hash, 'r', function(status, fd) {
-                    if (status) {
+                    if(!fd){deferred.resolve({
+                                                "error": "failed"
+                                            })}
+                    else if (status) {
                         console.log(status.message);
                         deferred.resolve({
                             "error": status.message
                         })
+                    }else{
+                        console.log("get file ", hash)
+                            // openFiles[hash] = fd
+                        if ((offset + length) > openFileSizes[hash]) length = openFileSizes[hash] - offset;
+                        console.log(offset, length, openFileSizes[hash])
+                        var buffer = new Buffer(length)
+                        fs.read(fd, buffer, 0, length, offset, function(err, num) {
+                            deferred.resolve(buffer.toString('binary', 0, num));
+                        })
+                        
                     }
-                    console.log("get file ", hash)
-                        // openFiles[hash] = fd
-                    if ((offset + length) > openFileSizes[hash]) length = openFileSizes[hash] - offset;
-                    console.log(offset, length, openFileSizes[hash])
-                    var buffer = new Buffer(length)
-                    fs.read(fd, buffer, 0, length, offset, function(err, num) {
-                        deferred.resolve(buffer.toString('binary', 0, num));
-                    })
                 })
             }
 
@@ -566,7 +590,7 @@ function putwithid(m) {
     if (signed) {
         var doc = JSON.parse(m[0].doc)
             // console.log(doc)
-        if (doc._id.substr(0, 45) == m[0].key) {
+        if (doc._id.substring(0, 46) == m[0].key) {
             console.log("verified")
             var deferred = Q.defer();
             if (doc.handle && doc._id == m[0].key) {
@@ -670,7 +694,7 @@ function queryHandles(query) {
         },
         function(err, body) {
 
-            // console.log(err, body)
+            console.log(JSON.stringify(body))
             if (!err) {
                 deferred.resolve(body.rows)
             } else {
@@ -724,7 +748,7 @@ function tag(tag) {
 }
 
 function validate(doc) {
-    var userKey = nacl.util.decodeUTF8(doc._id.substr(0, 44))
+    var userKey = nacl.util.decodeUTF8(doc._id.substring(0, 46))
     var sign = doc.sign;
     delete doc.sign;
     doc = JSON.stringify(doc)
@@ -830,8 +854,8 @@ connection.onopen = function(session) {
         include_docs: true
     }, function(err, change) {
         if (!err) {
-            session.publish(change.id.substr(0, 45), [change.id])
-            console.log("Got change number " + change.id);
+            session.publish(change.id.substring(0, 46), [change.id])
+            console.log("Got change number " + change.id.substring(0, 46));
             if (change.doc.tags) {
                 change.doc.tags.forEach(function(tag) {
                     session.publish("tag-" + tag, [change.id])

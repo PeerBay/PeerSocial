@@ -33,7 +33,10 @@
                         <input ng-disabled="data.signingIn" name="password" type="password" ng-model="data.password" required minlength="4">
                     </md-input-container>
                     <md-input-container>
-                        <md-button ng-disabled="data.signingIn" class="md-raised md-primary" ng-click="signIn($event)">Sign In</md-button>
+                        <md-button ng-disabled="data.signingIn" class="md-raised md-primary" ng-click="signIn($event)">Sign In
+                        </md-button>
+                        <md-button ng-if="data.newAccount" ng-click="data.signup=true;signIn($event);"> Sign Up
+                        </md-button>
                     </md-input-container>
                     <md-progress-linear ng-if="data.signingIn" md-mode="indeterminate"></md-progress-linear>
                 </md-card-content>
@@ -357,11 +360,31 @@
                                 <label>Group information</label>
                                 <textarea ng-model="data.groupForm.info" columns="1" md-maxlength="120"></textarea>
                             </md-input-container>
-                            <md-content class="md-padding autocomplete" layout="column" ng-init="data.groupForm.admins=[]">
-                                <md-contact-chips ng-model="data.groupForm.admins" md-contacts="queryHandles($query)" md-contact-name="name" md-highlight-flags="i" placeholder="To">
-                                </md-contact-chips>
+                            <md-content class="md-padding autocomplete" layout="column" >
+                                <md-chips md-autocomplete-snap md-require-match="true" ng-init="data.groupForm.admins=[]" ng-model="data.groupForm.admins" >
+                                <md-autocomplete md-items="item in queryHandles(data.groupForm.searchAdminText)" md-item-text="item.name" placeholder="Select admin" md-search-text="data.groupForm.searchAdminText">
+                                     <span md-highlight-text="data.groupForm.searchAdminText">{{item.name}} :: {{item.handle}}</span>
+                                </md-autocomplete>
+                                    <md-chip-template>
+                                        <span>
+                                          <strong>{{$chip.name}}</strong>
+                                          <em>(@{{$chip.handle}})</em>
+                                        </span>
+                                    </md-chip-template>
+                                </md-chips>
+                                   <md-chips md-autocomplete-snap md-require-match="true" ng-init="data.groupForm.users=[]" ng-model="data.groupForm.users" >
+                                <md-autocomplete md-items="item in queryHandles(data.groupForm.searchUserText)" md-item-text="item.name" placeholder="Add users" md-search-text="data.groupForm.searchUserText">
+                                     <span md-highlight-text="data.groupForm.searchUserText">{{item.name}} :: {{item.handle}}</span>
+                                </md-autocomplete>
+                                    <md-chip-template>
+                                        <span>
+                                          <strong>{{$chip.name}}</strong>
+                                          <em>(@{{$chip.handle}})</em>
+                                        </span>
+                                    </md-chip-template>
+                                </md-chips>
                             </md-content>
-                            <lf-ng-md-file-input lf-files="data.groupForm.files" lf-property="profileImage" lf-placeholder="Pick Group Picture" preview></lf-ng-md-file-input>
+                            <lf-ng-md-file-input lf-files="data.groupForm.files" lf-property="groupImage" lf-placeholder="Pick Group Picture" preview></lf-ng-md-file-input>
                             <md-input-container>
                                 <md-button class="md-raised md-primary" type="submit">Save</md-button>
                             </md-input-container>
@@ -385,27 +408,28 @@
                 </md-content>
             </md-sidenav>
         </md-content>
-        <md-content layout="column" ng-if="data.selectedIndex==2" ng-init="getNewsFeed()" layout-padding layout-align="start center">
+        <md-content ng-if="data.selectedIndex==2" ng-init="getNewsFeed()" layout-align="start center">
             <md-input-container>
                 <label>Enter Rss Feed</label>
                 <input name="rssfeed" ng-model="data.newsForm.rsslink" type="url">
             </md-input-container>
             <md-button ng-click="addRssFeed()">Add</md-button>
-            <md-card-content >
-                <md-card flex="25" layout="column" ng-repeat="article in data.news | orderBy:'date'">
-                    <img ng-init="getFile(article.image)" ng-src="{{data.files[article.image]}}" class="md-card-image" alt="image caption">
+            <div layout="row" flex offset="20" layout-wrap>
+                <md-card flex="25" ng-repeat="article in data.news | orderBy:-'date'">
+                    <img height=150 ng-if="article.image" ng-init="getFile(article.image)" ng-src="{{data.files[article.image]}}" class="md-card-image" alt="image caption">
                     <md-card-content ng-click="getArticle(article.link)">
-                        <h2>{{article.title}}</h2>
-                        <div>{{article.summary}}</div>
+                        <h4>{{article.title}}</h4>
+                        <article>{{article.summary.substring(0,200)}}</article>
                     </md-card-content>
                     <md-card-footer>
                         {{article.link}}
                     </md-card-footer>
                 </md-card>
-            </md-card-content>
+            </div>
         </md-content>
     </section>
     <script src="./bower_components/angular/angular.js"></script>
+    <script src="./bower_components/angular-sanitize/angular-sanitize.js"></script>
     <script src="./bower_components/angular-animate/angular-animate.js"></script>
     <script src="./bower_components/angular-aria/angular-aria.js"></script>
     <script src="./bower_components/angular-material/angular-material.js"></script>
@@ -422,12 +446,11 @@
     <script src="modules/onion.rtc.js"></script>
     <script src="modules/peerbay.js"></script>
     <script src="modules/peerFeed.js"></script>
-
     <script type="text/javascript">
     (function() {
         'use strict';
 
-        angular.module('MyApp', ['ngMaterial', 'ngMdIcons', 'lfNgMdFileInput'])
+        angular.module('MyApp', ['ngMaterial', 'ngMdIcons', 'lfNgMdFileInput', 'ngSanitize'])
             .config(function($mdThemingProvider, $mdIconProvider) {
 
                 $mdIconProvider
@@ -448,6 +471,133 @@
 
 
             }).controller('AppCtrl', function($scope, $mdToast, $mdDialog, $q) {
+                var DynamicWall = function(feedIDs) {
+                    console.log("DynamicWall", feedIDs)
+                    this.index = []
+                    this.PAGE_SIZE = 50;
+                    var self = this
+
+                    feedIDs.forEach(function(feedID) {
+                        self.addFeedID(feedID)
+                    })
+                    this.loadedPosts = {}
+                    this.loading = {}
+                    this.lastReq = {}
+
+                    return this
+
+
+                }
+
+                DynamicWall.prototype.addFeedID = function(feedID) {
+                    var self = this;
+                    if (feedID.startsWith("group-")) {
+                        console.log("group wall")
+                    }
+                    $scope.getProfile(feedID)
+                    $scope.feed.getFeedDocIds(feedID).then(
+                        function(ans) {
+                            self.index = self.index.concat(ans)
+                                // console.log(self.index)
+                                // console.log(ans)
+                            self.index.sort(function(a, b) {
+                                return parseFloat(b.date) - parseFloat(a.date);
+                            });
+                            // console.log(self.index)
+                            // self.getItemAtIndex(0)
+                        })
+                    $scope.feed.follow(feedID, function(data) {
+                        $scope.data.mywallunread++
+                            $scope.$apply()
+                        self.index = self.index.concat(data)
+                        self.index.sort(function(a, b) {
+                            return parseFloat(b.date) - parseFloat(a.date);
+                        });
+                        // console.log(self.index)
+                    })
+                }
+                DynamicWall.prototype.getItemAtIndex = function(index) {
+                    // console.log("getItemAtIndex ", index)
+                    var self = this
+                    var remaining = 0;
+                    var lastdate;
+                    if (this.index[index]) {
+
+
+                        var feedID = this.index[index].feedID
+                        var page = this.loadedPosts[index];
+                        // console.log(feedID)
+                        var docid = this.index[index].feedID + this.index[index].feedID
+                        this.index.slice(index).filter(function(b) {
+                                if (b.feedID == feedID) {
+                                    remaining++
+                                    lastdate = b.date
+                                }
+                            })
+                            // console.log(remaining, lastdate)
+                        if (remaining <= 3 && lastdate != "" && this.lastReq[feedID] != lastdate) {
+                            this.lastReq[feedID] = lastdate
+                            $scope.feed.getFeedDocIds(feedID, lastdate).then(
+                                function(ans) {
+
+                                    self.index = self.index.concat(ans)
+                                    self.index.sort(function(a, b) {
+                                        return parseFloat(b.date) - parseFloat(a.date);
+                                    });
+                                })
+                        }
+                        if (this.loadedPosts[feedID + this.index[index].date]) {
+                            // console.log(this.loadedPosts[feedID + this.index[index].date])
+                            return this.loadedPosts[feedID + this.index[index].date];
+                        } else if (!this.loading[feedID + this.index[index].date]) {
+                            this.loading[feedID + this.index[index].date] = true
+                            var docids = []
+                            for (var i = 0; i <= 3; i++) {
+                                if (this.index[index + i] && this.index[index + i].date) {
+                                    if (!this.loadedPosts[this.index[index + i].feedID + this.index[index].date]) {
+                                        docids.push(this.index[index + i].feedID + this.index[index + i].date)
+                                        this.loading[this.index[index + i].feedID + this.index[index + i].date] = true
+
+                                    }
+                                }
+                            }
+                            // console.log("get", docids)
+
+                            $scope.feed.get(docids).then(function(data) {
+                                data.forEach(function(doc, i, theDocs) {
+                                        doc.date = doc._id.substring(46)
+                                        doc.feedID = doc._id.substring(0, 46)
+                                        theDocs[i] = doc;
+                                        self.loadedPosts[doc._id] = doc
+                                    })
+                                    // console.log(self.loadedPosts)
+
+                            })
+
+
+                            // $scope.feed.getFeed(feedID, this.index[index].date).then(function(data) {
+                            //     console.log(data)
+                            //     self.loadedPosts = self.loadedPosts.concat(data)
+                            //     self.loadedPosts.sort(function(a, b) {
+                            //         if ((a !== null) && (b !== null)) {
+                            //             return parseFloat(a.date) - parseFloat(b.date);
+                            //         }
+                            //     });
+                            //     console.log(self.loadedPosts)
+                            // })
+                        }
+                    }
+
+
+
+                }
+                DynamicWall.prototype.getLength = function() {
+                    // console.log("getLength ", 3)
+                    return this.index.length
+                }
+
+
+
                 $scope.getFile = function(infohash) {
 
                     if ($scope.data.onprogressfiles.indexOf(infohash) == -1 && !$scope.data.files[infohash] && infohash) {
@@ -463,22 +613,25 @@
 
                     }
                 }
-                $scope.getNewsFeed=function(){
-                    $scope.data.settings.news.data.forEach(function(rss){
+                $scope.getNewsFeed = function() {
+                    $scope.data.settings.news.data.forEach(function(rss) {
 
                         $scope.feed.getRssFeeds([rss]).then(function(articles) {
                             console.log(articles)
-                            articles.forEach(function(article){
-                                if($scope.data.newsLinks.indexOf(article.link)==-1){
+                            articles.forEach(function(article) {
+                                if ($scope.data.newsLinks.indexOf(article.link) == -1) {
+                                    var parser = new DOMParser()
+                                    var readyMainDoc = parser.parseFromString(article.summary, "text/html")
+                                    article.summary = readyMainDoc.documentElement.textContent
                                     $scope.data.news.push(article)
                                     $scope.data.newsLinks.push(article.link)
                                 }
-                                                                                            
+
                             })
                             $scope.$apply()
 
                         })
-                        
+
                     })
                 }
                 $scope.addRssFeed = function() {
@@ -488,16 +641,20 @@
                     })
                     var link = $scope.data.newsForm.rsslink
                     $scope.feed.getRssFeeds([link]).then(function(articles) {
-                        articles.forEach(function(article){
-                            if($scope.data.newsLinks.indexOf(article.link)==-1){
+                        articles.forEach(function(article) {
+                            if ($scope.data.newsLinks.indexOf(article.link) == -1) {
+                                var parser = new DOMParser()
+                                var readyMainDoc = parser.parseFromString(article.summary, "text/html")
+                                article.summary = readyMainDoc.documentElement.textContent
                                 $scope.data.news.push(article)
+
                                 $scope.data.newsLinks.push(article.link)
                             }
-                                                                                        
+
                         })
 
                     })
-                    $scope.data.newsForm.rsslink=""
+                    $scope.data.newsForm.rsslink = ""
                 }
                 $scope.getArticle = function(link) {
 
@@ -511,11 +668,11 @@
                         // use 'vm.<xxx>' in the template markup
                         template: '<md-dialog>' +
                             '  <md-dialog-content>' +
-                            '<md-card flex="75" >' +
+                            '<md-card flex="50" >' +
                             '<img  ng-src="{{data.files[data.newsPost.image]}}" class="md-card-image" alt="image caption">' +
                             '<md-card-content >' +
                             '<h2>{{data.newsPost.title}}</h2>' +
-                            '<p>{{data.newsPost.text}}</p>' +
+                            '<div style="white-space: pre-line;" ng-bind-html="data.newsPost.text"></div>' +
                             '</md-card-content>' +
                             '<md-card-footer>' +
                             '{{data.newsPost.canonicalLink}}' +
@@ -528,20 +685,29 @@
                             if (!$scope.data.newsPosts[link]) {
                                 $scope.feed.getArticle(link).then(function(article) {
                                     console.log(article)
-                                    $scope.data.newsPosts[link]=article
-                                    $scope.data.newsPost=article
+                                    $scope.data.newsPosts[link] = article
+                                    $scope.data.newsPost = article
                                     $scope.feed.getFile(article.image).then(function(img) {
-                                        $scope.data.newsPosts[link].image = img
-                                        $scope.$apply()
-                                    })
+                                            $scope.data.files[article.image] = img
+                                            $scope.$apply()
+                                        })
+                                        // var parser = new DOMParser()
+                                        // var readyMainDoc = parser.parseFromString(article.text, "text/html")
+                                        // article.text = readyMainDoc.documentElement.textContent
+                                        // els=readyMainDoc.querySelectorAll("*")
+                                        // for (i in els){
+                                        //     if(!els.item(i).textContent.replace(" ","")){
+
+                                    //     }
+                                    // }
                                     $scope.$apply()
                                     $scope.closeDialog = function() {
                                         $mdDialog.hide();
                                     }
 
                                 });
-                            }else{
-                                $scope.data.newsPost=$scope.data.newsPosts[link]
+                            } else {
+                                $scope.data.newsPost = $scope.data.newsPosts[link]
                             }
                         }
                     })
@@ -572,8 +738,10 @@
                     files: {},
                     newsForm: {},
                     news: [],
-                    newsPosts:{},
-                    newsLinks:[]
+                    newsPosts: {},
+                    newsLinks: [],
+                    newAccount: false,
+                    signup: false
                 };
                 $scope.toastPosition = {
                     bottom: true,
@@ -636,8 +804,17 @@
                                         $scope.feed = feed
                                         console.log(profile)
                                         if (!profile[0]) {
+
                                             console.log("new user")
-                                            $scope.data.page = "profileform"
+                                            if ($scope.data.signup) {
+                                                $scope.data.page = "profileform"
+                                            } else {
+                                                $scope.showSimpleToast("New user? Sign Up or try another username/password.")
+                                                $scope.data.signingIn = false
+                                                $scope.data.newAccount = true
+                                                $scope.$apply()
+                                            }
+
                                         } else {
 
                                             $scope.data.profile = profile[0]
@@ -752,129 +929,6 @@
                 $scope.previous = function() {
                     $scope.data.selectedIndex = Math.max($scope.data.selectedIndex - 1, 0);
                 };
-                var DynamicWall = function(feedIDs) {
-                    console.log("DynamicWall", feedIDs)
-                    this.index = []
-                    this.PAGE_SIZE = 50;
-                    var self = this
-
-                    feedIDs.forEach(function(feedID) {
-                        self.addFeedID(feedID)
-                    })
-                    this.loadedPosts = {}
-                    this.loading = {}
-                    this.lastReq = {}
-
-                    return this
-
-
-                }
-                DynamicWall.prototype.addFeedID = function(feedID) {
-                    var self = this;
-                    if (feedID.startsWith("group-")) {
-                        console.log("group wall")
-                    }
-                    $scope.getProfile(feedID)
-                    $scope.feed.getFeedDocIds(feedID).then(
-                        function(ans) {
-                            self.index = self.index.concat(ans)
-                                // console.log(self.index)
-                                // console.log(ans)
-                            self.index.sort(function(a, b) {
-                                return parseFloat(b.date) - parseFloat(a.date);
-                            });
-                            // console.log(self.index)
-                            // self.getItemAtIndex(0)
-                        })
-                    $scope.feed.follow(feedID, function(data) {
-                        $scope.data.mywallunread++
-                            $scope.$apply()
-                        self.index = self.index.concat(data)
-                        self.index.sort(function(a, b) {
-                            return parseFloat(b.date) - parseFloat(a.date);
-                        });
-                        // console.log(self.index)
-                    })
-                }
-                DynamicWall.prototype.getItemAtIndex = function(index) {
-                    // console.log("getItemAtIndex ", index)
-                    var self = this
-                    var remaining = 0;
-                    var lastdate;
-                    if (this.index[index]) {
-
-
-                        var feedID = this.index[index].feedID
-                        var page = this.loadedPosts[index];
-                        // console.log(feedID)
-                        var docid = this.index[index].feedID + this.index[index].feedID
-                        this.index.slice(index).filter(function(b) {
-                                if (b.feedID == feedID) {
-                                    remaining++
-                                    lastdate = b.date
-                                }
-                            })
-                            // console.log(remaining, lastdate)
-                        if (remaining <= 3 && lastdate != "" && this.lastReq[feedID] != lastdate) {
-                            this.lastReq[feedID] = lastdate
-                            $scope.feed.getFeedDocIds(feedID, lastdate).then(
-                                function(ans) {
-
-                                    self.index = self.index.concat(ans)
-                                    self.index.sort(function(a, b) {
-                                        return parseFloat(b.date) - parseFloat(a.date);
-                                    });
-                                })
-                        }
-                        if (this.loadedPosts[feedID + this.index[index].date]) {
-                            // console.log(this.loadedPosts[feedID + this.index[index].date])
-                            return this.loadedPosts[feedID + this.index[index].date];
-                        } else if (!this.loading[feedID + this.index[index].date]) {
-                            this.loading[feedID + this.index[index].date] = true
-                            var docids = []
-                            for (var i = 0; i <= 3; i++) {
-                                if (this.index[index + i] && this.index[index + i].date) {
-                                    if (!this.loadedPosts[this.index[index + i].feedID + this.index[index].date]) {
-                                        docids.push(this.index[index + i].feedID + this.index[index + i].date)
-                                        this.loading[this.index[index + i].feedID + this.index[index + i].date] = true
-
-                                    }
-                                }
-                            }
-                            // console.log("get", docids)
-
-                            $scope.feed.get(docids).then(function(data) {
-                                data.forEach(function(doc, i, theDocs) {
-                                        doc.date = doc._id.substring(46)
-                                        doc.feedID = doc._id.substring(0, 46)
-                                        theDocs[i] = doc;
-                                        self.loadedPosts[doc._id] = doc
-                                    })
-                                    // console.log(self.loadedPosts)
-
-                            })
-
-
-                            // $scope.feed.getFeed(feedID, this.index[index].date).then(function(data) {
-                            //     console.log(data)
-                            //     self.loadedPosts = self.loadedPosts.concat(data)
-                            //     self.loadedPosts.sort(function(a, b) {
-                            //         if ((a !== null) && (b !== null)) {
-                            //             return parseFloat(a.date) - parseFloat(b.date);
-                            //         }
-                            //     });
-                            //     console.log(self.loadedPosts)
-                            // })
-                        }
-                    }
-
-
-
-                }
-                DynamicWall.prototype.getLength = function() {
-                    // console.log("getLength ", 3)
-                    return this.index.length
-                }
 
             });
     })();

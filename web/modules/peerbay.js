@@ -196,16 +196,33 @@ Feed.prototype = {
         // group data are signed only and public
         // group post are public key signed
         // other then that group rules applied
+        admins=groupData.admins
+
+
+
+
+
     },
     createPrivateChat: function(feedIDs) {
         // one to (one | many) chat rooms
         // private group rules applied 
+
+
+
     },
     createPrivateGroup: function(groupData) {
-        if (groupData.admins) {
-            groupData.admins.push(self.signKey)
-        } else {
-            groupData.admins = [self.signKey]
+        var groupDoc={"admins":[],"users":[]}
+        for (i in groupData.admins){
+            groupDoc.admins.push(groupData.admins[i].id)
+        }
+        if (groupDoc.admins.indexOf(self.signKey)==-1) {
+            groupDoc.admins.push(self.signKey)
+        }
+        for (j in groupData.users){
+            groupDoc.users.push(groupData.admins[i].id)
+        }
+        if (groupDoc.users.indexOf(self.signKey)==-1) {
+            groupDoc.users.push(self.signKey)
         }
         if (groupData.users) {
             groupData.users.push(self.signKey)
@@ -471,6 +488,7 @@ Feed.prototype = {
         if (query.startsWith("@")) {
             return new Promise(function(resolve, reject) {
                 self.onion.call("handles", [query.slice(1)]).then(function(results) {
+                    console.log(results)
                     results.forEach(function(doc, idx, theDocs) {
                         theDocs[idx] = doc.value[0]
                         theDocs[idx]["handle"] = doc.key
