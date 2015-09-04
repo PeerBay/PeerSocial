@@ -210,14 +210,14 @@ function storeFile(fileData) {
             buffer.name = tempFiles[infohash].name
             console.log("file uploaded")
             delete tempFiles[infohash]
-            delete buffer;
+            deferred.resolve({
+                seed: infohash
+            })
             fs.writeFile("files/" + infohash, buffer, function(err) {
                 if (err)
                     throw err;
                 files[infohash] = true
-                deferred.resolve({
-                    seed: infohash
-                })
+                delete buffer;
             });
 
             // client.seed("files/" + tempFiles[infohash].name,function(torrent) {
