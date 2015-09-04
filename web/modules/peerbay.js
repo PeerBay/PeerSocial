@@ -12,6 +12,33 @@ function Feed(boxKeys, signKeys) {
     this.settings = {}
     this.mySettings = {}
         // this.fileClient = new WebTorrent()
+    window.requestFileSystem = window.requestFileSystem || window.webkitRequestFileSystem;
+
+    function onInitFs(fs) {
+        console.log('Opened file system: ' + fs.name);
+        self.fs = fs;
+        fs.root.getDirectory('Private', {
+            create: true
+        }, function(dir) {
+            self.privDir = dir
+        })
+        fs.root.getDirectory('Public', {
+            create: true
+        }, function(dir) {
+            self.pubDir = dir
+        })
+
+    }
+
+    function errorHandler(e) {
+        console.log('Error: ' + e.name);
+    }
+    window.webkitStorageInfo.requestQuota(PERSISTENT, 2048 * 1024, function(grantedBytes) {
+        console.log(grantedBytes)
+        window.requestFileSystem(PERSISTENT, grantedBytes, onInitFs, errorHandler);
+    }, function(e) {
+        console.log('Error', e);
+    });
     return new Promise(function(resolve, reject) {
         if (onion) {
             self.onion = onion
@@ -39,6 +66,7 @@ function Feed(boxKeys, signKeys) {
 Feed.prototype = {
     storeFiles: function(lfFiles) {
         var self = this;
+
         return new Promise(function(resolve, reject) {
             var files = {}
             var idx = 0
@@ -70,41 +98,91 @@ Feed.prototype = {
 
         return new Promise(function(resolve, reject) {
 
+            self.privDir.getFile(infohash, {
+                create: false
+            }, function(fileEntry) {
+                // Create a FileWriter object for our FileEntry (log.txt).
+                // fileEntry.file(function(file) {
+                //     var reader = new FileReader();
 
-            var chunkSize = 15384;
-            self.onion.call("getFileSize", [infohash]).then(function(size) {
+                //     reader.onloadend = function(e) {
+                //         resolve("data:image/png;base64," + btoa(reader.result))
+                //     };
 
-                console.log(size)
-                // if (!size) resolve(size)
-                var file = ""
-                var appendFile = function(offset) {
-                    // if (size < offset){offset=size}
+                //     reader.readAsBinaryString(file);
+                // }, function(e) {
+                //     console.log(e.name)
+                // });
+                resolve(fileEntry.toURL())
+            }, function(e) {
+                console.log(e.name)
+                var chunkSize = 15384;
 
-                    if (offset >= size) {
-                        resolve("data:image/png;base64," + btoa(file))
-                        return;
-                    }
+                self.onion.call("getFileSize", [infohash]).then(function(size) {
 
-                    if ((offset + chunkSize) > size) chunkSize = size - offset
-                    console.log(offset, chunkSize, size)
-                    self.onion.call("getFile", [infohash, offset, chunkSize]).then(function(chunk) {
-                        if(typeof chunk =="object"){
-                            resolve("")
-                        }
-                        file += chunk
-                        console.log("file size ", file.length, size)
-                        if (file.length == size) {
+                    console.log(size)
+                        // if (!size) resolve(size)
+                    var file = ""
+                    var appendFile = function(offset) {
+                        // if (size < offset){offset=size}
+
+                        if (offset >= size) {
                             resolve("data:image/png;base64," + btoa(file))
-                           // console.log(file)
-                            // return;
-                        } else {
-                            appendFile(offset + chunkSize)
+                            return;
                         }
-                    })
-                }
-                appendFile(0)
 
-            })
+                        if ((offset + chunkSize) > size) chunkSize = size - offset
+                        console.log(offset, chunkSize, size)
+                        self.onion.call("getFile", [infohash, offset, chunkSize]).then(function(chunk) {
+                            if (typeof chunk == "object") {
+                                resolve("")
+                            }
+                            file += chunk
+                            console.log("file size ", file.length, size)
+                            if (file.length == size) {
+                                
+                                self.privDir.getFile(infohash, {
+                                    create: true
+                                }, function(fileEntry) {
+                                    // Create a FileWriter object for our FileEntry (log.txt).
+                                    fileEntry.createWriter(function(fileWriter) {
+
+                                        fileWriter.onwriteend = function(e) {
+                                            console.log('Write completed.');
+                                            resolve(fileEntry.toURL())
+                                        };
+                                        fileWriter.onerror = function(e) {
+                                            console.log('Write failed: ' + e.toString());
+                                        };
+                                        blobUtil.binaryStringToBlob(file).then(function (blob) {
+                                          fileWriter.write(blob);
+                                        }).catch(function (err) {
+                                          console.log(err)
+                                        });
+
+                                        
+
+
+                                    }, function(e) {
+                                        console.log(e.name)
+                                    });
+                                }, function(e) {
+                                    console.log(e.name)
+                                });
+                                // console.log(file)
+                                // return;
+                            } else {
+                                appendFile(offset + chunkSize)
+                            }
+                        })
+                    }
+                    appendFile(0)
+
+                })
+
+
+
+            });
 
 
         })
@@ -122,11 +200,29 @@ Feed.prototype = {
         var self = this;
         console.log(file.size)
         return new Promise(function(resolve, reject) {
-
-
-
-
             var infohash = file.hash
+            self.privDir.getFile(infohash, {
+                create: true
+            }, function(fileEntry) {
+                // Create a FileWriter object for our FileEntry (log.txt).
+                fileEntry.createWriter(function(fileWriter) {
+
+                    fileWriter.onwriteend = function(e) {
+                        console.log('Write completed.');
+                    };
+                    fileWriter.onerror = function(e) {
+                        console.log('Write failed: ' + e.toString());
+                    };
+
+                    fileWriter.write(file);
+
+
+                }, function(e) {
+                    console.log(e.name)
+                });
+            }, function(e) {
+                console.log(e.name)
+            });
 
             var chunkSize = 15384;
             self.onion.call("storeFile", [{
@@ -199,7 +295,7 @@ Feed.prototype = {
         // group data are signed only and public
         // group post are public key signed
         // other then that group rules applied
-        admins=groupData.admins
+        admins = groupData.admins
 
 
 
@@ -214,48 +310,88 @@ Feed.prototype = {
 
     },
     createPrivateGroup: function(groupData) {
-        var groupDoc={"admins":[],"users":[]}
-        for (i in groupData.admins){
-            groupDoc.admins.push(groupData.admins[i].id)
-        }
-        if (groupDoc.admins.indexOf(self.signKey)==-1) {
-            groupDoc.admins.push(self.signKey)
-        }
-        for (j in groupData.users){
-            groupDoc.users.push(groupData.admins[i].id)
-        }
-        if (groupDoc.users.indexOf(self.signKey)==-1) {
-            groupDoc.users.push(self.signKey)
-        }
-        
-        groupKeys = nacl.sign.keyPair()
-        groupKey = peerFeed.crypto.getpeerFeedID(groupKeys.publicKey)
-        
-        groupSecret = groupKeys.secretKey.subarray(0, 32)
-        groupData = JSON.stringify(groupData)
-        groupData = nacl.util.decodeUTF8(groupData)
-        nonce = peerFeed.crypto.getNonce()
-        groupData = nacl.secretbox(groupData, nonce, groupSecret)
-        data = {
-            _id: groupKey
-        }
-        data[nacl.util.encodeBase64(nonce)] = nacl.util.encodeBase64(groupData)
+        var self = this;
 
-        // signature = nacl.sign.detached(nacl.util.decodeUTF8(JSON.stringify(doc)), groupKeys.secretKey)
-        // signature = nacl.util.encodeBase64(signature)
-        // doc = {
-        //     "key": groupKey,
-        //     "doc": groupData,
-        //     "signature": signature
-        // }
-        self.onion.call("putwithid", [self.signDoc(data, groupKeys)]).then(function(ans) {
-            console.log(ans)
-        })
-        this.addSettingValue("groups", groupSecret).then(function(a) {
-            console.log(a)
+        return new Promise(function(resolve, reject) {
+            var groupAdminKeys = nacl.sign.keyPair()
+            var groupAdminSecret = nacl.util.encodeBase64(groupAdminKeys.secretKey)
+            var groupID = peerFeed.crypto.getpeerFeedID(groupAdminKeys.publicKey)
+            var groupUserKeys = nacl.sign.keyPair()
+            var groupSecret = nacl.util.encodeBase64(groupUserKeys.secretKey.subarray(0, 32))
+                // _id:groupID,
+            var groupDoc = {
+                name: groupData.name,
+                info: groupData.info,
+                admins: [self.signKey],
+                users: [],
+                secret: groupSecret
+            }
+            for (j in groupData.users) {
+                groupDoc.users.push(groupData.users[j].id)
+            }
+            if (groupDoc.users.indexOf(self.signKey) == -1) {
+                groupDoc.users.push(self.signKey)
+            }
+
+            if (groupData.files) {
+                self.storeFiles(groupData.files).then(function(files) {
+                    for (key in files) groupDoc[key] = files[key]
+                    var doc = {
+                        _id: groupID,
+                        share: groupDoc.users,
+                        data: groupDoc
+                    }
+                    self.onion.call("putwithid", [self.signDoc(self.encryptDoc(doc), groupAdminKeys)]).then(function(answer) {
+                        resolve(answer)
+                    })
+                    self.addSettingValue("groups", groupAdminSecret).then(function(a) {
+                        console.log(a)
+                    })
+                })
+            } else {
+                var doc = {
+                    _id: groupID,
+                    share: groupDoc.users,
+                    data: groupDoc
+                }
+                self.onion.call("putwithid", [self.signDoc(self.encryptDoc(doc), groupAdminKeys)]).then(function(answer) {
+                    resolve(answer)
+                })
+                self.addSettingValue("groups", groupAdminSecret).then(function(a) {
+                    console.log(a)
+                })
+            }
         })
     },
-
+    getGroupsInfo: function(groupKeys) {
+        var self = this;
+        console.log(groupKeys)
+        return new Promise(function(resolve, reject) {
+            var groupAdmin = {}
+            groupIDs = []
+            for (i in groupKeys) {
+                if (groupKeys[i].length == 88) {
+                    groupID = peerFeed.crypto.getpeerFeedID(nacl.util.decodeBase64(groupKeys[i]).subarray(32, 64))
+                    groupAdmin[groupID] = groupKeys[i]
+                    groupIDs.push(groupID)
+                } else {
+                    groupIDs.push(groupKeys[i])
+                }
+            }
+            self.get(groupIDs).then(function(groups) {
+                console.log(groups)
+                var datagroups = []
+                for (i in groups) {
+                    datagroup = self.decryptDoc(groups[i])
+                    if (datagroup._id in groupAdmin) {
+                        datagroup.admin = groupAdmin[datagroup._id]
+                    }
+                    datagroups.push(datagroup)
+                }
+                resolve(datagroups)
+            })
+        })
+    },
     createProfile: function(profile) {
         // create two docs
         // public profile signid (stores public signed info about user)
@@ -269,16 +405,14 @@ Feed.prototype = {
                 profile.boxKey = self.boxKey
             }
             if (profile.files) {
-
-                for (i in profile.files) {
-                    self.storeFiles(profile.files).then(function(files) {
-                        for (key in files) profile[key] = files[key]
-                        delete profile.files
-                        self.onion.call("putwithid", [self.signDoc(profile)]).then(function(answer) {
-                            resolve(answer)
-                        })
+                self.storeFiles(profile.files).then(function(files) {
+                    for (key in files) profile[key] = files[key]
+                    delete profile.files
+                    self.onion.call("putwithid", [self.signDoc(profile)]).then(function(answer) {
+                        resolve(answer)
                     })
-                }
+                })
+
             } else {
 
 
@@ -526,13 +660,13 @@ Feed.prototype = {
         header._id = doc._id
         header._rev = doc._rev
             //console.log(doc)
-        if (doc.data.share) {
+        if (doc.share) {
             // share to peerfeedids
-            if (doc.data.share.indexOf(mypeerFeedID) == -1) {
-                doc.data.share.push(mypeerFeedID)
+            if (doc.share.indexOf(mypeerFeedID) == -1) {
+                doc.share.push(mypeerFeedID)
             }
             doc = {
-                to: doc.data.share,
+                to: doc.share,
                 from: mypeerFeedID,
                 mySecretKey: nacl.util.encodeBase64(this.boxKeys.secretKey),
                 message: doc.data

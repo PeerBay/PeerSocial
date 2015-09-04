@@ -594,9 +594,10 @@ function putwithid(m) {
     var signed = nacl.sign.detached.verify(doc, signature, pKey)
     console.log("signature verification :", signed)
     if (signed) {
+        console.log(m[0])
         var doc = JSON.parse(m[0].doc)
-            // console.log(doc)
-        if (doc._id.substring(0, 46) == m[0].key) {
+        if (doc._id.indexOf(m[0].key)==0) {
+            doc.signature=m[0].signature
             console.log("verified")
             var deferred = Q.defer();
             if (doc.handle && doc._id == m[0].key) {
@@ -640,6 +641,7 @@ function putwithid(m) {
 
             return deferred.promise;
         } else {
+            console.log("key ID",doc._id,m[0].key)
             return {
                 "error": "Document id doesn't match public key"
             }
@@ -665,6 +667,7 @@ function put(m) {
         var deferred = Q.defer();
         var doc = JSON.parse(m[0].doc)
         console.log("verified")
+        doc.signature=m[0].signature
             // console.log(doc)
         doc._id = m[0].key + Date.now()
 

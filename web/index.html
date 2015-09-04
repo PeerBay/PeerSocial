@@ -8,9 +8,11 @@
     <meta name="description" content="">
     <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no" />
     <!-- <link rel='stylesheet' href='http://fonts.googleapis.com/css?family=Roboto:400,500,700,400italic'> -->
+    <link rel="shortcut icon" type="image/x-icon" href="images/pbicon.ico">
     <link rel="stylesheet" href="./bower_components/angular-material/angular-material.css" />
     <link rel="stylesheet" href="./bower_components/angular-material-icons/angular-material-icons.css" />
     <link rel="stylesheet" href="./bower_components/lf-ng-md-fileinput/dist/lf-ng-md-file-input.css">
+    <link href='https://fonts.googleapis.com/css?family=Roboto+Condensed&subset=latin,greek' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" href="./assets/app.css" />
 </head>
 
@@ -84,11 +86,10 @@
             </md-card>
         </md-content>
     </section>
-    <section layout="column" flex id="content" ng-if="data.page=='feeds'" class="tabsdemoStaticTabs">
+    <section layout="column" flex id="content" ng-if="data.page=='feeds'" >
         <md-toolbar layout="row" class="md-theme-indigo md-medium-tall " id="feedtoolbar">
             <div flex layout="column" class="md-toolbar-tools">
-                
-                <img src="images/pb.png"  style="max-height:95%" />
+                <img src="images/pbcircle.png" style="max-height:95%" />
             </div>
             <md-tabs flex layout="column" class="md-toolbar-tools md-primary" class=" " md-selected="data.selectedIndex" md-align-tabs="top" md-center-tabs>
                 <md-tab label="Feed"></md-tab>
@@ -142,22 +143,21 @@
             </div>
         </md-toolbar>
         <md-content layout="row" ng-if="data.selectedIndex==0" ng-init="data.subpage='mywall'" layout-padding layout-align="space-around start">
-            <md-sidenav layout="column" flex class="md-sidenav-left md-whiteframe-z2" md-component-id="left" md-is-locked-open="$mdMedia('gt-md')">
-                <md-toolbar class="md-theme-indigo">
-                    <h1 class="md-toolbar-tools">{{data.profile.name}}</h1>
-                    <img alt="noimage" ng-init="getFile(data.profile.profileImage)" ng-src="{{data.files[data.profile.profileImage]}}" class="md-avatar" />
+            <md-sidenav class="md-sidenav-left md-whiteframe-z2" md-component-id="left" md-is-locked-open="$mdMedia('gt-md')">
+                <md-toolbar >
+                    <div class="md-toolbar-tools">
+                        <h1 class="md-display-4">{{data.profile.name}}</h1>
+                    </div>
                 </md-toolbar>
-                <md-content layout="column" layout-padding>
-                    <md-button flex md-no-ink class="md-primary" ng-click="data.subpage='mywall'">My Page</md-button>
-                    <md-divider></md-divider>
-                    <md-list>
-                        <md-subheader flex class="md-no-sticky">Opened Pages</md-subheader>
-                        <md-list-item ng-repeat="page in data.openPages" ng-click="">
-                            <p>{{ data.profiles[page.feedID].name }}</p>
-                            <ng-md-icon icon="delete" md-menu-align-target></ng-md-icon>
-                        </md-list-item>
-                    </md-list>
-                </md-content>
+                <md-card flex=>
+                    <img ng-init="getFile(data.profile.profileImage)" ng-src="{{data.files[data.profile.profileImage]}}">
+                    <md-card-content>
+                        <h2 class="md-title">Bio</h2>
+                        <p>
+                            {{data.profile.bio}}
+                        </p>
+                    </md-card-content>
+                    <md-card>
             </md-sidenav>
             <div layout="column" layout-padding layout-align="center center" ng-if="data.subpage=='mywall'">
                 <section layout="column">
@@ -188,7 +188,7 @@
                     </md-toolbar>
                 </section>
                 <section layout="column">
-                    <md-virtual-repeat-container ng-if="data.publicWall"flex id="vertical-container" md-auto-shrink style="min-width:530px;min-height:900px;margin-left:10px">
+                    <md-virtual-repeat-container ng-if="data.publicWall" flex id="vertical-container" md-auto-shrink style="min-width:530px;min-height:900px;margin-left:10px">
                         <div layout="column" class="md-notifier" layout-align="center center">
                             <md-button flex md-no-ink class="md-primary" ng-click="data.mywallunread=0">Load more {{data.mywallunread}}</md-button>
                         </div>
@@ -275,11 +275,12 @@
                 <md-content layout="column" layout-padding>
                     <md-button flex md-no-ink class="md-primary">Your Groups</md-button>
                     <md-divider></md-divider>
-                    <md-list>
-                        <md-list-item ng-repeat="page in data.openPages" ng-click="">
-                            <img alt="{{ page.feedID }}" ng-src="{{  }}" class="md-avatar" />
-                            <p>{{ data.profiles[page.feedID].name }}</p>
-                            <ng-md-icon icon="delete" md-menu-align-target></ng-md-icon>
+                    <md-list ng-init="getGroupInfo()">
+                        <md-list-item ng-repeat="group in data.groups" ng-click="">
+                            <img alt="" ng-init="getFile(group.data.groupImage)" ng-src="{{data.files[group.data.groupImage] }}" class="md-avatar" />
+                            <p>{{ group.data.name }}</p>
+                            <sub ng-if="group.admin">Owner</sub>
+                            <ng-md-icon icon="settings_applications" md-menu-align-target></ng-md-icon>
                         </md-list-item>
                     </md-list>
                     <md-button ng-click="data.subpage='groupform'">Create group</md-button>
@@ -348,7 +349,7 @@
                 </md-toolbar>
                 <md-card flex>
                     <md-card-content>
-                        <form ng-submit="createGroup()">
+                        <form ng-submit="createPrivateGroup()">
                             <md-input-container>
                                 <label>Name</label>
                                 <input name="name" ng-model="data.groupForm.name" required minlength="4">
@@ -358,17 +359,7 @@
                                 <textarea ng-model="data.groupForm.info" columns="1" md-maxlength="120"></textarea>
                             </md-input-container>
                             <md-content class="md-padding autocomplete" layout="column">
-                                <md-chips md-autocomplete-snap md-require-match="true" ng-init="data.groupForm.admins=[]" ng-model="data.groupForm.admins">
-                                    <md-autocomplete md-items="item in queryHandles(data.groupForm.searchAdminText)" md-item-text="item.name" placeholder="Select admin" md-search-text="data.groupForm.searchAdminText">
-                                        <span md-highlight-text="data.groupForm.searchAdminText">{{item.name}} :: {{item.handle}}</span>
-                                    </md-autocomplete>
-                                    <md-chip-template>
-                                        <span>
-                                          <strong>{{$chip.name}}</strong>
-                                          <em>(@{{$chip.handle}})</em>
-                                        </span>
-                                    </md-chip-template>
-                                </md-chips>
+                                
                                 <md-chips md-autocomplete-snap md-require-match="true" ng-init="data.groupForm.users=[]" ng-model="data.groupForm.users">
                                     <md-autocomplete md-items="item in queryHandles(data.groupForm.searchUserText)" md-item-text="item.name" placeholder="Add users" md-search-text="data.groupForm.searchUserText">
                                         <span md-highlight-text="data.groupForm.searchUserText">{{item.name}} :: {{item.handle}}</span>
@@ -433,6 +424,7 @@
     <script src="./bower_components/angular-material-icons/angular-material-icons.js"></script>
     <script src="./bower_components/lf-ng-md-fileinput/dist/lf-ng-md-file-input.js"></script>
     <script src="./bower_components/autobahnjs/autobahn.js"></script>
+    <script src="./bower_components/blob-util/dist/blob-util.js"></script>
     <script src="./bower_components/tweetnacl/nacl.js"></script>
     <script src="modules/crypto/nacl-stream.js"></script>
     <script src="modules/crypto/blake2s.js"></script>
@@ -448,8 +440,8 @@
         'use strict';
 
         angular.module('MyApp', ['ngMaterial', 'ngMdIcons', 'lfNgMdFileInput', 'ngSanitize'])
-            .config(function($mdThemingProvider, $mdIconProvider) {
-
+            .config(function($mdThemingProvider, $mdIconProvider,$compileProvider) {
+                $compileProvider.imgSrcSanitizationWhitelist(/^\s*(filesystem):/);
                 $mdIconProvider
                     .defaultIconSet("./assets/svg/avatars.svg", 128)
                     .icon("menu", "./assets/svg/menu.svg", 24)
@@ -479,7 +471,7 @@
                     'contrastDefaultColor': 'light', // whether, by default, text (contrast)
                     // on this palette should be dark or light
                     'contrastDarkColors': ['50', '100', //hues which contrast should be 'dark' by default
-                        '200', '300', '400','500','600', 'A100','A200'
+                        '200', '300', '400', '500', '600', 'A100', 'A200'
                     ],
                     'contrastLightColors': '#E6E2E1' // could also specify this if default was 'dark'
                 });
@@ -614,7 +606,12 @@
                     return this.index.length
                 }
 
-
+                $scope.getGroupInfo=function(){
+                    $scope.feed.getGroupsInfo($scope.data.settings.groups.data).then(function(groups){
+                        console.log(groups)
+                        $scope.data.groups=groups
+                    })
+                }
 
                 $scope.getFile = function(infohash) {
 
@@ -769,8 +766,11 @@
                     right: true
                 };
                 // $scope.torrentClient = new WebTorrent()
-                $scope.createGroup = function() {
+                $scope.createPrivateGroup = function() {
                     console.log($scope.data.groupForm)
+                    $scope.feed.createPrivateGroup($scope.data.groupForm).then(function(answer){
+                        console.log(answer)
+                    })
                 }
                 $scope.createProfile = function() {
                     console.log($scope.data.profile)
@@ -858,6 +858,7 @@
                                             })
 
                                         }
+
                                         // feed.follow
                                     })
 
