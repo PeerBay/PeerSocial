@@ -17,11 +17,7 @@
 <body ng-controller="AppCtrl" layout="row" ng-app="MyApp">
     <section ng-if="data.page=='signin'" flex layout="column" layout-align="center center">
         <md-content layout-padding>
-            <md-toolbar>
-                <div flex class="md-toolbar-tools" layout-align="center center">
-                    <h1>Peerbay</h1>
-                </div>
-            </md-toolbar>
+            <img src="images/logo.png" width=300 />
             <md-card>
                 <md-card-content>
                     <md-input-container>
@@ -91,7 +87,8 @@
     <section layout="column" flex id="content" ng-if="data.page=='feeds'" class="tabsdemoStaticTabs">
         <md-toolbar layout="row" class="md-theme-indigo md-medium-tall " id="feedtoolbar">
             <div flex layout="column" class="md-toolbar-tools">
-                <h1>PeerBay</h1>
+                
+                <img src="images/pb.png"  style="max-height:95%" />
             </div>
             <md-tabs flex layout="column" class="md-toolbar-tools md-primary" class=" " md-selected="data.selectedIndex" md-align-tabs="top" md-center-tabs>
                 <md-tab label="Feed"></md-tab>
@@ -99,7 +96,7 @@
                 <md-tab label="News"></md-tab>
                 <md-tab label="Messages"></md-tab>
             </md-tabs>
-            <div flex layout="column" layout-align="end end" class="md-toolbar-tools">
+            <div flex layout="row" layout-align="end center" class="md-toolbar-tools">
                 <md-autocomplete md-selected-item="data.searchselectedItem" md-selected-item-change="loadFeedWall(item.id)" md-search-text="data.searchText" md-items="item in queryHandles(data.searchText)" md-item-text="item.handle" md-min-length="3" placeholder="Search a user's handle" md-menu-class="autocomplete-handles-template">
                     <md-item-template>
                         <span class="item-title">
@@ -116,7 +113,7 @@
                         </span>
                     </md-item-template>
                 </md-autocomplete>
-                <md-menu>
+                <md-menu style="margin-top:-10px">
                     <md-button aria-label="Open phone interactions menu" class="md-icon-button" ng-click="$mdOpenMenu()">
                         <ng-md-icon icon="dehaze"></ng-md-icon>
                     </md-button>
@@ -360,11 +357,11 @@
                                 <label>Group information</label>
                                 <textarea ng-model="data.groupForm.info" columns="1" md-maxlength="120"></textarea>
                             </md-input-container>
-                            <md-content class="md-padding autocomplete" layout="column" >
-                                <md-chips md-autocomplete-snap md-require-match="true" ng-init="data.groupForm.admins=[]" ng-model="data.groupForm.admins" >
-                                <md-autocomplete md-items="item in queryHandles(data.groupForm.searchAdminText)" md-item-text="item.name" placeholder="Select admin" md-search-text="data.groupForm.searchAdminText">
-                                     <span md-highlight-text="data.groupForm.searchAdminText">{{item.name}} :: {{item.handle}}</span>
-                                </md-autocomplete>
+                            <md-content class="md-padding autocomplete" layout="column">
+                                <md-chips md-autocomplete-snap md-require-match="true" ng-init="data.groupForm.admins=[]" ng-model="data.groupForm.admins">
+                                    <md-autocomplete md-items="item in queryHandles(data.groupForm.searchAdminText)" md-item-text="item.name" placeholder="Select admin" md-search-text="data.groupForm.searchAdminText">
+                                        <span md-highlight-text="data.groupForm.searchAdminText">{{item.name}} :: {{item.handle}}</span>
+                                    </md-autocomplete>
                                     <md-chip-template>
                                         <span>
                                           <strong>{{$chip.name}}</strong>
@@ -372,10 +369,10 @@
                                         </span>
                                     </md-chip-template>
                                 </md-chips>
-                                   <md-chips md-autocomplete-snap md-require-match="true" ng-init="data.groupForm.users=[]" ng-model="data.groupForm.users" >
-                                <md-autocomplete md-items="item in queryHandles(data.groupForm.searchUserText)" md-item-text="item.name" placeholder="Add users" md-search-text="data.groupForm.searchUserText">
-                                     <span md-highlight-text="data.groupForm.searchUserText">{{item.name}} :: {{item.handle}}</span>
-                                </md-autocomplete>
+                                <md-chips md-autocomplete-snap md-require-match="true" ng-init="data.groupForm.users=[]" ng-model="data.groupForm.users">
+                                    <md-autocomplete md-items="item in queryHandles(data.groupForm.searchUserText)" md-item-text="item.name" placeholder="Add users" md-search-text="data.groupForm.searchUserText">
+                                        <span md-highlight-text="data.groupForm.searchUserText">{{item.name}} :: {{item.handle}}</span>
+                                    </md-autocomplete>
                                     <md-chip-template>
                                         <span>
                                           <strong>{{$chip.name}}</strong>
@@ -464,10 +461,31 @@
                     .icon("user", "./assets/svg/user.svg", 512)
                     .icon("group", "./assets/svg/group.svg", 512)
                     .icon("phone", "./assets/svg/phone.svg", 512);
-
+                $mdThemingProvider.definePalette('peerBay', {
+                    '50': 'E6E2E1',
+                    '100': 'E4CDCA',
+                    '200': 'BF4A4F',
+                    '300': 'B52D35',
+                    '400': 'A6131B',
+                    '500': 'AF1C22',
+                    '600': 'B01D24',
+                    '700': 'A6141B',
+                    '800': 'AF1E24',
+                    '900': 'AF1E24',
+                    'A100': 'E6E2E1',
+                    'A200': 'E0A7A3',
+                    'A400': '5E2A28',
+                    'A700': '2C100C',
+                    'contrastDefaultColor': 'light', // whether, by default, text (contrast)
+                    // on this palette should be dark or light
+                    'contrastDarkColors': ['50', '100', //hues which contrast should be 'dark' by default
+                        '200', '300', '400','500','600', 'A100','A200'
+                    ],
+                    'contrastLightColors': '#E6E2E1' // could also specify this if default was 'dark'
+                });
                 $mdThemingProvider.theme('default')
-                    .primaryPalette('grey')
-                    .accentPalette('indigo');
+                    .primaryPalette('peerBay')
+                    .accentPalette('grey');
 
 
             }).controller('AppCtrl', function($scope, $mdToast, $mdDialog, $q) {
@@ -666,7 +684,7 @@
                         // Since GreetingController is instantiated with ControllerAs syntax
                         // AND we are passing the parent '$scope' to the dialog, we MUST
                         // use 'vm.<xxx>' in the template markup
-                        template: '<md-dialog>' +
+                        template: '<md-dialog style="max-width:50%">' +
                             '  <md-dialog-content>' +
                             '<md-card flex="50" >' +
                             '<img  ng-src="{{data.files[data.newsPost.image]}}" class="md-card-image" alt="image caption">' +
@@ -683,6 +701,7 @@
 
                         controller: function DialogController($scope, $mdDialog) {
                             if (!$scope.data.newsPosts[link]) {
+                                $scope.data.newsPost = {}
                                 $scope.feed.getArticle(link).then(function(article) {
                                     console.log(article)
                                     $scope.data.newsPosts[link] = article

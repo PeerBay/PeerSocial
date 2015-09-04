@@ -35,7 +35,7 @@ var Exit = function(address) {
         }
 
         self.connection = new autobahn.Connection({
-            url: 'ws://'+window.location.host+'/ws',
+            url: 'ws://'+window.location.hostname+':8080/ws',
             realm: 'realm1',
             authmethods: ["wampcra"],
             authid: user,

@@ -1,0 +1,16 @@
+{
+   "pid": 28947,
+   "options": {
+      "reactor": null,
+      "loglevel": "info",
+      "command": "start",
+      "logdir": null,
+      "debug": false,
+      "config": "/home/vasilis/projects/PeerBay/PeerSocial/PeerSocial/.crossbar/config.json",
+      "cbdir": "/home/vasilis/projects/PeerBay/PeerSocial/PeerSocial/.crossbar"
+   },
+   "argv": [
+      "/usr/local/bin/crossbar",
+      "start"
+   ]
+}

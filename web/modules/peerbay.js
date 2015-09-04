@@ -88,6 +88,9 @@ Feed.prototype = {
                     if ((offset + chunkSize) > size) chunkSize = size - offset
                     console.log(offset, chunkSize, size)
                     self.onion.call("getFile", [infohash, offset, chunkSize]).then(function(chunk) {
+                        if(typeof chunk =="object"){
+                            resolve("")
+                        }
                         file += chunk
                         console.log("file size ", file.length, size)
                         if (file.length == size) {
@@ -224,14 +227,10 @@ Feed.prototype = {
         if (groupDoc.users.indexOf(self.signKey)==-1) {
             groupDoc.users.push(self.signKey)
         }
-        if (groupData.users) {
-            groupData.users.push(self.signKey)
-        } else {
-            groupData.users = [self.signKey]
-        }
+        
         groupKeys = nacl.sign.keyPair()
         groupKey = peerFeed.crypto.getpeerFeedID(groupKeys.publicKey)
-
+        
         groupSecret = groupKeys.secretKey.subarray(0, 32)
         groupData = JSON.stringify(groupData)
         groupData = nacl.util.decodeUTF8(groupData)

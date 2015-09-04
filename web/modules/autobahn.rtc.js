@@ -1,25 +1,59 @@
 var Channel = function(channel, proxy) {
     var self = this
-    // console.log(this)
+        // console.log(this)
     this.channel = channel
-    this.eventHandler=window.document.createElement("channel")
-    this.inEventHandler=window.document.createElement("channel")
-    this.outEventHandler=window.document.createElement("channel")
-    this.subscriptions=[]
-    this.peerID=self.channel.peerID
-    // if (proxy) {
-    //     this.proxy
-    // }
-    this.channel.onclose=function(){
-        console.log("channel ",self.channel.peerID," closed")
+    this.eventHandler = window.document.createElement("channel")
+    this.inEventHandler = window.document.createElement("channel")
+    this.outEventHandler = window.document.createElement("channel")
+    this.subscriptions = []
+    this.peerID = self.channel.peerID
+    this.multipart={}
+        // if (proxy) {
+        //     this.proxy
+        // }
+    this.channel.onclose = function() {
+            console.log("channel ", self.channel.peerID, " closed")
+        }
+        // this.register("test",function(test){
+        //     // console.log("test:",test)
+        //     return {"tested":self.channel.peerID}
+        // })
+    this.channel.normalsend = this.channel.send
+    this.channel.send = function(data) {
+        if (data.length > 15000) {
+            multipartID = self._reqID()
+            for (i = 0; i <= data.length; i += 15000) {
+                self.channel.normalsend(JSON.stringify({
+                    "multipart": multipartID,
+                    "length": data.length,
+                    "data": data.substr(i, 15000)
+                }))
+
+            }
+        }else{
+            self.channel.normalsend(data)
+        }
     }
-    // this.register("test",function(test){
-    //     // console.log("test:",test)
-    //     return {"tested":self.channel.peerID}
-    // })
     this.channel.onmessage = function(e) {
         // console.log(this.peerID,e.data)
         var request = JSON.parse(e.data)
+        if (request.multipart) {
+            if (request.multipart in self.multipart) {
+                self.multipart[request.multipart].data += request.data
+                if (self.multipart[request.multipart].data.length == self.multipart[request.multipart].length) {
+                    request = JSON.parse(self.multipart[request.multipart].data)
+                    delete self.multipart[request.multipart]
+                } else {
+                    return
+                }
+            } else {
+                self.multipart[request.multipart] = {
+                    length: request.length,
+                    data: request.data
+                }
+                return
+            }
+        }
         switch (request.action) {
 
             case "publish":
@@ -36,7 +70,7 @@ var Channel = function(channel, proxy) {
                 var data = request["data"]
 
                 self.outEventHandler.addEventListener(topic, function(data) {
-                    console.log("out",{
+                    console.log("out", {
                         "action": "publish",
                         "topic": topic,
                         "data": data.detail
@@ -52,7 +86,7 @@ var Channel = function(channel, proxy) {
             case "call":
                 reqid = request.id
                 data = request.data
-                // console.log("received call for procedure ", request.procedure)
+                    // console.log("received call for procedure ", request.procedure)
 
                 function answer(data) {
                     self.channel.send(JSON.stringify(data.detail))
@@ -60,7 +94,7 @@ var Channel = function(channel, proxy) {
                     self.eventHandler.removeEventListener(data.detail.id, answer, false)
                 }
                 self.eventHandler.addEventListener(reqid, answer, false)
-                // console.log("waiting procedure call ", reqid)
+                    // console.log("waiting procedure call ", reqid)
                 var event = new CustomEvent("proc-" + request.procedure, {
                     detail: request
                 });
@@ -86,56 +120,56 @@ Channel.prototype = {
         this.channel.send(JSON.stringify({
             "action": request,
             "topic": topic,
-            "peer":myPeerID
+            "peer": myPeerID
         }))
 
     },
     publish: function(topic, data) {
         // console.log('publishing ', topic)
         // console.log("me publishing:",topic," to channel:",this.channel.peerID)
-        data.peer=myPeerID
+        data.peer = myPeerID
         var event = new CustomEvent(topic, {
             detail: data
         });
 
         this.outEventHandler.dispatchEvent(event)
     },
-    subscriptions:{},
+    subscriptions: {},
 
     subscribe: function(topic, func) {
         // console.log(this.channel.peerID," subscribed to:",this.subscriptions)
-        if(this.subscriptions.indexOf(topic)==-1){
+        if (this.subscriptions.indexOf(topic) == -1) {
             // console.log("me subscribe to:",topic," in channel:",this.channel.peerID)
             this.subscriptions.push(topic)
             this._sendRequest("subscribe", topic)
-            wrapfunc=function(data){
+            wrapfunc = function(data) {
                 // console.log(data,func)
-               
+
                 func(data.detail)
             }
             this.inEventHandler.addEventListener(topic, wrapfunc, false)
-            
-        }else{
-            
-           console.log("subscription ",topic," exists in ",this.channel.peerID)
-           var err= new Error()
-           console.log( err.stack);
+
+        } else {
+
+            console.log("subscription ", topic, " exists in ", this.channel.peerID)
+            var err = new Error()
+            console.log(err.stack);
         }
         // console.log('subscribing ', topic)
     },
     call: function(procedure, data) {
         reqid = this._reqID()
-        var self=this
-        data.peer=myPeerID
+        var self = this
+        data.peer = myPeerID
         this.channel.send(JSON.stringify({
             "action": "call",
             "procedure": procedure,
             "data": data,
             "id": reqid
-            
+
         }))
 
-       
+
         return new Promise(function(resolve, reject) {
             function answerCall(data) {
                 // console.log(data)
@@ -151,7 +185,7 @@ Channel.prototype = {
     },
     register: function(procedure, func) {
         // console.log("registered procedure ", procedure)
-        var self=this;
+        var self = this;
         this.eventHandler.addEventListener("proc-" + procedure, function(data) {
             // console.log("procedure ", procedure, " called with data: ", data.detail)
             var event = new CustomEvent(data.detail.id, {
@@ -159,15 +193,15 @@ Channel.prototype = {
                     "id": data.detail.id,
                     "action": "answer",
                     "data": func(data.detail.data),
-                    "peer":myPeerID
+                    "peer": myPeerID
                 }
             });
-            
+
             self.eventHandler.dispatchEvent(event)
 
         })
     },
-    forward:function(data){
+    forward: function(data) {
         // console.log(data)
 
         this.channel.send(JSON.stringify(data))

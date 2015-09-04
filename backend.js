@@ -132,7 +132,7 @@ function getRssFeeds(rssLinks) {
 
             if (img = imgregex.exec(item.summary)) {
                 item.image = img[1]
-            } else if(img = imgregex.exec(item.description)) {
+            } else if (img = imgregex.exec(item.description)) {
                 item.image = img[1]
             }
 
@@ -154,7 +154,7 @@ function getRssFeeds(rssLinks) {
                 "title": item.title,
                 "image": image,
                 "date": item.date,
-                "description":item.description
+                "description": item.description
 
             })
         }
@@ -312,10 +312,13 @@ function getFileSize(fileData) {
                 if (hash in openFileSizes) deferred.resolve(openFileSizes[hash])
                 console.log(hash)
                 fs.stat("files/" + hash, function(err, stats) {
-                    if (err) {deferred.resolve(err)}else{
-                                        openFileSizes[hash] = stats.size
-                                        console.log("size", stats.size)
-                                        deferred.resolve(stats.size)}
+                    if (err) {
+                        deferred.resolve(err)
+                    } else {
+                        openFileSizes[hash] = stats.size
+                        console.log("size", stats.size)
+                        deferred.resolve(stats.size)
+                    }
                 });
             } else {
                 deferred.resolve(0)
@@ -338,21 +341,24 @@ function getFile(fileData) {
         } else {
             clearInterval(fileReadyInterval)
             if (!(hash in files)) {
-                deferred.resolve(0)
+                deferred.resolve({
+                    "error": "failed"
+                })
             } else {
                 var offset = fileData[1]
                 var length = fileData[2]
                 if (offset >= openFileSizes[hash]) return ""
                 fs.open("files/" + hash, 'r', function(status, fd) {
-                    if(!fd){deferred.resolve({
-                                                "error": "failed"
-                                            })}
-                    else if (status) {
+                    if (!fd) {
+                        deferred.resolve({
+                            "error": "failed"
+                        })
+                    } else if (status) {
                         console.log(status.message);
                         deferred.resolve({
                             "error": status.message
                         })
-                    }else{
+                    } else {
                         console.log("get file ", hash)
                             // openFiles[hash] = fd
                         if ((offset + length) > openFileSizes[hash]) length = openFileSizes[hash] - offset;
@@ -361,7 +367,7 @@ function getFile(fileData) {
                         fs.read(fd, buffer, 0, length, offset, function(err, num) {
                             deferred.resolve(buffer.toString('binary', 0, num));
                         })
-                        
+
                     }
                 })
             }
