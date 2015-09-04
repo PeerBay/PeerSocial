@@ -209,11 +209,11 @@ function storeFile(fileData) {
             var buffer = new Buffer(tempFiles[infohash].data, "binary");
             buffer.name = tempFiles[infohash].name
             console.log("file uploaded")
+            delete tempFiles[infohash]
+            delete buffer;
             fs.writeFile("files/" + infohash, buffer, function(err) {
                 if (err)
                     throw err;
-                delete tempFiles[infohash]
-                delete buffer;
                 files[infohash] = true
                 deferred.resolve({
                     seed: infohash
