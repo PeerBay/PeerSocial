@@ -19,9 +19,10 @@
 <body ng-controller="AppCtrl" layout="row" ng-app="MyApp">
     <section ng-if="data.page=='signin'" flex layout="column" layout-align="center center">
         <md-content layout-padding>
-            <img src="images/logo.png" width=300 />
+            
             <md-card>
                 <md-card-content>
+                <img src="images/logo.png" class="md-card-image" width=300 />
                     <md-input-container>
                         <label>Username or Email</label>
                         <input ng-disabled="data.signingIn" name="username" ng-model="data.username" required minlength="4">
@@ -86,16 +87,54 @@
             </md-card>
         </md-content>
     </section>
-    <section layout="column" flex id="content" ng-if="data.page=='feeds'" >
+    <section layout="column" flex id="content" ng-if="data.page=='feeds'">
         <md-toolbar layout="row" class="md-theme-indigo md-medium-tall " id="feedtoolbar">
             <div flex layout="column" class="md-toolbar-tools">
                 <img src="images/pbcircle.png" style="max-height:95%" />
             </div>
             <md-tabs flex layout="column" class="md-toolbar-tools md-primary" class=" " md-selected="data.selectedIndex" md-align-tabs="top" md-center-tabs>
-                <md-tab label="Feed"></md-tab>
-                <md-tab label="Groups"></md-tab>
-                <md-tab label="News"></md-tab>
-                <md-tab label="Messages"></md-tab>
+                <md-tab>
+                    <ng-md-icon icon="public">
+                        <md-tooltip md-delay="40">
+                            Feed
+                        </md-tooltip>
+                    </ng-md-icon>
+                </md-tab>
+                <md-tab>
+                    <ng-md-icon icon="group">
+                        <md-tooltip md-delay="40">
+                            Groups
+                        </md-tooltip>
+                    </ng-md-icon>
+                </md-tab>
+                <md-tab>
+                    <ng-md-icon icon="email">
+                        <md-tooltip md-delay="40">
+                            Messages
+                        </md-tooltip>
+                    </ng-md-icon>
+                </md-tab>
+                <md-tab>
+                    <ng-md-icon icon="web">
+                        <md-tooltip md-delay="40">
+                            News
+                        </md-tooltip>
+                    </ng-md-icon>
+                </md-tab>
+                <md-tab data-ng-disabled="true">
+                    <ng-md-icon icon="audiotrack">
+                        <md-tooltip md-delay="40">
+                            Online Radio
+                        </md-tooltip>
+                    </ng-md-icon>
+                </md-tab>
+                <md-tab data-ng-disabled="true">
+                    <ng-md-icon icon="voice_chat">
+                        <md-tooltip md-delay="40">
+                            Video Chat
+                        </md-tooltip>
+                    </ng-md-icon>
+                </md-tab>
             </md-tabs>
             <div flex layout="row" layout-align="end center" class="md-toolbar-tools">
                 <md-autocomplete md-selected-item="data.searchselectedItem" md-selected-item-change="loadFeedWall(item.id)" md-search-text="data.searchText" md-items="item in queryHandles(data.searchText)" md-item-text="item.handle" md-min-length="3" placeholder="Search a user's handle" md-menu-class="autocomplete-handles-template">
@@ -144,7 +183,7 @@
         </md-toolbar>
         <md-content layout="row" ng-if="data.selectedIndex==0" ng-init="data.subpage='mywall'" layout-padding layout-align="space-around start">
             <md-sidenav class="md-sidenav-left md-whiteframe-z2" md-component-id="left" md-is-locked-open="$mdMedia('gt-md')">
-                <md-toolbar >
+                <md-toolbar>
                     <div class="md-toolbar-tools">
                         <h1 class="md-display-4">{{data.profile.name}}</h1>
                     </div>
@@ -204,9 +243,9 @@
                                     </p>
                                 </md-card-content>
                                 <div class="md-actions" layout="row" layout-align="end center">
-                                    <md-button>Favourite</md-button>
-                                    <md-button>Repost</md-button>
-                                    <md-button>Answer</md-button>
+                                    <ng-md-icon icon="star"></ng-md-icon>
+                                    <ng-md-icon icon="share"></ng-md-icon>
+                                    <ng-md-icon icon="reply"></ng-md-icon>
                                 </div>
                             </md-card>
                             <br/>
@@ -359,7 +398,6 @@
                                 <textarea ng-model="data.groupForm.info" columns="1" md-maxlength="120"></textarea>
                             </md-input-container>
                             <md-content class="md-padding autocomplete" layout="column">
-                                
                                 <md-chips md-autocomplete-snap md-require-match="true" ng-init="data.groupForm.users=[]" ng-model="data.groupForm.users">
                                     <md-autocomplete md-items="item in queryHandles(data.groupForm.searchUserText)" md-item-text="item.name" placeholder="Add users" md-search-text="data.groupForm.searchUserText">
                                         <span md-highlight-text="data.groupForm.searchUserText">{{item.name}} :: {{item.handle}}</span>
@@ -396,21 +434,24 @@
                 </md-content>
             </md-sidenav>
         </md-content>
-        <md-content ng-if="data.selectedIndex==2" ng-init="getNewsFeed()" layout-align="start center">
+        <md-content ng-if="data.selectedIndex==3" ng-init="getNewsFeed()" layout-align="start center">
             <md-input-container>
                 <label>Enter Rss Feed</label>
                 <input name="rssfeed" ng-model="data.newsForm.rsslink" type="url">
             </md-input-container>
             <md-button ng-click="addRssFeed()">Add</md-button>
-            <div layout="row" flex offset="20" layout-wrap>
-                <md-card flex="25" ng-repeat="article in data.news | orderBy:-'date'">
-                    <img height=150 ng-if="article.image" ng-init="getFile(article.image)" ng-src="{{data.files[article.image]}}" class="md-card-image" alt="image caption">
+            <div layout="row" flex offset="15" layout-wrap >
+                <md-card flex="20" ng-repeat="article in data.news | orderBy:'-date'" layout="column" layout-align="space-between center">
+                    <img height=150 ng-show="data.files[article.image]" ng-init="getFile(article.image)" ng-src="{{data.files[article.image]}}" class="md-card-image" alt="image caption">
                     <md-card-content ng-click="getArticle(article.link)">
-                        <h4>{{article.title}}</h4>
-                        <article>{{article.summary.substring(0,200)}}</article>
+                        <h4 >{{article.title}}</h4>
+                        <article class="md-body-2">{{data.files[article.image]?article.summary.substring(0,200):article.summary.substring(0,300)}}...</article>
                     </md-card-content>
-                    <md-card-footer>
-                        {{article.link}}
+                    <md-card-footer style="width:90%" layout="row" layout-align="space-between end"
+
+>
+                        <span  class="md-caption">{{article.source}}</span>
+                        <span  class="md-caption">{{article.date | fromNow}}</span>
                     </md-card-footer>
                 </md-card>
             </div>
@@ -422,6 +463,7 @@
     <script src="./bower_components/angular-aria/angular-aria.js"></script>
     <script src="./bower_components/angular-material/angular-material.js"></script>
     <script src="./bower_components/angular-material-icons/angular-material-icons.js"></script>
+    <script src="./bower_components/moment/moment.js"></script>
     <script src="./bower_components/lf-ng-md-fileinput/dist/lf-ng-md-file-input.js"></script>
     <script src="./bower_components/autobahnjs/autobahn.js"></script>
     <script src="./bower_components/blob-util/dist/blob-util.js"></script>
@@ -440,8 +482,8 @@
         'use strict';
 
         angular.module('MyApp', ['ngMaterial', 'ngMdIcons', 'lfNgMdFileInput', 'ngSanitize'])
-            .config(function($mdThemingProvider, $mdIconProvider,$compileProvider) {
-                $compileProvider.imgSrcSanitizationWhitelist(/^\s*(filesystem):/);
+            .config(function($mdThemingProvider, $mdIconProvider, $compileProvider) {
+                $compileProvider.imgSrcSanitizationWhitelist(/^\s*(filesystem|data):/);
                 $mdIconProvider
                     .defaultIconSet("./assets/svg/avatars.svg", 128)
                     .icon("menu", "./assets/svg/menu.svg", 24)
@@ -480,6 +522,10 @@
                     .accentPalette('grey');
 
 
+            }).filter('fromNow', function() {
+                return function(dateString) {
+                    return moment(dateString).fromNow()
+                };
             }).controller('AppCtrl', function($scope, $mdToast, $mdDialog, $q) {
                 var DynamicWall = function(feedIDs) {
                     console.log("DynamicWall", feedIDs)
@@ -606,10 +652,10 @@
                     return this.index.length
                 }
 
-                $scope.getGroupInfo=function(){
-                    $scope.feed.getGroupsInfo($scope.data.settings.groups.data).then(function(groups){
+                $scope.getGroupInfo = function() {
+                    $scope.feed.getGroupsInfo($scope.data.settings.groups.data).then(function(groups) {
                         console.log(groups)
-                        $scope.data.groups=groups
+                        $scope.data.groups = groups
                     })
                 }
 
@@ -638,6 +684,7 @@
                                     var parser = new DOMParser()
                                     var readyMainDoc = parser.parseFromString(article.summary, "text/html")
                                     article.summary = readyMainDoc.documentElement.textContent
+                                    article.source = article.link.split("/")[2]
                                     $scope.data.news.push(article)
                                     $scope.data.newsLinks.push(article.link)
                                 }
@@ -662,7 +709,7 @@
                                 var readyMainDoc = parser.parseFromString(article.summary, "text/html")
                                 article.summary = readyMainDoc.documentElement.textContent
                                 $scope.data.news.push(article)
-
+                                console.log(article.date)
                                 $scope.data.newsLinks.push(article.link)
                             }
 
@@ -681,10 +728,10 @@
                         // Since GreetingController is instantiated with ControllerAs syntax
                         // AND we are passing the parent '$scope' to the dialog, we MUST
                         // use 'vm.<xxx>' in the template markup
-                        template: '<md-dialog style="max-width:50%">' +
+                        template: '<md-dialog aria-label="Article" style="max-width:50%">' +
                             '  <md-dialog-content>' +
                             '<md-card flex="50" >' +
-                            '<img  ng-src="{{data.files[data.newsPost.image]}}" class="md-card-image" alt="image caption">' +
+                            '<img ng-if="data.files[data.newsPost.image]"  ng-src="{{data.files[data.newsPost.image]}}" class="md-card-image" alt="image caption">' +
                             '<md-card-content >' +
                             '<h2>{{data.newsPost.title}}</h2>' +
                             '<div style="white-space: pre-line;" ng-bind-html="data.newsPost.text"></div>' +
@@ -768,7 +815,7 @@
                 // $scope.torrentClient = new WebTorrent()
                 $scope.createPrivateGroup = function() {
                     console.log($scope.data.groupForm)
-                    $scope.feed.createPrivateGroup($scope.data.groupForm).then(function(answer){
+                    $scope.feed.createPrivateGroup($scope.data.groupForm).then(function(answer) {
                         console.log(answer)
                     })
                 }

@@ -101,21 +101,9 @@ Feed.prototype = {
             self.privDir.getFile(infohash, {
                 create: false
             }, function(fileEntry) {
-                // Create a FileWriter object for our FileEntry (log.txt).
-                // fileEntry.file(function(file) {
-                //     var reader = new FileReader();
-
-                //     reader.onloadend = function(e) {
-                //         resolve("data:image/png;base64," + btoa(reader.result))
-                //     };
-
-                //     reader.readAsBinaryString(file);
-                // }, function(e) {
-                //     console.log(e.name)
-                // });
                 resolve(fileEntry.toURL())
-            }, function(e) {
-                console.log(e.name)
+            }, function(err) {
+                console.log(err.name)
                 var chunkSize = 15384;
 
                 self.onion.call("getFileSize", [infohash]).then(function(size) {
@@ -127,7 +115,9 @@ Feed.prototype = {
                         // if (size < offset){offset=size}
 
                         if (offset >= size) {
-                            resolve("data:image/png;base64," + btoa(file))
+                            self.saveFileToDisk(infohash,file).then(function(fslink){
+                                    resolve(fslink)
+                                })
                             return;
                         }
 
@@ -135,40 +125,15 @@ Feed.prototype = {
                         console.log(offset, chunkSize, size)
                         self.onion.call("getFile", [infohash, offset, chunkSize]).then(function(chunk) {
                             if (typeof chunk == "object") {
-                                resolve("")
+                                resolve(chunk.error)
                             }
                             file += chunk
                             console.log("file size ", file.length, size)
                             if (file.length == size) {
-                                
-                                self.privDir.getFile(infohash, {
-                                    create: true
-                                }, function(fileEntry) {
-                                    // Create a FileWriter object for our FileEntry (log.txt).
-                                    fileEntry.createWriter(function(fileWriter) {
+                                self.saveFileToDisk(infohash,file).then(function(fslink){
+                                    resolve(fslink)
+                                })
 
-                                        fileWriter.onwriteend = function(e) {
-                                            console.log('Write completed.');
-                                            resolve(fileEntry.toURL())
-                                        };
-                                        fileWriter.onerror = function(e) {
-                                            console.log('Write failed: ' + e.toString());
-                                        };
-                                        blobUtil.binaryStringToBlob(file).then(function (blob) {
-                                          fileWriter.write(blob);
-                                        }).catch(function (err) {
-                                          console.log(err)
-                                        });
-
-                                        
-
-
-                                    }, function(e) {
-                                        console.log(e.name)
-                                    });
-                                }, function(e) {
-                                    console.log(e.name)
-                                });
                                 // console.log(file)
                                 // return;
                             } else {
@@ -187,6 +152,39 @@ Feed.prototype = {
 
         })
 
+    },
+    saveFileToDisk: function(infohash, file) {
+        var self=this;
+        return new Promise(function(resolve, reject) {
+            self.privDir.getFile(infohash, {
+                create: true
+            }, function(fileEntry) {
+                // Create a FileWriter object for our FileEntry (log.txt).
+                fileEntry.createWriter(function(fileWriter) {
+
+                    fileWriter.onwriteend = function(e) {
+                        console.log('Write completed.');
+                        resolve(fileEntry.toURL())
+                    };
+                    fileWriter.onerror = function(e) {
+                        console.log('Write failed: ' + e.toString());
+                    };
+                    blobUtil.binaryStringToBlob(file).then(function(blob) {
+                        fileWriter.write(blob);
+                    }).catch(function(err) {
+                        console.log(err)
+                    });
+
+
+
+
+                }, function(e) {
+                    console.log(e.name)
+                });
+            }, function(e) {
+                console.log(e.name)
+            });
+        })
     },
     getArticle: function(link) {
         var self = this;

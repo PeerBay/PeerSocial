@@ -9,7 +9,10 @@ body {
     padding: 0px;
 }
 
-
+ng-md-icon md-tooltip {
+  margin-top:5px;
+  font-size:30em;
+}
 
 .profileForm md-card {
     width: 500px;
