@@ -188,7 +188,7 @@
                     </md-toolbar>
                 </section>
                 <section layout="column">
-                    <md-virtual-repeat-container flex id="vertical-container" md-auto-shrink style="min-width:530px;min-height:900px;margin-left:10px">
+                    <md-virtual-repeat-container ng-if="data.publicWall"flex id="vertical-container" md-auto-shrink style="min-width:530px;min-height:900px;margin-left:10px">
                         <div layout="column" class="md-notifier" layout-align="center center">
                             <md-button flex md-no-ink class="md-primary" ng-click="data.mywallunread=0">Load more {{data.mywallunread}}</md-button>
                         </div>
@@ -748,7 +748,7 @@
                     groupForm: {},
                     page: "signin",
                     publicPost: {},
-                    publicWall: [],
+                    publicWall: null,
                     profiles: {},
                     subpage: "mywall",
                     mywallunread: 0,
