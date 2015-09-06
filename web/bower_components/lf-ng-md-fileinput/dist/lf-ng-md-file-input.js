@@ -1,6 +1,7 @@
 (function(angular) {
     'use strict';
 
+
     var lfNgMdFileinput = angular.module('lfNgMdFileInput', ['ngMaterial', 'ngMdIcons']);
 
     lfNgMdFileinput.directive('lfNgMdFileInput', function($q) {
@@ -50,17 +51,17 @@
                 '</div>',
                 '</div>'
             ].join(''),
-            replace: true,
             scope: {
                 lfFiles: '=?',
                 lfProperty: '@?',
                 lfPlaceholder: '@?'
             },
             link: function(scope, element, attrs) {
+                console.log(scope)
                 if (typeof scope.lfFiles != "object") {
                     scope.lfFiles = [];
-                }
 
+                }
                 scope.bool_file_multiple = false;
                 scope.bool_file_draggable = false;
                 scope.bool_file_preview = false;

@@ -94,6 +94,9 @@ var download = function(uri, filename, cb) {
 };
 
 function getRssFeeds(rssLinks) {
+    if(!rssLinks[0]){
+        return []
+    }
     console.log("getRss", rssLinks)
     var deferred = Q.defer();
     var feedparser = new FeedParser({
@@ -243,6 +246,9 @@ function storeFile(fileData) {
 }
 
 function getArticle(link) {
+    if(!link[0]){
+        return {}
+    }
     var deferred = Q.defer();
     webrequest(link[0], function(error, response, html) {
         if (!error && response.statusCode == 200) {
@@ -708,8 +714,6 @@ function queryHandles(query) {
     feeds.view("rel", "handles", {
             "startkey": query[0],
             "endkey": query[0] + "\u9999",
-            "reduce": true,
-            "group": true,
             "limit": 5
         },
         function(err, body) {
@@ -744,9 +748,7 @@ function belongsTo(threadIds) {
     console.log(threadIds)
     var deferred = Q.defer();
     feeds.view("rel", "belongs", {
-            "keys": threadIds,
-            "reduce": true,
-            "group": true
+            "keys": threadIds
         },
         function(err, body) {
             var answer = {};
@@ -765,9 +767,7 @@ function tag(tag) {
     console.log(tag[0])
     var deferred = Q.defer();
     feeds.view("rel", "tag", {
-            "key": tag[0],
-            "reduce": true,
-            "group": true
+            "key": tag[0]
         },
         function(err, body) {
             var answer = {};

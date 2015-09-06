@@ -35,15 +35,15 @@ function Feed(boxKeys, signKeys) {
     function errorHandler(e) {
         console.log('Error: ' + e.name);
     }
-    if(window.webkitStorageInfo){
+    if (window.webkitStorageInfo) {
         window.webkitStorageInfo.requestQuota(PERSISTENT, 2048 * 1024, function(grantedBytes) {
             console.log(grantedBytes)
             window.requestFileSystem(PERSISTENT, grantedBytes, onInitFs, errorHandler);
         }, function(e) {
             console.log('Error', e);
         });
-        
-    }else{
+
+    } else {
         window.requestFileSystem(PERSISTENT, 2048 * 1024, onInitFs, errorHandler);
     }
     return new Promise(function(resolve, reject) {
@@ -73,31 +73,39 @@ function Feed(boxKeys, signKeys) {
 Feed.prototype = {
     storeFiles: function(lfFiles) {
         var self = this;
-
+        console.log(lfFiles)
         return new Promise(function(resolve, reject) {
             var files = {}
             var idx = 0
-            for (i in lfFiles) {
-                lfFiles[i].lfFile.hash = nacl.util.encodeBase64(nacl.hash(nacl.util.decodeUTF8(lfFiles[i].lfDataUrl)))
-                lfFiles[i].lfFile.hash = lfFiles[i].lfFile.hash.split("/").join("")
-                self.storeFile(lfFiles[i].lfFile).then(function(infohash) {
+            lfFiles.forEach(function(lfFile) {
+                lfFile.lfFile.hash = nacl.util.encodeBase64(nacl.hash(nacl.util.decodeUTF8(lfFile.lfDataUrl)))
+                lfFile.lfFile.hash = lfFile.lfFile.hash.split("/").join("")
+                self.storeFile(lfFile.lfFile).then(function(infohash) {
                     console.log(i)
-                    type = typeof files[lfFiles[i].lfProperty]
+                    type = typeof files[lfFile.lfProperty]
                     switch (type) {
                         case "undefined":
-                            files[lfFiles[i].lfProperty] = infohash
+                            files[lfFile.lfProperty] = infohash
                             break;
                         case "string":
-                            files[lfFiles[i].lfProperty] = [files[lfFiles[i].lfProperty], infohash]
+                            if(files[lfFile.lfProperty]!=infohash){
+                                files[lfFile.lfProperty] = [files[lfFile.lfProperty], infohash]
+                            }
+                            break;
                         case "object":
-                            files[lfFiles[i].lfProperty].push(infohash)
+                            if(files[lfFile.lfProperty].indexOf(infohash)==-1){
+                                files[lfFile.lfProperty].push(infohash)
+                            }
+                            break;
                     }
                     idx++;
                     if (idx == lfFiles.length) {
                         resolve(files)
                     }
                 })
-            }
+
+
+            })
         })
     },
     getFile: function(infohash) {
@@ -501,13 +509,15 @@ Feed.prototype = {
         })
     },
     groupPost: function(group, post) {
-        var self=this;
+        var self = this;
 
-        post=self.signDoc(post)
+        post = self.signDoc(post)
 
-        post=self.encryptDoc({data:post}, group.secret)
+        post = self.encryptDoc({
+            data: post
+        }, group.secret)
 
-        post=self.signDoc(post, group.signKeys)
+        post = self.signDoc(post, group.signKeys)
 
         return new Promise(function(resolve, reject) {
             self.onion.call("put", [post]).then(function(ans) {
@@ -745,11 +755,29 @@ Feed.prototype = {
     },
     publicPost: function(post, keys) {
         var self = this
-        return new Promise(function(resolve, reject) {
-            self.onion.call("put", [self.signDoc(post, keys)]).then(function(answer) {
-                resolve(answer)
-            })
 
+        return new Promise(function(resolve, reject) {
+            if (post.files && post.files.length) {
+                self.storeFiles(post.files).then(function(files) {
+                    for (key in files) {
+                        if(typeof files[key] == "object"){
+                            post[key] = files[key]
+                        }else{
+                            post[key] = [files[key]]
+                        }
+                    }
+                    delete post.files
+                    self.onion.call("put", [self.signDoc(post, keys)]).then(function(answer) {
+                        resolve(answer)
+                    })
+                })
+
+            } else {
+
+                self.onion.call("put", [self.signDoc(post, keys)]).then(function(answer) {
+                    resolve(answer)
+                })
+            }
         })
     },
     search: function(query) {
@@ -759,7 +787,7 @@ Feed.prototype = {
                 self.onion.call("handles", [query.slice(1)]).then(function(results) {
                     console.log(results)
                     results.forEach(function(doc, idx, theDocs) {
-                        theDocs[idx] = doc.value[0]
+                        theDocs[idx] = doc.value
                         theDocs[idx]["handle"] = doc.key
                     })
                     resolve(results)
