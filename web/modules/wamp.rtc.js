@@ -2,6 +2,13 @@
 // and starts rtc p2p connections returning channels onopen
 var AUTOBAHN_DEBUG = true;
 var myPeerID
+window.RTCPeerConnection = window.RTCPeerConnection || window.mozRTCPeerConnection || 
+                       window.webkitRTCPeerConnection || window.msRTCPeerConnection;
+window.RTCSessionDescription = window.RTCSessionDescription || window.mozRTCSessionDescription ||
+                       window.webkitRTCSessionDescription || window.msRTCSessionDescription;
+
+navigator.getUserMedia = navigator.getUserMedia || navigator.mozGetUserMedia ||
+                       navigator.webkitGetUserMedia || navigator.msGetUserMedia;
 var Exit = function(address) {
     var self = this
     return new Promise(function(resolve, reject) {
@@ -141,7 +148,7 @@ Exit.prototype = {
             return false
         }
         return new Promise(function(resolve, reject) {
-            self.seeds[peerID] = new webkitRTCPeerConnection(self.config, self.rtcconnection);
+            self.seeds[peerID] = new RTCPeerConnection(self.config, self.rtcconnection);
             var channel = self.seeds[peerID].createDataChannel("dataChannel", {
                 reliable: true
             });
@@ -221,7 +228,7 @@ Exit.prototype = {
         if((peerID in self.seeds) || (peerID in self.leachers) ){
             return false
         }
-        this.leachers[peerID] = new webkitRTCPeerConnection(self.config, self.rtcconnection);
+        this.leachers[peerID] = new RTCPeerConnection(self.config, self.rtcconnection);
         this.leachers[peerID].onicecandidate = function(event) {
             if (event.candidate) {
                 var json = {

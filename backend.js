@@ -43,7 +43,7 @@ var fs = require("fs")
 var http = require('http');
 
 
-var requests = couchdb.use("requests")
+var requestsDB = couchdb.use("requests")
 var feeds = couchdb.use("feeds")
     // var client = new WebTorrent()
     // process.on('uncaughtException', function(err) {
@@ -63,7 +63,7 @@ fs.readdir('files', function(err, lfiles) {
     if (err)
         throw err;
     for (var index in lfiles) {
-        console.log(lfiles[index]);
+        // console.log(lfiles[index]);
         files[lfiles[index]] = true
     }
 });
@@ -377,7 +377,7 @@ function getFile(fileData) {
     return deferred.promise;
 }
 
-function askPeer(m) {
+function addRequest(m) {
     // {
     //     key:''
     //     request:{}
@@ -386,7 +386,7 @@ function askPeer(m) {
     doc = m[0].request
     doc._id = m[0].key + Date.now()
 
-    requests.insert(doc, function(err, body) {
+    requestsDB.insert(doc, function(err, body) {
         // console.log(err, body)
         if (!err) {
             deferred.resolve(body)
@@ -398,7 +398,8 @@ function askPeer(m) {
 }
 
 function getNewRequestsIds(feedID) {
-    requests.fetchRevs({}, {
+    var deferred = Q.defer();
+    requestsDB.fetchRevs({}, {
         "startkey": feedID[0] + "\u9999",
         "endkey": feedID[0],
         "descending": true
@@ -406,9 +407,9 @@ function getNewRequestsIds(feedID) {
         console.log(err)
         if (!err) {
             var answer = [];
-            // console.log("docids", body)
+            console.log("docids", JSON.stringify(body))
             body.rows.forEach(function(row) {
-                    if (row.id) {
+                    if (row.id && row.value.rev.indexOf("1")==0) {
                         answer.push(row.id)
                     }
                 })
@@ -428,22 +429,28 @@ function getNewRequestsIds(feedID) {
 function getRequests(signedRequest) {
     var pKey = Base58.decode(signedRequest[0].key).subarray(0, 32)
     var askDocs = {}
+    console.log(signedRequest)
     for (n in signedRequest[0].docids) {
-        docid = nacl.sign.open(signedRequest[0].docids[n], pKey)
-        if (docid && docid.startsWith(signedRequest[0].key)) {
+        docid = nacl.util.encodeUTF8(
+            nacl.sign.open(
+                nacl.util.decodeBase64(
+                    signedRequest[0].docids[n]), pKey))
+        if (docid && docid.indexOf(signedRequest[0].key)==0) {
             askDocs[docid] = signedRequest[0].docids[n]
         }
     }
+    console.log("askDocs:",askDocs)
     if (askDocs.length != 0) {
         var deferred = Q.defer();
-        feeds.fetch({
+        requestsDB.fetch({
             "keys": Object.keys(askDocs)
         }, function(err, body) {
             // console.log(err, body)
             if (!err) {
                 var answer = [];
-                // console.log(body)
-                if (body.rows) {
+                console.log(body)
+                if (body.rows.length>=1) {
+                    var deleteDocs=[]
                     body.rows.forEach(function(row) {
                         if (row.doc) {
                             answer.push(row.doc)
@@ -454,6 +461,10 @@ function getRequests(signedRequest) {
                             })
                         }
                     })
+                    feeds.bulk({"docs":deleteDocs},function(err,body){
+                        console.log(err,body)
+                    })
+
                 }
 
 
@@ -712,6 +723,22 @@ function queryHandles(query) {
         })
     return deferred.promise
 }
+function getBoxKeys(feedIds) {
+    var deferred = Q.defer();
+    feeds.view("rel", "boxkey", {
+            keys:feedIds
+        },
+        function(err, body) {
+
+            if (!err && body.rows.length>=1 ) {
+
+                deferred.resolve(body.rows)
+            } else {
+                deferred.resolve(null)
+            }
+        })
+    return deferred.promise
+}
 
 function belongsTo(threadIds) {
     console.log(threadIds)
@@ -856,6 +883,10 @@ connection.onopen = function(session) {
     session.register("getRssFeeds", getRssFeeds)
     session.register("getArticle", getArticle)
     session.register("belongsTo", belongsTo)
+    session.register("addRequest", addRequest)
+    session.register("getNewRequestsIds", getNewRequestsIds)
+    session.register("getRequests", getRequests)
+    session.register("getBoxKeys", getBoxKeys)
     session.register("tag", tag)
     follow({
         db: "http://127.0.0.1:5984/feeds",
@@ -876,6 +907,16 @@ connection.onopen = function(session) {
                 })
             }
 
+        }
+    })
+    follow({
+        db: "http://127.0.0.1:5984/requests",
+        since: "now",
+        include_docs: true
+    }, function(err, change) {
+        if (!err && !change.doc.viewed) {
+            session.publish("requests-"+change.id.substring(0, 46), [change.id])
+            console.log("Got change number " + change.id.substring(0, 46));
         }
     })
 

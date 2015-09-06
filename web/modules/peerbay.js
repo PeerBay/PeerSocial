@@ -9,7 +9,9 @@ function Feed(boxKeys, signKeys) {
     this.boxKey = peerFeed.crypto.getpeerFeedID(boxKeys.publicKey)
     this.boxSignKeys = nacl.sign.keyPair.fromSeed(nacl.scalarMult(boxKeys.secretKey, signKeys.secretKey.subarray(0, 32)))
     this.boxSignKey = peerFeed.crypto.getpeerFeedID(this.boxSignKeys.publicKey)
-    this.settings = {}
+    this.settings = {
+        data: {}
+    }
     this.mySettings = {}
         // this.fileClient = new WebTorrent()
     window.requestFileSystem = window.requestFileSystem || window.webkitRequestFileSystem;
@@ -33,12 +35,17 @@ function Feed(boxKeys, signKeys) {
     function errorHandler(e) {
         console.log('Error: ' + e.name);
     }
-    window.webkitStorageInfo.requestQuota(PERSISTENT, 2048 * 1024, function(grantedBytes) {
-        console.log(grantedBytes)
-        window.requestFileSystem(PERSISTENT, grantedBytes, onInitFs, errorHandler);
-    }, function(e) {
-        console.log('Error', e);
-    });
+    if(window.webkitStorageInfo){
+        window.webkitStorageInfo.requestQuota(PERSISTENT, 2048 * 1024, function(grantedBytes) {
+            console.log(grantedBytes)
+            window.requestFileSystem(PERSISTENT, grantedBytes, onInitFs, errorHandler);
+        }, function(e) {
+            console.log('Error', e);
+        });
+        
+    }else{
+        window.requestFileSystem(PERSISTENT, 2048 * 1024, onInitFs, errorHandler);
+    }
     return new Promise(function(resolve, reject) {
         if (onion) {
             self.onion = onion
@@ -115,9 +122,9 @@ Feed.prototype = {
                         // if (size < offset){offset=size}
 
                         if (offset >= size) {
-                            self.saveFileToDisk(infohash,file).then(function(fslink){
-                                    resolve(fslink)
-                                })
+                            self.saveFileToDisk(infohash, file).then(function(fslink) {
+                                resolve(fslink)
+                            })
                             return;
                         }
 
@@ -130,7 +137,7 @@ Feed.prototype = {
                             file += chunk
                             console.log("file size ", file.length, size)
                             if (file.length == size) {
-                                self.saveFileToDisk(infohash,file).then(function(fslink){
+                                self.saveFileToDisk(infohash, file).then(function(fslink) {
                                     resolve(fslink)
                                 })
 
@@ -154,7 +161,7 @@ Feed.prototype = {
 
     },
     saveFileToDisk: function(infohash, file) {
-        var self=this;
+        var self = this;
         return new Promise(function(resolve, reject) {
             self.privDir.getFile(infohash, {
                 create: true
@@ -286,8 +293,77 @@ Feed.prototype = {
 
         })
     },
+    getNewRequests: function() {
+        var self = this
+        console.log("get requests")
+        return new Promise(function(resolve, reject) {
+            self.onion.call("getNewRequestsIds", [self.signKey]).then(function(newRequestsIds) {
+                console.log(newRequestsIds)
+                signedIDs = []
+                newRequestsIds.forEach(function(reqid) {
+                    signedIDs.push(nacl.util.encodeBase64(nacl.sign(nacl.util.decodeUTF8(reqid), self.signKeys.secretKey)))
+                })
+                getReqDoc = {
+                    "key": self.signKey,
+                    "docids": signedIDs
+                }
+                self.onion.call("getRequests", [getReqDoc]).then(function(requests) {
+                    var reqDocs = []
+                    console.log(requests)
+                    requests.forEach(function(req) {
+                        doc = self.decryptDoc(req)
+                        console.log(doc)
+                        if (self.validateDoc(doc.data)) {
+                            reqDoc = JSON.parse(doc.data.doc)
+                            reqDoc.from = doc.data.key
+                            reqDocs.push(reqDoc)
 
-    sendRequest: function() {},
+                        } else {
+                            console.log("unverifiable request")
+                        }
+
+                    })
+
+                    resolve(reqDocs)
+
+                })
+            })
+        })
+    },
+    validateDoc: function(signedDoc) {
+        d = nacl.util.decodeUTF8(signedDoc.doc)
+        s = nacl.util.decodeBase64(signedDoc.signature)
+        k = Base58.decode(signedDoc.key).subarray(0, 32)
+        return nacl.sign.detached.verify(d, s, k)
+    },
+    sendRequest: function(to, reqData) {
+        var self = this;
+        this.getBoxKeys([to]).then(function(boxkeys) {
+
+            var req = {
+                "key": to,
+                "request": self.encryptDoc({
+                    share: [boxkeys[0].value],
+                    data: self.signDoc({
+                        "data": reqData
+                    })
+                })
+            }
+            console.log(reqData)
+            self.onion.call("addRequest", [req]).then(function(ans) {
+                console.log(ans)
+            })
+
+        })
+
+    },
+    getBoxKeys: function(feedIDs) {
+        return new Promise(function(resolve, reject) {
+            this.onion.call("getBoxKeys", feedIDs).then(function(ans) {
+                resolve(ans)
+            })
+        })
+    },
     createPublicGroup: function(groupData) {
         // group encryption is public key signing
         // group data are signed only and public
@@ -326,6 +402,7 @@ Feed.prototype = {
             }
             for (j in groupData.users) {
                 groupDoc.users.push(groupData.users[j].id)
+
             }
             if (groupDoc.users.indexOf(self.signKey) == -1) {
                 groupDoc.users.push(self.signKey)
@@ -336,29 +413,54 @@ Feed.prototype = {
                     for (key in files) groupDoc[key] = files[key]
                     var doc = {
                         _id: groupID,
-                        share: groupDoc.users,
                         data: groupDoc
                     }
-                    self.onion.call("putwithid", [self.signDoc(self.encryptDoc(doc), groupAdminKeys)]).then(function(answer) {
+                    self.onion.call("putwithid", [self.signDoc(self.encryptDoc(doc, groupUserKeys.secretKey.subarray(0, 32)), groupAdminKeys)]).then(function(answer) {
                         resolve(answer)
                     })
-                    self.addSettingValue("groups", groupAdminSecret).then(function(a) {
+                    self.addSettingValue("groups", [groupAdminSecret, groupSecret]).then(function(a) {
                         console.log(a)
+                    })
+                    groupDoc.users.forEach(function(user) {
+                        if (user !== self.signKey) {
+                            self.inviteToGroup(user, doc)
+                        }
+
                     })
                 })
             } else {
                 var doc = {
                     _id: groupID,
-                    share: groupDoc.users,
                     data: groupDoc
                 }
-                self.onion.call("putwithid", [self.signDoc(self.encryptDoc(doc), groupAdminKeys)]).then(function(answer) {
+                self.onion.call("putwithid", [self.signDoc(self.encryptDoc(doc, groupUserKeys.secretKey.subarray(0, 32)), groupAdminKeys)]).then(function(answer) {
                     resolve(answer)
                 })
-                self.addSettingValue("groups", groupAdminSecret).then(function(a) {
+                self.addSettingValue("groups", [groupAdminSecret, groupSecret]).then(function(a) {
                     console.log(a)
                 })
+                groupDoc.users.forEach(function(user) {
+                    if (user !== self.signKey) {
+                        self.inviteToGroup(user, doc)
+                    }
+
+                })
             }
+        })
+    },
+    inviteToGroup: function(peerID, group) {
+        console.log("invite ", peerID, group.data.name)
+        this.sendRequest(peerID, {
+            "type": "groupInvite",
+            "name": group.data.name,
+            "info": group.data.info,
+            "groupID": group._id,
+            "secret": group.data.secret
+        })
+    },
+    acceptGroupInvitation: function(group) {
+        this.addSettingValue("groups", [group.data.groupID, group.data.secret]).then(function(a) {
+            console.log(a)
         })
     },
     getGroupsInfo: function(groupKeys) {
@@ -366,28 +468,71 @@ Feed.prototype = {
         console.log(groupKeys)
         return new Promise(function(resolve, reject) {
             var groupAdmin = {}
-            groupIDs = []
+            var groupIDs = []
+            var groupSecrets = {}
             for (i in groupKeys) {
-                if (groupKeys[i].length == 88) {
-                    groupID = peerFeed.crypto.getpeerFeedID(nacl.util.decodeBase64(groupKeys[i]).subarray(32, 64))
-                    groupAdmin[groupID] = groupKeys[i]
+                if (groupKeys[i][0].length == 88) {
+                    groupID = peerFeed.crypto.getpeerFeedID(nacl.util.decodeBase64(groupKeys[i][0]).subarray(32, 64))
+                    groupAdmin[groupID] = groupKeys[i][0]
                     groupIDs.push(groupID)
+                    groupSecrets[groupID] = nacl.util.decodeBase64(groupKeys[i][1])
                 } else {
-                    groupIDs.push(groupKeys[i])
+                    groupIDs.push(groupKeys[i][0])
+                    groupSecrets[groupKeys[i][0]] = nacl.util.decodeBase64(groupKeys[i][1])
                 }
             }
             self.get(groupIDs).then(function(groups) {
                 console.log(groups)
                 var datagroups = []
                 for (i in groups) {
-                    datagroup = self.decryptDoc(groups[i])
+                    datagroup = self.decryptDoc(groups[i], groupSecrets[groups[i]._id])
                     if (datagroup._id in groupAdmin) {
                         datagroup.admin = groupAdmin[datagroup._id]
                     }
+
+                    datagroup.secret = groupSecrets[groups[i]._id]
+                    datagroup.signKeys = nacl.sign.keyPair.fromSeed(datagroup.secret)
+
+                    datagroup.feedID = peerFeed.crypto.getpeerFeedID(datagroup.signKeys.publicKey)
                     datagroups.push(datagroup)
                 }
                 resolve(datagroups)
             })
+        })
+    },
+    groupPost: function(group, post) {
+        var self=this;
+
+        post=self.signDoc(post)
+
+        post=self.encryptDoc({data:post}, group.secret)
+
+        post=self.signDoc(post, group.signKeys)
+
+        return new Promise(function(resolve, reject) {
+            self.onion.call("put", [post]).then(function(ans) {
+                resolve(ans)
+            })
+        })
+    },
+    getGroupFeed: function(group, before) {
+        var self = this
+        console.log("getting group", group.feedID, before)
+
+        return new Promise(function(resolve, reject) {
+            self.onion.call("getFeed", [group.feedID, before]).then(function(docs) {
+                console.log(docs)
+                docs.forEach(function(doc, i, theDocs) {
+                    doc = decryptDoc(doc, group.secret)
+                    console.log(doc)
+                    doc.date = doc._id.substring(46)
+                    doc.feedID = doc._id.substring(0, 46)
+                    theDocs[i] = doc;
+                })
+
+                resolve(docs)
+            })
+
         })
     },
     createProfile: function(profile) {
@@ -444,28 +589,21 @@ Feed.prototype = {
             self.get([self.boxSignKey]).then(function(settings) {
                 console.log("settings:", settings)
                 if (settings.length == 0) {
-                    settings = {
+                    console.log("creating settings")
+                    var settings = {
                         _id: self.boxSignKey,
                         data: {
                             creationDate: Date.now()
                         }
                     }
-                    var doc = {
-                        signedDoc: nacl.util.encodeBase64(
-                            nacl.sign(
-                                nacl.util.decodeUTF8(
-                                    JSON.stringify(self.encryptDoc(settings))
-                                ),
-                                self.boxSignKeys.secretKey)
-                        ),
-                        key: self.boxSignKey
-                    }
+                    var doc = self.signDoc(self.encryptDoc(settings), self.boxSignKeys)
 
                     self.onion.call("putwithid", [doc]).then(function(ans) {
+                        console.log(ans)
                         self.settings = settings
                         self.settings._id = ans.id
                         self.settings._rev = ans.rev
-                        resolve({})
+                        resolve(self.settings)
                     })
                 } else {
                     self.settings = self.decryptDoc(settings[0])
@@ -651,15 +789,20 @@ Feed.prototype = {
         })
     },
 
-    encryptDoc: function(doc) {
+    encryptDoc: function(doc, keys) {
         var header = {}
-
-        mypeerFeedID = this.boxKey
         header._id = doc._id
         header._rev = doc._rev
-            //console.log(doc)
+        if (keys && typeof(keys) === "object" && "byteLength" in keys) {
+            data = nacl.util.decodeUTF8(JSON.stringify(doc.data))
+            nonce = peerFeed.crypto.getNonce()
+            header[nacl.util.encodeBase64(nonce)] = nacl.util.encodeBase64(nacl.secretbox(data, nonce, keys))
+            return header
+        }
+        mypeerFeedID = this.boxKey
         if (doc.share) {
-            // share to peerfeedids
+            console.log("encrypting :", doc, " for ", doc.share)
+                // share to peerfeedids
             if (doc.share.indexOf(mypeerFeedID) == -1) {
                 doc.share.push(mypeerFeedID)
             }
@@ -726,9 +869,29 @@ Feed.prototype = {
         console.log("decrypt " + header._id)
 
         if (keys) {
-            // console.log(keys)
-            var mySecretKey = keys.secretKey
-            var mypeerFeedID = peerFeed.crypto.getpeerFeedID(keys.publicKey)
+            if ("secretKey" in keys) {
+                // console.log(keys)
+                var mySecretKey = keys.secretKey
+                var mypeerFeedID = peerFeed.crypto.getpeerFeedID(keys.publicKey)
+            } else {
+                //secretbox encryption
+                for (i in header) {
+                    if (i.length == 32) {
+                        nonce = nacl.util.decodeBase64(i)
+                        cipher = nacl.util.decodeBase64(header[i])
+                        text = nacl.secretbox.open(cipher, nonce, keys)
+                        text = nacl.util.encodeUTF8(text)
+                        console.log(text)
+                        text = JSON.parse(text)
+                        return {
+                            _id: header._id,
+                            _rev: header._rev,
+                            data: text
+                        }
+
+                    }
+                }
+            }
         } else {
             var mySecretKey = this.boxKeys.secretKey
             var mypeerFeedID = this.boxKey

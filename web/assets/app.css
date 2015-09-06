@@ -1,8 +1,6 @@
 html,
 body {
     font-family: 'Roboto ', Helvetica, Arial, sans-serif;
-
-
     font-size: 14px;
     /*height: 100%;*/
     margin: 0px;
@@ -10,73 +8,107 @@ body {
 }
 
 ng-md-icon md-tooltip {
-  margin-top:5px;
-  font-size:30em;
+    margin-top: 5px;
+    font-size: 30em;
 }
 
 .profileForm md-card {
     width: 500px;
 }
-#publicpostbox{
+
+#publicpostbox {
     width: 500px;
 }
 
-.autocomplete-handles-template li {
-  border-bottom: 1px solid #ccc;
-  height: auto;
-  padding-top: 8px;
-  padding-bottom: 8px;
-  white-space: normal; }
-.autocomplete-handles-template li:last-child {
-  border-bottom-width: 0; }
- .autocomplete-handles-template .item-title,  .autocomplete-handles-template .item-metadata {
-  display: block;
-  line-height: 2; }
- .autocomplete-handles-template .item-title md-icon {
-  height: 18px;
-  width: 18px; }
-  #feedtoolbar{
-  	    min-height: 48px;
-  	height: 48px;
-  }
+#notify {
+    position: absolute;
+    right: 0;
+    top: 50px;
+    overflow: hidden;
+    min-width: 100%;
+    min-height: 100%;
+    
+}
+#notify md-dialog{
+    position: absolute;
+    right: 5px;
+    top: 0;
+    overflow: hidden;
+    width: 400px;
+}
 
-  @font-face {
-  font-family: "Roboto ";
-  font-style: normal;
-  font-weight: 300;
-  src: local('Roboto  Light'), local('Roboto-Light'), url("fonts/Roboto-Light.ttf") format('truetype');
+.autocomplete-handles-template li {
+    border-bottom: 1px solid #ccc;
+    height: auto;
+    padding-top: 8px;
+    padding-bottom: 8px;
+    white-space: normal;
 }
+
+.autocomplete-handles-template li:last-child {
+    border-bottom-width: 0;
+}
+
+.autocomplete-handles-template .item-title,
+.autocomplete-handles-template .item-metadata {
+    display: block;
+    line-height: 2;
+}
+
+.autocomplete-handles-template .item-title md-icon {
+    height: 18px;
+    width: 18px;
+}
+
+#feedtoolbar {
+    min-height: 48px;
+    height: 48px;
+}
+
 @font-face {
-  font-family: "Roboto ";
-  font-style: italic;
-  font-weight: 300;
-  src: local('Roboto  Light Italic'), local('Roboto-LightItalic'), url("fonts/Roboto-LightItalic.ttf") format('truetype');
+    font-family: "Roboto ";
+    font-style: normal;
+    font-weight: 300;
+    src: local('Roboto  Light'), local('Roboto-Light'), url("fonts/Roboto-Light.ttf") format('truetype');
 }
+
+@font-face {
+    font-family: "Roboto ";
+    font-style: italic;
+    font-weight: 300;
+    src: local('Roboto  Light Italic'), local('Roboto-LightItalic'), url("fonts/Roboto-LightItalic.ttf") format('truetype');
+}
+
 
 /* Normal */
+
 @font-face {
-  font-family: "Roboto ";
-  font-style: normal;
-  font-weight: 400;
-  src: local('Roboto  Regular'), local('Roboto-Regular'), url("fonts/Roboto-Regular.ttf") format('truetype');
-}
-@font-face {
-  font-family: "Roboto ";
-  font-style: italic;
-  font-weight: 400;
-  src: local('Roboto  Italic'), local('Roboto-Italic'), url("fonts/Roboto-Italic.ttf") format('truetype');
+    font-family: "Roboto ";
+    font-style: normal;
+    font-weight: 400;
+    src: local('Roboto  Regular'), local('Roboto-Regular'), url("fonts/Roboto-Regular.ttf") format('truetype');
 }
 
-/* Bold */
 @font-face {
-  font-family: "Roboto ";
-  font-style: normal;
-  font-weight: 700;
-  src: local('Roboto  Bold'), local('Roboto-Bold'), url("fonts/Roboto-Bold.ttf") format('truetype');
+    font-family: "Roboto ";
+    font-style: italic;
+    font-weight: 400;
+    src: local('Roboto  Italic'), local('Roboto-Italic'), url("fonts/Roboto-Italic.ttf") format('truetype');
 }
+
+
+/* Bold */
+
 @font-face {
-  font-family: "Roboto ";
-  font-style: italic;
-  font-weight: 700;
-  src: local('Roboto  Bold Italic'), local('Roboto-BoldItalic'), url("fonts/Roboto-BoldItalic.ttf") format('truetype');
+    font-family: "Roboto ";
+    font-style: normal;
+    font-weight: 700;
+    src: local('Roboto  Bold'), local('Roboto-Bold'), url("fonts/Roboto-Bold.ttf") format('truetype');
+}
+
+@font-face {
+    font-family: "Roboto ";
+    font-style: italic;
+    font-weight: 700;
+    src: local('Roboto  Bold Italic'), local('Roboto-BoldItalic'), url("fonts/Roboto-BoldItalic.ttf") format('truetype');
 }
