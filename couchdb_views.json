@@ -1,21 +1,21 @@
 {
-  "_id": "_design/rel",
-  "views": {
-    "belongs": {
-      "map": "function (doc) {\n    if(doc.belongsTo!=doc._id){\n\n        emit(doc.belongsTo,doc._id);\n    }\n}",
-      "reduce": "function (keys, values, rereduce) {\n\n   var rel=[];\n  values.forEach(function(v){\n         rel= rel.concat(v);\n  });\n   \n   return rel;\n \n}"
-    },
-    "mentions": {
-      "map": "function (doc) {\n    if(doc.mentions){\n        var i;\n        for (i in doc.mentions){\n            emit(doc.mentions[i],doc._id);\n        }\n\n    }\n  }",
-      "reduce": "function (keys, values, rereduce) {\n   var rel=[];\n  values.forEach(function(v){\n         rel= rel.concat(v);\n  });\n   \n   return rel;\n}"
-    },
-    "tag": {
-      "reduce": "function (keys, values, rereduce) {\n   var rel=[];\n  values.forEach(function(v){\n         rel= rel.concat(v);\n  });\n   \n   return rel;\n}",
-      "map": "function (doc) {\n    if(doc.tags){\n        var i;\n        for (i in doc.tags){\n            emit(doc.tags[i],doc._id);\n        }\n\n    }\n  }"
-    },
-    "handles": {
-      "map": "function (doc) {\n    if(doc._id.length==46){\n        if(doc.handle){\n            var json={\n                id:doc._id,\n                name:doc.name,\n                location:doc.location\n            };\n            emit(doc.handle, json);\n        }\n    }\n}",
-      "reduce": "function (keys, values, rereduce) {\n   var rel=[];\n  values.forEach(function(v){\n       rel= rel.concat(v);\n  });\n   \n   return rel;\n}"
-    }
-  }
+   "_id": "_design/rel",
+   "language": "javascript",
+   "views": {
+       "belongs": {
+           "map": "function (doc) {\n    if(doc.belongsTo!=doc._id){\n\n        emit(doc.belongsTo,doc._id);\n    }\n}"
+       },
+       "mentions": {
+           "map": "function (doc) {\n    if(doc.mentions){\n        var i;\n        for (i in doc.mentions){\n            emit(doc.mentions[i],doc._id);\n        }\n\n    }\n  }"
+       },
+       "tag": {
+           "reduce": "function (keys, values, rereduce) {\n   var rel=[];\n  values.forEach(function(v){\n         rel= rel.concat(v);\n  });\n   \n   return rel;\n}"
+       },
+       "handles": {
+           "map": "function (doc) {\n    if(doc._id.length==46){\n        if(doc.handle){\n            var json={\n                id:doc._id,\n                name:doc.name,\n                location:doc.location\n            };\n            emit(doc.handle, json);\n        }\n    }\n}"
+       },
+       "boxkey": {
+           "map": "function (doc) {\n    if(doc.boxKey){\n       emit(doc._id, doc.boxKey);\n    }\n}"
+       }
+   }
 }
