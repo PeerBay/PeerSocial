@@ -52,6 +52,7 @@
                 '</div>'
             ].join(''),
             scope: {
+                lfOnFileRemoved:'=?',
                 lfFiles: '=?',
                 lfProperty: '@?',
                 lfPlaceholder: '@?'
@@ -62,6 +63,7 @@
                     scope.lfFiles = [];
 
                 }
+
                 scope.bool_file_multiple = false;
                 scope.bool_file_draggable = false;
                 scope.bool_file_preview = false;
@@ -193,7 +195,8 @@
                     scope.str_file_name = '';
                     scope.bool_file_null = true;
                 };
-
+                console.log(scope.lfOnFileRemoved)
+                scope.lfOnFileRemoved=scope.onFileRemoved
                 scope.fileRemovedAt = function(index) {
                     scope.lfFiles.splice(index, 1);
                     if (scope.lfFiles.length == 0) {

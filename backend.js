@@ -626,7 +626,7 @@ function putwithid(m) {
                         // console.log(err, body)
                         if (!err) {
                             // console.log(JSON.stringify(body))
-                            if (body.rows.length == 0 || body.rows[0].value[0].id == m[0].key) {
+                            if (body.rows.length == 0 || body.rows[0].id == m[0].key) {
                                 feeds.insert(doc, function(err, body) {
                                     // console.log(err, body)
                                     if (!err) {

@@ -437,7 +437,7 @@
                                 "lfDataUrl": dataurl,
                                 "lfProperty": scope.property
                             })
-                            element.html("<img style='width:100%' src='"+dataurl+"'>")
+                            element.html("<img style='width:50%' src='"+dataurl+"'>")
                             console.log(scope.files,element)
 
                         })
