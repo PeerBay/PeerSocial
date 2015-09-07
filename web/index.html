@@ -222,7 +222,6 @@
                         <div class="md-toolbar-tools">
                             <md-autocomplete flex md-input-type="textarea" md-selected-item="data.publicPost.selectedItem" md-search-text="data.publicPost.text" md-items="item in queryPublicPost(data.publicPost.text)" md-item-text="autocompletePublicPost(data.publicPost.text,item.handle)" md-min-length="3" md-floating-label="What's happening?" md-menu-class="autocomplete-handles-template">
                                 <md-item-template>
-
                                     <span class="item-title">
                                             <ng-md-icon icon="perm_identity"></ng-md-icon>
                                             <span> {{item.name}} </span>
@@ -271,9 +270,12 @@
                                     </p>
                                 </md-card-content>
                                 <md-card-footer>
-                                    <md-grid-list md-cols="{{post.images.length>1?2:1}}" md-gutter="1em" md-row-height="4:3">
-                                        <md-grid-tile ng-init="getFile(image)" style="background-image:url({{data.files[image]}}); background-size: cover; background-position: 50%" ng-repeat="image in post.images">
+                                    <md-grid-list md-cols="{{post.images.length>1?2:1}}" md-gutter="1em" md-row-height="1:1">
+                                        <md-grid-tile ng-init="getFile(image)" ng-repeat="image in post.images">
+                                            <div ng-if="data.files[image]" style="background-image:url('{{data.files[image]}}'); background-size: cover; background-position: 50%;width:100%;height:100%" >
                                           
+                                                
+                                            </div>
                                         </md-grid-tile>
                                     </md-grid-list>
                                 </md-card-footer>
@@ -282,24 +284,24 @@
                                     <ng-md-icon icon="share"></ng-md-icon>
                                     <ng-md-icon icon="reply" ng-click="post.answer=true"></ng-md-icon>
                                 </div>
-                                <div class="answerPost" ng-if="post.answer"  layout="row">
-                                        <img class="avatarImage" ng-src="{{data.files[data.profile.profileImage]}}" alt="">
-                                <md-autocomplete  ng-init="data.answerPost[post._id]={};data.answerPost[post._id].text='@'+data.profiles[post.feedID].handle" flex md-input-type="textarea" md-selected-item="data.publicPost.selectedItem" md-search-text="data.answerPost[post._id].text" md-items="item in queryPublicPost(data.publicPost.text)" md-item-text="autocompletePublicPost(data.publicPost.text,item.handle)" md-min-length="3" md-floating-label="Answer to {{data.profiles[post.feedID].name}}.." md-menu-class="autocomplete-handles-template">
-                                    <md-item-template>
-                                        <span class="item-title">
+                                <div class="answerPost" ng-if="post.answer" layout="row">
+                                    <img class="avatarImage" ng-src="{{data.files[data.profile.profileImage]}}" alt="">
+                                    <md-autocomplete ng-init="data.answerPost[post._id]={};data.answerPost[post._id].text='@'+data.profiles[post.feedID].handle" flex md-input-type="textarea" md-selected-item="data.publicPost.selectedItem" md-search-text="data.answerPost[post._id].text" md-items="item in queryPublicPost(data.publicPost.text)" md-item-text="autocompletePublicPost(data.publicPost.text,item.handle)" md-min-length="3" md-floating-label="Answer to {{data.profiles[post.feedID].name}}.." md-menu-class="autocomplete-handles-template">
+                                        <md-item-template>
+                                            <span class="item-title">
                                             <ng-md-icon icon="perm_identity"></ng-md-icon>
                                             <span> {{item.name}} </span>
-                                        </span>
-                                        <span class="item-metadata">
+                                            </span>
+                                            <span class="item-metadata">
                                             <span class="item-metastat">
                                               Handle:<strong>{{item.handle}}</strong> 
                                             </span>
-                                        <span class="item-metastat">
+                                            <span class="item-metastat">
                                               Location:<strong>{{item.location}}</strong> 
                                             </span>
-                                        </span>
-                                    </md-item-template>
-                                </md-autocomplete>
+                                            </span>
+                                        </md-item-template>
+                                    </md-autocomplete>
                                 </div>
                             </md-card>
                             <br/>
@@ -1048,7 +1050,7 @@
                     text.slice(Math.max(text.lastIndexOf("@"), text.lastIndexOf("#"), text.lastIndexOf(" ")))
                     if (match = re.exec(text.slice(Math.max(text.lastIndexOf("@"), text.lastIndexOf("#"), text.lastIndexOf(" "))))) {
                         var deferred = $q.defer();
-                        
+
                         if (match.length) {
                             $scope.feed.search(match[0]).then(function(results) {
                                 if (results.length) deferred.resolve(results)

@@ -207,7 +207,7 @@ function storeFile(fileData) {
         var offset = fileData[0].offset
         var slice = fileData[0].slice
         tempFiles[infohash].data += slice;
-        console.log(offset, tempFiles[infohash].data.length, slice.length)
+        // console.log(offset, tempFiles[infohash].data.length, slice.length)
         if ((offset + slice.length) >= tempFiles[infohash].size) {
             var buffer = new Buffer(tempFiles[infohash].data, "binary");
             buffer.name = tempFiles[infohash].name

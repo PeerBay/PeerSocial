@@ -773,7 +773,7 @@ Feed.prototype = {
                 })
 
             } else {
-
+                delete post.files
                 self.onion.call("put", [self.signDoc(post, keys)]).then(function(answer) {
                     resolve(answer)
                 })
