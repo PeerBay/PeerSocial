@@ -1,0 +1,49 @@
+CACHE MANIFEST
+
+
+#version 1.1 9-11-2015
+
+CACHE:
+
+#images
+http://peerbay.net/images/logo.png
+
+#internal HTML documents
+
+
+#style sheets
+http://peerbay.net/assets/app.css
+http://peerbay.net/bower_components/angular-material-icons/angular-material-icons.css
+http://peerbay.net/bower_components/angular-material/angular-material.css
+http://peerbay.net/bower_components/cropme/cropme.css
+http://peerbay.net/bower_components/lf-ng-md-fileinput/dist/lf-ng-md-file-input.css
+
+
+#javascript files
+http://peerbay.net/bower_components/angular/angular.js
+http://peerbay.net/bower_components/angular-sanitize/angular-sanitize.js
+http://peerbay.net/bower_components/angular-animate/angular-animate.js
+http://peerbay.net/bower_components/angular-aria/angular-aria.js
+http://peerbay.net/bower_components/angular-material/angular-material.js
+http://peerbay.net/bower_components/angular-material-icons/angular-material-icons.js
+http://peerbay.net/bower_components/moment/moment.js
+http://peerbay.net/bower_components/lf-ng-md-fileinput/dist/lf-ng-md-file-input.js
+http://peerbay.net/bower_components/angular-touch/angular-touch.js
+http://peerbay.net/bower_components/angular-superswipe/superswipe.js
+http://peerbay.net/bower_components/cropme/cropme.js
+http://peerbay.net/bower_components/autobahnjs/autobahn.js
+http://peerbay.net/bower_components/blob-util/dist/blob-util.js
+http://peerbay.net/bower_components/tweetnacl/nacl.js
+http://peerbay.net/modules/idb.filesystem.js
+http://peerbay.net/modules/crypto/nacl-stream.js
+http://peerbay.net/modules/crypto/blake2s.js
+http://peerbay.net/modules/crypto/scrypt.js
+http://peerbay.net/modules/crypto/base58.js
+http://peerbay.net/modules/autobahn.rtc.js
+http://peerbay.net/modules/wamp.rtc.js
+http://peerbay.net/modules/onion.rtc.js
+http://peerbay.net/modules/peerbay.js
+http://peerbay.net/modules/peerFeed.js
+
+NETWORK:
+*
