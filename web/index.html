@@ -1405,6 +1405,7 @@
                             if (ans.ok) {
                                 $scope.data.profile._id = ans.id
                                 $scope.data.profile._rev = ans.rev
+                                location.reload()
                             } else if (ans.error) {
                                 $scope.showSimpleToast("Error:" + ans.error)
                             }
