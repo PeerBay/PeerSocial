@@ -392,7 +392,7 @@ function addRequest(m) {
     // }
     var deferred = Q.defer();
     doc = m[0].request
-    doc._id = m[0].key + Date.now()
+    doc._id = m[0].key + "-"+Date.now()
 
     requestsDB.insert(doc, function(err, body) {
         // console.log(err, body)
@@ -708,7 +708,7 @@ function put(m) {
         console.log("verified")
         doc.signature = m[0].signature
             // console.log(doc)
-        doc._id = m[0].key + Date.now()
+        doc._id = m[0].key +"-" +Date.now()
 
         feeds.insert(doc, function(err, body) {
             console.log(err, body)
@@ -815,7 +815,7 @@ function tag(tag) {
 }
 
 function validate(doc) {
-    var userKey = nacl.util.decodeUTF8(doc._id.substring(0, 46))
+    var userKey = nacl.util.decodeUTF8(doc._id.split("-")[0])
     var sign = doc.sign;
     delete doc.sign;
     doc = JSON.stringify(doc)
@@ -925,8 +925,8 @@ connection.onopen = function(session) {
         include_docs: true
     }, function(err, change) {
         if (!err) {
-            session.publish(change.id.substring(0, 46), [change.id])
-            console.log("Got change number " + change.id.substring(0, 46));
+            session.publish(change.id.split("-")[0], [change.id])
+            console.log("Got change number " + change.id.split("-")[0]);
             if (change.doc.tags) {
                 change.doc.tags.forEach(function(tag) {
                     session.publish("tag-" + tag, [change.id])
@@ -946,8 +946,8 @@ connection.onopen = function(session) {
         include_docs: true
     }, function(err, change) {
         if (!err && !change.doc.viewed) {
-            session.publish("requests-" + change.id.substring(0, 46), [change.id])
-            console.log("Got change number " + change.id.substring(0, 46));
+            session.publish("requests-" + change.id.split("-")[0], [change.id])
+            console.log("Got change number " + change.id.split("-")[0]);
         }
     })
 

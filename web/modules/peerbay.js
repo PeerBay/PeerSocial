@@ -614,8 +614,8 @@ Feed.prototype = {
                 docs.forEach(function(doc, i, theDocs) {
                     doc = decryptDoc(doc, group.secret)
                     console.log(doc)
-                    doc.date = doc._id.substring(46)
-                    doc.feedID = doc._id.substring(0, 46)
+                    doc.date = doc._id.split("-")[1]
+                    doc.feedID = doc._id.split("-")[0]
                     theDocs[i] = doc;
                 })
 
@@ -736,8 +736,8 @@ Feed.prototype = {
                 console.log(docs)
                 docs.forEach(function(doc, i, theDocs) {
 
-                    doc.date = doc._id.substring(46)
-                    doc.feedID = doc._id.substring(0, 46)
+                    doc.date = doc._id.split("-")[1]
+                    doc.feedID = doc._id.split("-")[0]
                     theDocs[i] = doc;
                 })
 
@@ -770,8 +770,8 @@ Feed.prototype = {
                     // docs.forEach(function(docid, i, theDocs) {
                     //     doc = {}
                     //     doc._id=docid
-                    //     doc.date = docid.substring(46)
-                    //     doc.feedID = docid.substring(0, 46)
+                    //     doc.date = docid.split("-")[1]
+                    //     doc.feedID = docid.split("-")[0]
                     //     theDocs[i] = doc;
                     // })
 

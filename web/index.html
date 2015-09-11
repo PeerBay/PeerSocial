@@ -605,9 +605,9 @@
                                             $scope.feed.get($scope.unread[this.id]).then(function(data) {
                                                 console.log(data)
                                                 data.forEach(function(doc, i, theDocs) {
-                                                    doc.date = parseInt(doc._id.substring(46))
+                                                    doc.date = parseInt(doc._id.split("-")[1])
                                                     if (doc.date && self.lastdate > doc.date) self.lastdate = doc.date
-                                                    doc.feedID = doc._id.substring(0, 46)
+                                                    doc.feedID = doc._id.split("-")[0]
                                                     theDocs[i] = doc;
                                                     $scope.Tab[self.id].push(doc)
                                                 })
@@ -630,9 +630,9 @@
                                                 console.log(ans)
                                                 $scope.feed.get(ans).then(function(data) {
                                                         data.forEach(function(doc, i, theDocs) {
-                                                                doc.date = parseInt(doc._id.substring(46))
+                                                                doc.date = parseInt(doc._id.split("-")[1])
                                                                 if (doc.date && self.lastdate > doc.date) self.lastdate = doc.date
-                                                                doc.feedID = doc._id.substring(0, 46)
+                                                                doc.feedID = doc._id.split("-")[0]
                                                                 theDocs[i] = doc;
                                                                 $scope.Tab[self.id].push(doc)
                                                                 $scope.$apply()
@@ -656,9 +656,9 @@
                                                 $scope.feed.get(data).then(function(data) {
                                                     console.log(data)
                                                     data.forEach(function(doc, i, theDocs) {
-                                                            doc.date = parseInt(doc._id.substring(46))
+                                                            doc.date = parseInt(doc._id.split("-")[1])
                                                             if (doc.date && self.lastdate > doc.date) self.lastdate = doc.date
-                                                            doc.feedID = doc._id.substring(0, 46)
+                                                            doc.feedID = doc._id.split("-")[0]
                                                             theDocs[i] = doc;
                                                             $scope.Tab[self.id].push(doc)
                                                             $scope.$apply()
@@ -691,10 +691,10 @@
                                                 console.log(data)
                                                 for (var i in data) {
                                                     var doc = data[i]
-                                                    var feedID = doc._id.substring(0, 46)
+                                                    var feedID = doc._id.split("-")[0]
                                                     doc = $scope.feed.decryptDoc(doc, self.feed.secret)
                                                     var post = JSON.parse(doc.data.doc)
-                                                    post.date = parseInt(doc._id.substring(46))
+                                                    post.date = parseInt(doc._id.split("-")[1])
                                                     if (post.date && self.lastdate > post.date) self.lastdate = post.date
                                                     post.feedID = feedID
                                                     post.user = doc.data.key
@@ -728,10 +728,10 @@
                                                     console.log(data)
                                                     for (var i in data) {
                                                         var doc = data[i]
-                                                        var feedID = doc._id.substring(0, 46)
+                                                        var feedID = doc._id.split("-")[0]
                                                         doc = $scope.feed.decryptDoc(doc, self.feed.secret)
                                                         var post = JSON.parse(doc.data.doc)
-                                                        post.date = parseInt(doc._id.substring(46))
+                                                        post.date = parseInt(doc._id.split("-")[1])
                                                         if (post.date && self.lastdate > post.date) self.lastdate = post.date
                                                         post.feedID = feedID
                                                         post.user = doc.data.key
@@ -755,10 +755,10 @@
                                                     console.log(data)
                                                     for (var i in data) {
                                                         var doc = data[i]
-                                                        var feedID = doc._id.substring(0, 46)
+                                                        var feedID = doc._id.split("-")[0]
                                                         doc = $scope.feed.decryptDoc(doc, self.feed.secret)
                                                         var post = JSON.parse(doc.data.doc)
-                                                        post.date = parseInt(doc._id.substring(46))
+                                                        post.date = parseInt(doc._id.split("-")[1])
                                                         if (post.date && self.lastdate > post.date) self.lastdate = post.date
                                                         post.feedID = feedID
                                                         post.user = doc.data.key
@@ -787,9 +787,9 @@
                                             $scope.feed.get($scope.unread[this.id]).then(function(data) {
                                                 console.log(data)
                                                 data.forEach(function(doc, i, theDocs) {
-                                                    doc.date = parseInt(doc._id.substring(46))
+                                                    doc.date = parseInt(doc._id.split("-")[1])
                                                     if (doc.date && self.lastdate > doc.date) self.lastdate = doc.date
-                                                    doc.user = doc._id.substring(0, 46)
+                                                    doc.user = doc._id.split("-")[0]
                                                     $scope.getProfile(doc.user)
                                                     theDocs[i] = doc;
                                                     $scope.Tab[self.id].push(doc)
@@ -813,9 +813,9 @@
                                                 console.log(ans)
                                                 $scope.feed.get(ans).then(function(data) {
                                                         data.forEach(function(doc, i, theDocs) {
-                                                                doc.date = parseInt(doc._id.substring(46))
+                                                                doc.date = parseInt(doc._id.split("-")[1])
                                                                 if (doc.date && self.lastdate > doc.date) self.lastdate = doc.date
-                                                                doc.user = doc._id.substring(0, 46)
+                                                                doc.user = doc._id.split("-")[0]
                                                                 $scope.getProfile(doc.user)
                                                                 theDocs[i] = doc;
                                                                 $scope.Tab[self.id].push(doc)
@@ -839,9 +839,9 @@
                                                 $scope.feed.get(data).then(function(data) {
                                                     console.log(data)
                                                     data.forEach(function(doc, i, theDocs) {
-                                                            doc.date = parseInt(doc._id.substring(46))
+                                                            doc.date = parseInt(doc._id.split("-")[1])
                                                             if (doc.date && self.lastdate > doc.date) self.lastdate = doc.date
-                                                            doc.user = doc._id.substring(0, 46)
+                                                            doc.user = doc._id.split("-")[0]
                                                             $scope.getProfile(doc.user)
                                                             theDocs[i] = doc;
                                                             $scope.Tab[self.id].push(doc)
@@ -886,9 +886,9 @@
 
                                             $scope.feed.get(ans).then(function(data) {
                                                 data.forEach(function(doc, i, theDocs) {
-                                                    doc.date = parseInt(doc._id.substring(46))
+                                                    doc.date = parseInt(doc._id.split("-")[1])
                                                     if (doc.date && self.lastdate > doc.date) self.lastdate = doc.date
-                                                    doc.feedID = doc._id.substring(0, 46)
+                                                    doc.feedID = doc._id.split("-")[0]
                                                     theDocs[i] = doc;
                                                     $scope.Tab[self.id].push(doc)
                                                     $scope.$apply()
@@ -903,10 +903,10 @@
                                                 console.log(data)
                                                 for (var i in data) {
                                                     var doc = data[i]
-                                                    var feedID = doc._id.substring(0, 46)
+                                                    var feedID = doc._id.split("-")[0]
                                                     doc = $scope.feed.decryptDoc(doc, self.feed.secret)
                                                     var post = JSON.parse(doc.data.doc)
-                                                    post.date = parseInt(doc._id.substring(46))
+                                                    post.date = parseInt(doc._id.split("-")[1])
                                                     if (post.date && self.lastdate > post.date) self.lastdate = post.date
                                                     post.feedID = feedID
                                                     post.user = doc.data.key
@@ -925,9 +925,9 @@
 
                                             $scope.feed.get(ans).then(function(data) {
                                                 data.forEach(function(doc, i, theDocs) {
-                                                    doc.date = parseInt(doc._id.substring(46))
+                                                    doc.date = parseInt(doc._id.split("-")[1])
                                                     if (doc.date && self.lastdate > doc.date) self.lastdate = doc.date
-                                                    doc.user = doc._id.substring(0, 46)
+                                                    doc.user = doc._id.split("-")[0]
                                                     $scope.getProfile(doc.user)
                                                     theDocs[i] = doc;
                                                     $scope.Tab[self.id].push(doc)
@@ -1656,8 +1656,8 @@
 
                             $scope.feed.get(docids).then(function(data) {
                                 data.forEach(function(doc, i, theDocs) {
-                                        doc.date = doc._id.substring(46)
-                                        doc.feedID = doc._id.substring(0, 46)
+                                        doc.date = doc._id.split("-")[1]
+                                        doc.feedID = doc._id.split("-")[0]
                                         theDocs[i] = doc;
                                         self.loadedPosts[doc._id] = doc
                                     })
@@ -1790,10 +1790,10 @@
                                 console.log(data)
                                 for (var i in data) {
                                     var doc = data[i]
-                                    feedID = doc._id.substring(0, 46)
+                                    feedID = doc._id.split("-")[0]
                                     doc = $scope.feed.decryptDoc(doc, self.group[feedID].secret)
                                     var post = JSON.parse(doc.data.doc)
-                                    post.date = doc._id.substring(46)
+                                    post.date = doc._id.split("-")[1]
                                     post.feedID = feedID
                                     post.user = doc.data.key
                                     post._id = doc._id
