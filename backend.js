@@ -94,7 +94,7 @@ var download = function(uri, filename, cb) {
 };
 
 function getRssFeeds(rssLinks) {
-    if(!rssLinks[0]){
+    if (!rssLinks[0]) {
         return []
     }
     console.log("getRss", rssLinks)
@@ -193,6 +193,7 @@ function storeFile(fileData) {
 
     var deferred = Q.defer();
     if (!(infohash in tempFiles)) {
+        console.log("store file ", infohash)
         var size = fileData[0].size
         var name = fileData[0].name
         tempFiles[infohash] = {
@@ -203,9 +204,10 @@ function storeFile(fileData) {
         deferred.resolve({
             infohash: size
         })
-    } else {
+    } else if (fileData[0].slice) {
         var offset = fileData[0].offset
         var slice = fileData[0].slice
+        console.log("store slice: ", infohash, offset + slice.length, tempFiles[infohash].size)
         tempFiles[infohash].data += slice;
         // console.log(offset, tempFiles[infohash].data.length, slice.length)
         if ((offset + slice.length) >= tempFiles[infohash].size) {
@@ -246,7 +248,7 @@ function storeFile(fileData) {
 }
 
 function getArticle(link) {
-    if(!link[0]){
+    if (!link[0]) {
         return {}
     }
     var deferred = Q.defer();
@@ -415,7 +417,7 @@ function getNewRequestsIds(feedID) {
             var answer = [];
             console.log("docids", JSON.stringify(body))
             body.rows.forEach(function(row) {
-                    if (row.id && row.value.rev.indexOf("1")==0) {
+                    if (row.id && row.value.rev.indexOf("1") == 0) {
                         answer.push(row.id)
                     }
                 })
@@ -441,11 +443,11 @@ function getRequests(signedRequest) {
             nacl.sign.open(
                 nacl.util.decodeBase64(
                     signedRequest[0].docids[n]), pKey))
-        if (docid && docid.indexOf(signedRequest[0].key)==0) {
+        if (docid && docid.indexOf(signedRequest[0].key) == 0) {
             askDocs[docid] = signedRequest[0].docids[n]
         }
     }
-    console.log("askDocs:",askDocs)
+    console.log("askDocs:", askDocs)
     if (askDocs.length != 0) {
         var deferred = Q.defer();
         requestsDB.fetch({
@@ -455,21 +457,14 @@ function getRequests(signedRequest) {
             if (!err) {
                 var answer = [];
                 console.log(body)
-                if (body.rows.length>=1) {
-                    var deleteDocs=[]
+                if (body.rows.length >= 1) {
+
                     body.rows.forEach(function(row) {
-                        if (row.doc) {
+                        if (row.doc && !row.doc.viewed) {
                             answer.push(row.doc)
-                            deleteDocs.push({
-                                "_id": row.doc._id,
-                                "_rev": row.doc._rev,
-                                "viewed": askDocs[row.doc._id]
-                            })
                         }
                     })
-                    feeds.bulk({"docs":deleteDocs},function(err,body){
-                        console.log(err,body)
-                    })
+
 
                 }
 
@@ -489,6 +484,33 @@ function getRequests(signedRequest) {
     }
     return deferred.promise;
 
+}
+
+function deleteRequest(req) {
+    var pKey = Base58.decode(req[0].key).subarray(0, 32)
+    var deferred = Q.defer();
+    docid = nacl.util.encodeUTF8(
+        nacl.sign.open(
+            nacl.util.decodeBase64(
+                req[0].sign), pKey))
+    if (docid && docid.indexOf(req[0].key) == 0) {
+       
+        requestsDB.insert({
+            _id: docid,
+            _rev: req[0].rev,
+            viewed: req[0].sign
+        }, function(err, body) {
+            // console.log(err, body)
+            if (!err) {
+                deferred.resolve(body)
+            } else {
+                deferred.resolve(err)
+            }
+        })
+    }else{
+        deferred.resolve({"error":"not valid sign"})
+    }
+    return deferred.promise;
 }
 
 function getFeed(feedId) {
@@ -534,7 +556,7 @@ function getFeedDocIds(feedID) {
     console.log('getFeedDocIds', feedID)
     var deferred = Q.defer();
     if (feedID[1]) {
-        startkey = feedID[1]
+        startkey = feedID[1] - 1
     } else {
         startkey = "1\u9999"
 
@@ -613,8 +635,8 @@ function putwithid(m) {
     if (signed) {
         console.log(m[0])
         var doc = JSON.parse(m[0].doc)
-        if (doc._id.indexOf(m[0].key)==0) {
-            doc.signature=m[0].signature
+        if (doc._id.indexOf(m[0].key) == 0) {
+            doc.signature = m[0].signature
             console.log("verified")
             var deferred = Q.defer();
             if (doc.handle && doc._id == m[0].key) {
@@ -658,7 +680,7 @@ function putwithid(m) {
 
             return deferred.promise;
         } else {
-            console.log("key ID",doc._id,m[0].key)
+            console.log("key ID", doc._id, m[0].key)
             return {
                 "error": "Document id doesn't match public key"
             }
@@ -684,7 +706,7 @@ function put(m) {
         var deferred = Q.defer();
         var doc = JSON.parse(m[0].doc)
         console.log("verified")
-        doc.signature=m[0].signature
+        doc.signature = m[0].signature
             // console.log(doc)
         doc._id = m[0].key + Date.now()
 
@@ -727,14 +749,15 @@ function queryHandles(query) {
         })
     return deferred.promise
 }
+
 function getBoxKeys(feedIds) {
     var deferred = Q.defer();
     feeds.view("rel", "boxkey", {
-            keys:feedIds
+            keys: feedIds
         },
         function(err, body) {
 
-            if (!err && body.rows.length>=1 ) {
+            if (!err && body.rows.length >= 1) {
 
                 deferred.resolve(body.rows)
             } else {
@@ -765,16 +788,24 @@ function belongsTo(threadIds) {
 
 function tag(tag) {
     console.log(tag[0])
+    if (tag[1]) {
+        startkey = [tag[0], tag[1] - 1]
+    } else {
+        startkey = [tag[0], {}]
+    }
     var deferred = Q.defer();
     feeds.view("rel", "tag", {
-            "key": tag[0]
+            "startkey": startkey,
+            "endkey": [tag[0], 0],
+            "descending": true,
+            "limit": 5
         },
         function(err, body) {
-            var answer = {};
+            var answer = [];
             console.log(err, body)
             if (!err) {
                 body.rows.forEach(function(doc) {
-                    answer[doc.key] = doc.value
+                    answer.push(doc.value)
                 });
 
                 deferred.resolve(answer)
@@ -824,7 +855,8 @@ connection.onopen = function(session) {
             freePeers.push(p[0].authid)
                 // console.log("join", rtcPeers[p[0].session])
         }
-        // console.log("register ",session._subscriptions)
+        session.publish("onlineUsers", [Object.keys(rtcPeers).length])
+            // console.log("register ",session._subscriptions)
     }
 
     function on_event_leave(p, f, l) {
@@ -862,11 +894,9 @@ connection.onopen = function(session) {
             freePeers.push(req[0])
         }
     })
-    session.register("test", function(data) {
+    session.subscribe("test", function(data) {
         console.log("test called with :", data)
-        return {
-            "test": "success"
-        }
+
     })
     session.register("handles", queryHandles)
     session.register("putwithid", putwithid)
@@ -886,6 +916,7 @@ connection.onopen = function(session) {
     session.register("addRequest", addRequest)
     session.register("getNewRequestsIds", getNewRequestsIds)
     session.register("getRequests", getRequests)
+    session.register("deleteRequest", deleteRequest)
     session.register("getBoxKeys", getBoxKeys)
     session.register("tag", tag)
     follow({
@@ -915,7 +946,7 @@ connection.onopen = function(session) {
         include_docs: true
     }, function(err, change) {
         if (!err && !change.doc.viewed) {
-            session.publish("requests-"+change.id.substring(0, 46), [change.id])
+            session.publish("requests-" + change.id.substring(0, 46), [change.id])
             console.log("Got change number " + change.id.substring(0, 46));
         }
     })

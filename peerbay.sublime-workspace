@@ -4,6 +4,42 @@
 		"selected_items":
 		[
 			[
+				"sess",
+				"seedSessions"
+			],
+			[
+				"subsc",
+				"subscriptions"
+			],
+			[
+				"users",
+				"usersnum"
+			],
+			[
+				"md-",
+				"md-button"
+			],
+			[
+				"onfile",
+				"onFileRemoved"
+			],
+			[
+				"desti",
+				"destinationHeight"
+			],
+			[
+				"destination",
+				"destinationWidth"
+			],
+			[
+				"md-ca",
+				"md-card-footer"
+			],
+			[
+				"md-c",
+				"md-content"
+			],
+			[
 				"files",
 				"filesystem"
 			],
@@ -240,10 +276,6 @@
 				"$scope	AngularJS"
 			],
 			[
-				"md-ca",
-				"md-card-content"
-			],
-			[
 				"req",
 				"req"
 			],
@@ -294,10 +326,6 @@
 			[
 				"peer",
 				"peerID"
-			],
-			[
-				"sess",
-				"session"
 			],
 			[
 				"messa",
@@ -486,34 +514,6 @@
 			[
 				"peerFeedID",
 				"peerFeedID"
-			],
-			[
-				"contro",
-				"controller	Angular.js"
-			],
-			[
-				"encry",
-				"encryptDoc"
-			],
-			[
-				"hash",
-				"hashCodes"
-			],
-			[
-				"$app",
-				"angular: $apply"
-			],
-			[
-				"$root",
-				"$rootScope	AngularJS"
-			],
-			[
-				"ev",
-				"angular: $eval"
-			],
-			[
-				"h",
-				"h6	Tag"
 			]
 		]
 	},
@@ -523,7 +523,7 @@
 			"file": "web/index.html",
 			"settings":
 			{
-				"buffer_size": 69107,
+				"buffer_size": 85139,
 				"line_ending": "Unix"
 			}
 		},
@@ -531,31 +531,7 @@
 			"file": "web/modules/peerbay.js",
 			"settings":
 			{
-				"buffer_size": 35579,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "backend.js",
-			"settings":
-			{
-				"buffer_size": 29159,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "web/assets/app.css",
-			"settings":
-			{
-				"buffer_size": 2322,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "web/modules/onion.rtc.js",
-			"settings":
-			{
-				"buffer_size": 11820,
+				"buffer_size": 38247,
 				"line_ending": "Unix"
 			}
 		},
@@ -571,7 +547,39 @@
 			"file": "web/modules/autobahn.rtc.js",
 			"settings":
 			{
-				"buffer_size": 7469,
+				"buffer_size": 8454,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "web/modules/onion.rtc.js",
+			"settings":
+			{
+				"buffer_size": 13857,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "README.md",
+			"settings":
+			{
+				"buffer_size": 831,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "backend.js",
+			"settings":
+			{
+				"buffer_size": 29254,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "web/assets/app.css",
+			"settings":
+			{
+				"buffer_size": 3078,
 				"line_ending": "Unix"
 			}
 		},
@@ -697,18 +705,24 @@
 		"/home/vasilis/projects/PeerBay/PeerSocial/PeerSocial/web",
 		"/home/vasilis/projects/PeerBay/PeerSocial/PeerSocial/web/assets",
 		"/home/vasilis/projects/PeerBay/PeerSocial/PeerSocial/web/bower_components",
-		"/home/vasilis/projects/PeerBay/PeerSocial/PeerSocial/web/bower_components/idb.filesystem.js",
-		"/home/vasilis/projects/PeerBay/PeerSocial/PeerSocial/web/modules"
+		"/home/vasilis/projects/PeerBay/PeerSocial/PeerSocial/web/bower_components/cropme",
+		"/home/vasilis/projects/PeerBay/PeerSocial/PeerSocial/web/bower_components/lf-ng-md-fileinput",
+		"/home/vasilis/projects/PeerBay/PeerSocial/PeerSocial/web/bower_components/lf-ng-md-fileinput/dist"
 	],
 	"file_history":
 	[
+		"/home/vasilis/projects/PeerBay/PeerSocial/PeerSocial/web/bower_components/lf-ng-md-fileinput/dist/lf-ng-md-file-input.js",
+		"/home/vasilis/projects/PeerBay/PeerSocial/PeerSocial/web/bower_components/cropme/cropme.js",
+		"/home/vasilis/projects/PeerBay/PeerSocial/PeerSocial/couchdb_views.json",
+		"/home/vasilis/projects/PeerBay/PeerSocial/PeerSocial/web/modules/idb.filesystem.js",
+		"/home/vasilis/projects/PeerBay/PeerSocial/PeerSocial/web/bower_components/angular-superswipe/superswipe.js",
+		"/home/vasilis/projects/PeerBay/PeerSocial/PeerSocial/web/bower_components/idb.filesystem.js/src/idb.filesystem.js",
 		"/home/vasilis/projects/PeerBay/PeerSocial/PeerSocial/web/bower_components/lf-ng-md-fileinput/dist/lf-ng-md-file-input.css",
 		"/home/vasilis/projects/PeerBay/PeerSocial/PeerSocial/.gitignore",
 		"/home/vasilis/projects/PeerBay/peerNode/hello/hello/web/fuzzyScraper.js",
 		"/home/vasilis/projects/PeerBay/peerNode/testing/couchdb/configure",
 		"/home/vasilis/projects/PeerBay/PeerSocial/PeerSocial/testfiletor.js",
 		"/home/vasilis/.config/sublime-text-3/Packages/User/CommandOnSave.sublime-settings",
-		"/home/vasilis/projects/PeerBay/PeerSocial/PeerSocial/web/bower_components/lf-ng-md-fileinput/dist/lf-ng-md-file-input.js",
 		"/home/vasilis/projects/PeerBay/PeerSocial/PeerSocial/web/modules/delivery.js",
 		"/home/vasilis/projects/PeerBay/PeerSocial/PeerSocial/web/modules/wamp.rtc.js",
 		"/home/vasilis/projects/PeerBay/PeerSocial/PeerSocial/web/modules/create-torrent.js",
@@ -824,12 +838,7 @@
 		"/home/vasilis/.config/sublime-text-3/Packages/Web Inspector/Default (Linux).sublime-keymap",
 		"/home/vasilis/.config/sublime-text-3/Packages/SideBarGit/SideBarGit.sublime-settings",
 		"/home/vasilis/projects/PeerBay/peerFeed/backbone/comments-form.html",
-		"/home/vasilis/projects/PeerBay/peerFeed/backbone/comments-list.html",
-		"/home/vasilis/projects/PeerBay/peerFeed/social/templates/comments-form.html",
-		"/home/vasilis/projects/PeerBay/peerFeed/social/templates/comments-list.html",
-		"/home/vasilis/projects/PeerBay/peerFeed/social/templates/posts-list.html",
-		"/home/vasilis/projects/PeerBay/peerFeed/social/index.html.1",
-		"/home/vasilis/projects/PeerBay/peerFeed/social/templates/posts-form.html"
+		"/home/vasilis/projects/PeerBay/peerFeed/backbone/comments-list.html"
 	],
 	"find":
 	{
@@ -849,6 +858,47 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"proxies",
+			"exit",
+			"subscriptions",
+			"subscrptions",
+			"data.name",
+			"admin",
+			"data.feed",
+			"invite",
+			"resolve",
+			"image in",
+			"{{data.groupswallunread}}",
+			"unread",
+			"load ",
+			"randompeers",
+			"waiting",
+			"unread",
+			"unreade",
+			"readasdata",
+			"getFile",
+			"grouppost",
+			"psot",
+			"grouppost",
+			"groupwall",
+			"loadGrou",
+			"addrss",
+			"simpletoast",
+			"mdtoa",
+			"email",
+			" data.files[image]",
+			" src=\"{{",
+			"src",
+			"tourl",
+			"notifica",
+			"data.files[image",
+			"publicpost",
+			"button",
+			"getcroppromise",
+			"dataurl",
+			"browse",
+			"lffiles",
+			"tourl",
 			"webkit",
 			"mozRt",
 			"moz",
@@ -935,48 +985,7 @@
 			"send",
 			"reqID",
 			"sendRequest",
-			"twi",
-			"I am",
-			"I",
-			"true",
-			"I",
-			"leachchannel",
-			"self.exit.rtcKey",
-			"master",
-			"testroute",
-			"testro",
-			"console",
-			"self.exit.",
-			"exit",
-			"tube",
-			"_tube",
-			"onconne",
-			"PeerPouchDB._shareInitializersByName",
-			"id = fun",
-			"PouchDB.uuid()",
-			"uuid",
-			"Pouch",
-			"_shareInitializersByName",
-			"Promise.all(Object.keys(doc._attachments).map(function (k",
-			"return Promise.all(Object.keys(doc._attachments).map(function (key)",
-			"\n  Object.keys(atts).forEach(function (filename) {\n    var att = atts[filename];\n    att.data = b64StringToBluffer(att.data, att.content_type);\n  });\n}",
-			"function readAttachmentsAsBlobOrBuffer(row) {\n  var atts = row.doc && row.doc._attachments;\n  if (!atts) {\n    return;\n  }\n  Object.keys(atts).forEach(function (filename) {\n    var att = atts[filename];\n    att.data = b64StringToBluffer(att.data, att.content_type);\n  });\n}",
-			"function readAttachmentsAsBlobOrBuffer(row) {\n  var atts = row.doc && row.doc._attachments;\n  if (!atts) {\n    return;\n  }\n  Object.keys(atts).forEach(function (filename) {\n    var att = atts[filename];\n    att.data = b64StringToBluffer(att.data, att.content_type);\n  });\n}\n",
-			"      method: 'POST',\n      url: genDBUrl(host, '_revs_diff'),",
-			"method: 'DE",
-			"httppouch",
-			"changes",
-			"req",
-			"rtcke",
-			"candida",
-			"call",
-			"rtckey",
-			"&list=FL6N6BHHM1xkH_8PD27kKpHQ",
-			"rtcchanne",
-			"={};\n",
-			"F",
-			"f",
-			"user"
+			"twi"
 		],
 		"highlight": true,
 		"in_selection": false,
@@ -1013,7 +1022,7 @@
 	"groups":
 	[
 		{
-			"selected": 0,
+			"selected": 3,
 			"sheets":
 			[
 				{
@@ -1022,15 +1031,15 @@
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 69107,
+						"buffer_size": 85139,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								57509,
-								57509
+								36550,
+								36550
 							]
 						],
 						"settings":
@@ -1040,10 +1049,10 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 19088.0,
+						"translation.y": 8235.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 0,
+					"stack_index": 5,
 					"type": "text"
 				},
 				{
@@ -1052,15 +1061,15 @@
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 35579,
+						"buffer_size": 38247,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								1591,
-								1591
+								922,
+								922
 							]
 						],
 						"settings":
@@ -1070,104 +1079,14 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 294.0,
+						"translation.y": 90.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 1,
+					"stack_index": 2,
 					"type": "text"
 				},
 				{
 					"buffer": 2,
-					"file": "backend.js",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 29159,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								13915,
-								13915
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
-							"tab_size": 4,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 6069.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 3,
-					"type": "text"
-				},
-				{
-					"buffer": 3,
-					"file": "web/assets/app.css",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 2322,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								548,
-								548
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/CSS/CSS.tmLanguage",
-							"tab_size": 2,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 238.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 4,
-					"type": "text"
-				},
-				{
-					"buffer": 4,
-					"file": "web/modules/onion.rtc.js",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 11820,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								8561,
-								8561
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
-							"tab_size": 4,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 2997.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 6,
-					"type": "text"
-				},
-				{
-					"buffer": 5,
 					"file": "web/modules/wamp.rtc.js",
 					"semi_transient": false,
 					"settings":
@@ -1179,8 +1098,8 @@
 						"selection":
 						[
 							[
-								7805,
-								7805
+								6146,
+								6146
 							]
 						],
 						"settings":
@@ -1190,27 +1109,27 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 3626.0,
+						"translation.y": 720.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 2,
+					"stack_index": 3,
 					"type": "text"
 				},
 				{
-					"buffer": 6,
+					"buffer": 3,
 					"file": "web/modules/autobahn.rtc.js",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 7469,
+						"buffer_size": 8454,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								1879,
-								1879
+								5609,
+								5609
 							]
 						],
 						"settings":
@@ -1220,14 +1139,132 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 357.0,
+						"translation.y": 1890.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"type": "text"
+				},
+				{
+					"buffer": 4,
+					"file": "web/modules/onion.rtc.js",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 13857,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								5904,
+								5904
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 1980.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
+					"type": "text"
+				},
+				{
+					"buffer": 5,
+					"file": "README.md",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 831,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								830,
+								830
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Markdown/Markdown.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 146.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 6,
+					"type": "text"
+				},
+				{
+					"buffer": 6,
+					"file": "backend.js",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 29254,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								26625,
+								26625
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 12990.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 4,
+					"type": "text"
+				},
+				{
+					"buffer": 7,
+					"file": "web/assets/app.css",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 3078,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1319,
+								1319
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/CSS/CSS.tmLanguage",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 1050.0,
 						"zoom_level": 1.0
 					},
 					"stack_index": 7,
 					"type": "text"
 				},
 				{
-					"buffer": 7,
+					"buffer": 8,
 					"file": ".gitignore",
 					"semi_transient": false,
 					"settings":
@@ -1251,11 +1288,11 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 5,
+					"stack_index": 8,
 					"type": "text"
 				},
 				{
-					"buffer": 8,
+					"buffer": 9,
 					"semi_transient": false,
 					"settings":
 					{
@@ -1279,11 +1316,11 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 8,
+					"stack_index": 9,
 					"type": "text"
 				},
 				{
-					"buffer": 9,
+					"buffer": 10,
 					"file": "testrssreadable.js",
 					"semi_transient": false,
 					"settings":
@@ -1309,11 +1346,11 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 10,
+					"stack_index": 11,
 					"type": "text"
 				},
 				{
-					"buffer": 10,
+					"buffer": 11,
 					"file": "node_modules/feed-poll/index.js",
 					"semi_transient": false,
 					"settings":
@@ -1336,14 +1373,14 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 561.0,
+						"translation.y": 495.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 9,
+					"stack_index": 10,
 					"type": "text"
 				},
 				{
-					"buffer": 11,
+					"buffer": 12,
 					"file": "node_modules/feed-poll/node_modules/feed-read/index.js",
 					"semi_transient": false,
 					"settings":
@@ -1366,10 +1403,10 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 1887.0,
+						"translation.y": 1665.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 11,
+					"stack_index": 12,
 					"type": "text"
 				}
 			]
@@ -1422,7 +1459,7 @@
 	"project": "peerbay.sublime-project",
 	"replace":
 	{
-		"height": 64.0
+		"height": 42.0
 	},
 	"save_all_on_build": true,
 	"select_file":

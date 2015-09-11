@@ -36,6 +36,9 @@
                         <md-button ng-if="data.newAccount" ng-click="data.signup=true;signIn($event);"> Sign Up
                         </md-button>
                     </md-input-container>
+                    <md-input-container>
+                        <md-checkbox ng-model="data.remember" aria-label="Remember Me">Remember Me</md-checkbox>
+                    </md-input-container>
                     <md-progress-linear ng-if="data.signingIn" md-mode="indeterminate"></md-progress-linear>
                 </md-card-content>
             </md-card>
@@ -46,7 +49,7 @@
             <div flex class="md-toolbar-tools" layout-align="center center">
                 <md-button class="md-warn" ng-click="data.page='feeds'">
                     <ng-md-icon icon="chevron_left"></ng-md-icon>
-                    Feeds
+                    Home
                 </md-button>
                 <h1>Profile</h1>
             </div>
@@ -83,531 +86,340 @@
                     <md-button class="md-raised md-primary" type="submit">Save</md-button>
                 </md-input-container>
             </form>
-            <!-- <md-card flex="50">
-
-                <md-card-content>
-                    <img style="width:100%;" ng-init="data.profileForm.coverImage=data.files[data.profile.coverImage]" ng-src="{{data.profileForm.coverImage}}">
-                    <img style="width:30%;left:0;" ng-init="data.profileForm.profileImage=data.files[data.profile.profileImage]" ng-src="{{data.profileForm.profileImage}}">
-                    <p >Name: {{data.profileForm.name}}</p>
-                    <p >Handle: @{{data.profileForm.handle}}</p>
-                    <p >Location: {{data.profileForm.location}}</p>
-                    <p >Website: {{data.profileForm.website}}</p>
-                    <p >Bio: {{data.profileForm.bio}}</p>
-                    <p >Birthday: {{data.profileForm.birthday}}</p>
-
-                 
-                </md-card-content>
-            </md-card> -->
         </md-content>
     </section>
-    <section layout="column" flex id="content" ng-if="data.page=='feeds'">
-        <md-toolbar layout="row" class="md-theme-indigo md-medium-tall " id="feedtoolbar">
-            <div flex layout="column" class="md-toolbar-tools">
-                <img src="images/pbcircle.png" style="max-height:95%" />
-            </div>
-            <md-tabs flex layout="column" class="md-toolbar-tools md-primary" class=" " md-selected="data.selectedIndex" md-align-tabs="top" md-center-tabs>
-                <md-tab>
-                    <ng-md-icon icon="public">
-                        <md-tooltip md-delay="40">
-                            Feed
-                        </md-tooltip>
-                    </ng-md-icon>
-                </md-tab>
-                <md-tab>
-                    <ng-md-icon icon="group">
-                        <md-tooltip md-delay="40">
-                            Groups
-                        </md-tooltip>
-                    </ng-md-icon>
-                </md-tab>
-                <md-tab>
-                    <ng-md-icon icon="forum">
-                        <md-tooltip md-delay="40">
-                            Messages
-                        </md-tooltip>
-                    </ng-md-icon>
-                </md-tab>
-                <md-tab>
-                    <ng-md-icon icon="web">
-                        <md-tooltip md-delay="40">
-                            News
-                        </md-tooltip>
-                    </ng-md-icon>
-                </md-tab>
-                <md-tab data-ng-disabled="true">
-                    <ng-md-icon icon="audiotrack">
-                        <md-tooltip md-delay="40">
-                            Online Radio
-                        </md-tooltip>
-                    </ng-md-icon>
-                </md-tab>
-                <md-tab data-ng-disabled="true">
-                    <ng-md-icon icon="voice_chat">
-                        <md-tooltip md-delay="40">
-                            Video Chat
-                        </md-tooltip>
-                    </ng-md-icon>
-                </md-tab>
-            </md-tabs>
-            <div flex layout="row" layout-align="end center" class="md-toolbar-tools">
-                <md-autocomplete md-selected-item="data.searchselectedItem" md-selected-item-change="loadFeedWall(item.id)" md-search-text="data.searchText" md-items="item in queryHandles(data.searchText)" md-item-text="item.handle" md-min-length="3" placeholder="Search a user's handle" md-menu-class="autocomplete-handles-template">
-                    <md-item-template>
-                        <span class="item-title">
-                            <ng-md-icon icon="perm_identity"></ng-md-icon>
-                            <span> {{item.name}} </span>
-                        </span>
-                        <span class="item-metadata">
-                            <span class="item-metastat">
-                              Handle:<strong>{{item.handle}}</strong> 
-                            </span>
-                        <span class="item-metastat">
-                              Location:<strong>{{item.location}}</strong> 
-                            </span>
-                        </span>
-                    </md-item-template>
-                </md-autocomplete>
-                <md-button class="md-icon-button" ng-click="showNotifications()">
-                    <ng-md-icon icon="notifications"></ng-md-icon>{{$scope.data.notifications.length}}
-                </md-button>
-                <md-menu style="margin-top:-10px">
-                    <md-button aria-label="Open phone interactions menu" class="md-icon-button" ng-click="$mdOpenMenu()">
-                        <ng-md-icon icon="dehaze"></ng-md-icon>
-                    </md-button>
-                    <md-menu-content width="4">
-                        <md-menu-item>
-                            <md-button ng-click="data.page='profileform'">
-                                <ng-md-icon icon="person_outline" md-menu-align-target></ng-md-icon>
-                                Edit Profile
-                            </md-button>
-                        </md-menu-item>
-                        <md-menu-item>
-                            <md-button>
-                                <ng-md-icon icon="settings" md-menu-align-target></ng-md-icon>
-                                Settings
-                            </md-button>
-                        </md-menu-item>
-                        <md-menu-divider></md-menu-divider>
-                        <md-menu-item>
-                            <md-button>
-                                <ng-md-icon icon="logout" md-menu-align-target></ng-md-icon>
-                                Logout
-                            </md-button>
-                        </md-menu-item>
-                    </md-menu-content>
-                </md-menu>
-            </div>
-        </md-toolbar>
-        <md-content layout="row" ng-if="data.selectedIndex==0" ng-init="data.subpage='mywall'" layout-padding layout-align="space-around start">
-            <md-sidenav class="md-sidenav-left md-whiteframe-z2" md-component-id="left" md-is-locked-open="$mdMedia('gt-md')">
-                <md-toolbar>
-                    <div class="md-toolbar-tools">
-                        <!--         <img flex="100" ng-init="getFile(data.profile.coverImage)" ng-src="{{data.files[data.profile.coverImage]}}"> -->
-                        <h1 class="md-display-4">{{data.profile.name}}</h1>
-                    </div>
-                </md-toolbar>
-                <md-card flex=>
-                    <img ng-init="getFile(data.profile.profileImage)" ng-src="{{data.files[data.profile.profileImage]}}">
-                    <md-card-content>
-                        <h2 class="md-title">Bio</h2>
-                        <p>
-                            {{data.profile.bio}}
-                        </p>
-                    </md-card-content>
-                    <md-card>
-                        <md-button data-ng-click="data.subpage='mywall'">My Wall</md-button>
-            </md-sidenav>
-            <div layout="column" layout-padding layout-align="center center" ng-if="data.subpage=='mywall'">
-                <section layout="column">
-                    <md-toolbar id="publicpostbox" flex class="md-tall ">
-                        <form ng-submit="submitPublicPost()">
-                            <div class="md-toolbar-tools">
-                                <md-input-container>
-                                    <md-autocomplete flex md-input-type="textarea" md-selected-item="data.publicPost.selectedItem" md-search-text="data.publicPost.text" md-items="item in queryPublicPost(data.publicPost.text)" md-item-text="autocompletePublicPost(data.publicPost.text,item.handle)" md-min-length="3" md-floating-label="What's happening?" md-menu-class="autocomplete-handles-template">
-                                        <md-item-template>
-                                            <span class="item-title">
+    <section ng-if="data.page=='feeds'" flex layout="row">
+        <md-content flex layout-padding layout="column" style="overflow:hidden">
+            <!-- layout="column" layout-fill layout-align="top center" -->
+            <md-tabs md-selected="selectedIndex" md-border-bottom md-autoselect>
+                <md-tab md-on-select="walls[tab.wallid].start()" md-on-deselect="walls[tab.wallid].pause()" ng-repeat="tab in tabs" ng-disabled="tab.disabled">
+                    <md-tab-label>
+                        <ng-md-icon ng-if="tab.type=='owner'" icon="person_outline"></ng-md-icon>
+                        <ng-md-icon ng-if="tab.type=='group'" icon="group"></ng-md-icon>
+                        <span ng-if="tab.type=='hashtag'"><b>#</b></span>
+                        <ng-md-icon ng-if="tab.type=='user'" icon="person"></ng-md-icon>
+                        {{tab.handle || tab.data.name || tab.tag }}<sup style="color:red" ng-if="unread[tab.wallid].length">{{unread[tab.wallid].length}}</sup>
+                        <ng-md-icon icon="clear" ng-click="removeTab( tab )"></ng-md-icon>
+                    </md-tab-label>
+                    <md-tab-body style="height:100%">
+                        <section layout="row" ng-if="tab.type=='user'||tab.type=='owner' ">
+                            <md-content flex="20" layout="column">
+                                <md-toolbar>
+                                    <div class="md-toolbar-tools">
+                                        <!--         <img flex="100" ng-init="getFile(data.profile.coverImage)" ng-src="{{data.files[data.profile.coverImage]}}"> -->
+                                        <h1 class="md-display-4">{{tab.name}}</h1>
+                                    </div>
+                                </md-toolbar>
+                                <md-card flex=>
+                                    <img ng-init="!data.files[tab.profileImage]?getFile(tab.profileImage):pass" ng-src="{{data.files[tab.profileImage]}}">
+                                    <md-card-content>
+                                        <h2 class="md-title">Bio</h2>
+                                        <p>
+                                            {{tab.bio}}
+                                        </p>
+                                    </md-card-content>
+                                    <md-card>
+                            </md-content>
+                            <md-content flex offset-gt-md="10" class="md-padding">
+                                <md-toolbar style="max-width:500px" flex class="md-tall " ng-if="tab.type=='owner' ">
+                                    <form ng-submit="submitPublicPost()">
+                                        <div class="md-toolbar-tools">
+                                            <md-input-container>
+                                                <md-autocomplete flex md-input-type="textarea" md-selected-item="data.publicPost.selectedItem" md-search-text="data.publicPost.text" md-items="item in queryPublicPost(data.publicPost.text)" md-item-text="autocompletePublicPost(data.publicPost.text,item.handle)" md-min-length="3" md-floating-label="What's happening?" md-menu-class="autocomplete-handles-template">
+                                                    <md-item-template>
+                                                        <span class="item-title">
                                             <ng-md-icon icon="perm_identity"></ng.-md-icon>
                                             <span> {{item.name}} </span>
-                                            </span>
-                                            <span class="item-metadata">
+                                                        </span>
+                                                        <span class="item-metadata">
                                             <span class="item-metastat">
                                               Handle:<strong>{{item.handle}}</strong> 
                                             </span>
-                                            <span class="item-metastat">
+                                                        <span class="item-metastat">
                                               Location:<strong>{{item.location}}</strong> 
                                             </span>
-                                            </span>
-                                        </md-item-template>
-                                    </md-autocomplete>
-                                </md-input-container>
-                            </div>
-                            <br>
-                            <div class="md-toolbar-tools md-toolbar-tools-bottom md-accent" layout="row" layout-sm="column" layout-align="space-between end">
-                                <md-input-container>
-                                    <lf-ng-md-file-input lf-files="data.publicPost.files" lf-on-file-removed="data.resetPublicFiles" lf-property="images" multiple lf-placeholder="AddPhoto"></lf-ng-md-file-input>
-                                </md-input-container>
-                                <md-input-container>
-                                    <md-button class="md-accent">Post</md-button>
-                                </md-input-container>
-                            </div>
-                        </form>
-                    </md-toolbar>
-                    <md-content layout="row" style="width:500px">
-                        <md-card flex ng-repeat="image in data.publicPost.files">
-                            <md-card-image class="thumbnail">
-                                <img ng-src="{{image.lfDataUrl}}">
-                            </md-card-image>
-                        </md-card>
-                    </md-content>
-                </section>
-                <section layout="column">
-                    <md-virtual-repeat-container ng-if="data.publicWall" flex id="vertical-container" md-auto-shrink style="min-width:530px;min-height:900px;margin-left:10px">
-                        <div layout="column" class="md-notifier" layout-align="center center">
-                            <md-button flex md-no-ink class="md-primary" ng-click="data.mywallunread=0">Load more {{data.mywallunread}}</md-button>
-                        </div>
-                        <div md-virtual-repeat="post in data.publicWall" md-item-size="300" md-on-demand class="repeated-item">
-                            <md-card>
-                                <md-card-content id="post{{post.date}}">
-                                    <div layout="row">
-                                        <img class="avatarImage" ng-src="{{data.files[data.profiles[post.feedID].profileImage]}}" alt="">
-                                        <h3>
+                                                        </span>
+                                                    </md-item-template>
+                                                </md-autocomplete>
+                                            </md-input-container>
+                                        </div>
+                                        <br>
+                                        <div class="md-toolbar-tools md-toolbar-tools-bottom md-accent" layout="row" layout-sm="column" layout-align="space-between end">
+                                            <md-input-container>
+                                                <lf-ng-md-file-input lf-files="data.publicPost.files" lf-on-file-removed="data.resetPublicFiles" lf-property="images" multiple lf-placeholder="AddPhoto"></lf-ng-md-file-input>
+                                            </md-input-container>
+                                            <md-input-container>
+                                                <md-button class="md-accent">Post</md-button>
+                                            </md-input-container>
+                                        </div>
+                                    </form>
+                                </md-toolbar>
+                                <md-card ng-if="post.date" style="max-width:500px" ng-repeat="post in Tab[tab.wallid] | orderBy: '-date'">
+                                    <md-card-content id="post{{post.date}}">
+                                        <div layout="row">
+                                            <img class="avatarImage" ng-init="!data.files[data.profiles[post.feedID].profileImage]?getFile(data.profiles[post.feedID].profileImage):pass" ng-src="{{data.files[data.profiles[post.feedID].profileImage]}}" alt="">
+                                            <h3>
                                     {{data.profiles[post.feedID].name}}
                                     </h3>
+                                        </div>
+                                        <p>
+                                            {{post.message}}
+                                        </p>
+                                    </md-card-content>
+                                    <md-card-footer>
+                                        <md-grid-list md-cols="{{post.images.length>1?2:1}}" md-gutter="1em" md-row-height="1:1">
+                                            <md-grid-tile ng-init="getFile(image)" ng-click="showImageGallery(post.images)" ng-repeat="image in post.images">
+                                                <md-progress-circular ng-if="!data.files[image]" class="md-hue-2" md-mode="indeterminate" md-diameter="20px"></md-progress-circular>
+                                                <div ng-if="data.files[image]" ng-style="{'background-image':'url('+data.files[image]+')', 'background-size': 'cover', 'background-position': '50%','width':'100%','height':'100%'}">
+                                                </div>
+                                            </md-grid-tile>
+                                        </md-grid-list>
+                                    </md-card-footer>
+                                    <div class="md-actions" layout="row" layout-align="end center">
+                                        <ng-md-icon icon="star"></ng-md-icon>
+                                        <ng-md-icon icon="share"></ng-md-icon>
+                                        <ng-md-icon icon="reply" ng-click="post.answer=true"></ng-md-icon>
                                     </div>
-                                    <p>
-                                        {{post.message}}
-                                    </p>
-                                </md-card-content>
-                                <md-card-footer>
-                                    <md-grid-list md-cols="{{post.images.length>1?2:1}}" md-gutter="1em" md-row-height="1:1">
-                                        <md-grid-tile ng-init="getFile(image)" ng-repeat="image in post.images">
-                                            <md-progress-circular ng-if="!data.files[image]" class="md-hue-2" md-mode="indeterminate" md-diameter="20px"></md-progress-circular>
-                                            <div ng-if="data.files[image]" ng-style="{'background-image':'url('+data.files[image]+')', 'background-size': 'cover', 'background-position': '50%','width':'100%','height':'100%'}">
-                                            </div>
-                                        </md-grid-tile>
-                                    </md-grid-list>
-                                </md-card-footer>
-                                <div class="md-actions" layout="row" layout-align="end center">
-                                    <ng-md-icon icon="star"></ng-md-icon>
-                                    <ng-md-icon icon="share"></ng-md-icon>
-                                    <ng-md-icon icon="reply" ng-click="post.answer=true"></ng-md-icon>
-                                </div>
-                                <div class="answerPost" ng-if="post.answer" layout="row">
-                                    <img class="avatarImage" ng-src="{{data.files[data.profile.profileImage]}}" alt="">
-                                    <md-autocomplete ng-init="data.answerPost[post._id]={};data.answerPost[post._id].text='@'+data.profiles[post.feedID].handle" flex md-input-type="textarea" md-selected-item="data.publicPost.selectedItem" md-search-text="data.answerPost[post._id].text" md-items="item in queryPublicPost(data.publicPost.text)" md-item-text="autocompletePublicPost(data.publicPost.text,item.handle)" md-min-length="3" md-floating-label="Answer to {{data.profiles[post.feedID].name}}.." md-menu-class="autocomplete-handles-template">
-                                        <md-item-template>
-                                            <span class="item-title">
+                                    <div class="answerPost" ng-if="post.answer" layout="row">
+                                        <img class="avatarImage" ng-src="{{data.files[data.profile.profileImage]}}" alt="">
+                                        <md-autocomplete ng-init="data.answerPost[post._id]={};data.answerPost[post._id].text='@'+data.profiles[post.feedID].handle" flex md-input-type="textarea" md-selected-item="data.publicPost.selectedItem" md-search-text="data.answerPost[post._id].text" md-items="item in queryPublicPost(data.publicPost.text)" md-item-text="autocompletePublicPost(data.publicPost.text,item.handle)" md-min-length="3" md-floating-label="Answer to {{data.profiles[post.feedID].name}}.." md-menu-class="autocomplete-handles-template">
+                                            <md-item-template>
+                                                <span class="item-title">
                                             <ng-md-icon icon="perm_identity"></ng-md-icon>
                                             <span> {{item.name}} </span>
-                                            </span>
-                                            <span class="item-metadata">
+                                                </span>
+                                                <span class="item-metadata">
                                             <span class="item-metastat">
                                               Handle:<strong>{{item.handle}}</strong> 
                                             </span>
-                                            <span class="item-metastat">
+                                                <span class="item-metastat">
                                               Location:<strong>{{item.location}}</strong> 
                                             </span>
-                                            </span>
-                                        </md-item-template>
-                                    </md-autocomplete>
-                                </div>
-                            </md-card>
-                            <br/>
-                        </div>
-                    </md-virtual-repeat-container>
-                </section>
-            </div>
-            <div layout="column" layout-padding layout-align="center center" ng-if="data.subpage=='feedwall'">
-                <section layout="column">
-                    <md-toolbar id="publicpostbox" flex class="md-tall ">
-                        <div class="md-toolbar-tools">
-                            <h1> {{data.profiles[data.feedwallid].name}}</h1>
-                            <md-button ng-click="followFeed(data.feedwallid)">Follow</md-button>
-                        </div>
-                        <br>
-                    </md-toolbar>
-                </section>
-                <section layout="column">
-                    <md-virtual-repeat-container flex id="vertical-container" md-auto-shrink style="min-width:530px;min-height:900px;margin-left:10px">
-                        <div layout="column" class="md-notifier" layout-align="center center">
-                            <md-button flex md-no-ink class="md-primary" ng-click="data.mywallunread=0">Load more {{data.feedwallunread}}</md-button>
-                        </div>
-                        <div md-virtual-repeat="post in data.feedWall" md-item-size="300" md-on-demand class="repeated-item">
-                            <md-card ng-show="post.date" ng-class="{'md-hue-1':post.read}" ng-mouseover="post.read=true">
-                                <!-- <img class="md-card-image" alt="Washed Out"> -->
-                                <md-card-content id="post{{post.date}}">
-                                    <h3>
-                                    {{data.profiles[post.feedID].name}}
-                                    </h3>
-                                    <p>
-                                        {{post.message}}
-                                    </p>
-                                </md-card-content>
-                                <div class="md-actions" layout="row" layout-align="end center">
-                                    <md-button>Favourite</md-button>
-                                    <md-button>Repost</md-button>
-                                    <md-button>Answer</md-button>
-                                </div>
-                            </md-card>
-                            <br/>
-                        </div>
-                    </md-virtual-repeat-container>
-                </section>
-            </div>
-            <md-sidenav layout="column" flex class="md-sidenav-right md-whiteframe-z2" md-component-id="left" md-is-locked-open="$mdMedia('gt-md')">
-                <md-toolbar class="md-theme-indigo">
-                    <h1 class="md-toolbar-tools">Following</h1>
-                </md-toolbar>
-                <md-content layout-padding>
-                    <md-list>
-                        <md-list-item class="md-2-line" ng-click="loadFeedWall(feedid)" ng-repeat="feedid in feed.mySettings.following.data">
-                            <div class="md-list-item-text">
-                                <h3>{{data.profiles[feedid].name}}</h3>
-                                <p>@{{data.profiles[feedid].handle}}</p>
-                            </div>
-                        </md-list-item>
-                    </md-list>
-                </md-content>
-            </md-sidenav>
-        </md-content>
-        <md-content layout="row" ng-if="data.selectedIndex==1" ng-init="data.subpage='groupswall'" layout-padding layout-align="space-around start">
-            <md-sidenav layout="column" flex class="md-sidenav-left md-whiteframe-z2" md-component-id="left" md-is-locked-open="$mdMedia('gt-md')">
-                <md-toolbar class="md-theme-indigo">
-                    <h1 class="md-toolbar-tools">{{data.profile.name}}</h1>
-                </md-toolbar>
-                <md-content layout="column" layout-padding>
-                    <md-button flex md-no-ink class="md-primary">Your Groups</md-button>
-                    <md-divider></md-divider>
-                    <md-list ng-init="getGroupInfo()">
-                        <md-list-item ng-repeat="group in data.groups" ng-click="loadGroupFeedWall(group)">
-                            <img alt="" ng-init="getFile(group.data.groupImage)" ng-src="{{data.files[group.data.groupImage] }}" class="md-avatar" />
-                            <p>{{ group.data.name }}</p>
-                            <sub ng-if="group.admin">Owner</sub>
-                            <ng-md-icon icon="settings_applications" md-menu-align-target></ng-md-icon>
-                        </md-list-item>
-                    </md-list>
-                    <md-button ng-click="data.subpage='groupform'">Create group</md-button>
-                </md-content>
-            </md-sidenav>
-            <div layout="column" layout-padding layout-align="center center" ng-if="data.subpage=='groupswall'">
-                <section layout="column">
-                    <md-virtual-repeat-container flex id="vertical-container" md-auto-shrink style="min-width:530px;min-height:900px;margin-left:10px">
-                        <div layout="column" class="md-notifier" layout-align="center center">
-                            <md-button flex md-no-ink class="md-primary" ng-click="data.groupswallunread=0">Load more {{data.groupswallunread}}</md-button>
-                        </div>
-                        <div ng-if="data.groupsWall" md-virtual-repeat="post in data.groupsWall" ng-init="loadAllGroups()" md-item-size="300" md-on-demand class="repeated-item">
-                            <md-card ng-show="post.message" ng-class="{'md-hue-1':post.read}" ng-mouseover="post.read=true">
-                                <!-- <img class="md-card-image" alt="Washed Out"> -->
-                                <md-card-content id="post{{post.date}}">
-                                    <h3>
-                                    {{data.profiles[post.key].name}}
-                                    </h3>
-                                    <p>
-                                        {{post.message}}
-                                    </p>
-                                </md-card-content>
-                                <div class="md-actions" layout="row" layout-align="end center">
-                                    <md-button>Favourite</md-button>
-                                    <md-button>Repost</md-button>
-                                    <md-button>Answer</md-button>
-                                </div>
-                            </md-card>
-                            <br/>
-                        </div>
-                    </md-virtual-repeat-container>
-                </section>
-            </div>
-            <div layout="column" layout-padding layout-align="center center" ng-if="data.subpage=='groupwall'">
-                <section layout="column">
-                    <md-toolbar id="grouppostbox" flex class="md-tall ">
-                        <div class="md-toolbar-tools">
-                            <md-autocomplete flex md-input-type="textarea" md-selected-item="data.groupPost.selectedItem" md-search-text="data.groupPost.text" md-items="item in queryGroupPost(data.groupPost.text)" md-item-text="autocompletePublicPost(data.groupPost.text,item.handle)" md-min-length="3" md-floating-label="Post on {{data.groupWall.data.name}}" md-menu-class="autocomplete-handles-template">
-                                <md-item-template>
-                                    <span class="item-title">
+                                                </span>
+                                            </md-item-template>
+                                        </md-autocomplete>
+                                    </div>
+                                </md-card>
+                                <br/>
+                                <md-button class="md-raised md-primary loadmore" ng-click="walls[tab.wallid].loadmore()">Load More..</md-button>
+                            </md-content>
+                        </section>
+                        <section ng-if="tab.type=='group' " layout="row">
+                            <md-content flex="20" layout="column">
+                                <md-list>
+                                    <md-subheader class="md-no-sticky">{{tab.data.name}} users</md-subheader>
+                                    <md-list-item class="md-3-line" ng-repeat="user in tab.data.users">
+                                        <img ng-src="{{data.files[data.profiles[user].profileImage]}}" class="md-avatar" />
+                                        <div class="md-list-item-text" layout="column">
+                                            <h3>{{data.profiles[user].name}}</h3>
+                                            <h4>@{{data.profiles[user].handle}}</h4>
+                                        </div>
+                                    </md-list-item>
+                                    <md-divider></md-divider>
+                                </md-list>
+                                <md-autocomplete ng-if="tab.admin" md-items="item in queryHandles(data.groupForm.searchUserText)" md-item-text="item.name" placeholder="Add user" md-selected-item-change="feed.inviteToGroup(item.id,tab)" md-search-text="data.groupForm.searchUserText">
+                                    <span md-highlight-text="data.groupForm.searchUserText">{{item.name}} :: {{item.handle}}</span>
+                                </md-autocomplete>
+                            </md-content>
+                            <md-content offset="10" flex class="md-padding">
+                                <md-toolbar style="max-width:500px" id="grouppostbox" flex class="md-tall ">
+                                    <div class="md-toolbar-tools">
+                                        <md-autocomplete flex md-input-type="textarea" md-selected-item="tab.groupPost.selectedItem" md-search-text="tab.groupPost.text" md-items="item in queryGroupPost(tab.groupPost.text)" md-item-text="autocompletePublicPost(tab.groupPost.text,item.handle)" md-min-length="3" md-floating-label="Post on {{tab.data.name}}" md-menu-class="autocomplete-handles-template">
+                                            <md-item-template>
+                                                <span class="item-title">
                                             <ng-md-icon icon="perm_identity"></ng-md-icon>
                                             <span> {{item.name}} </span>
-                                    </span>
-                                    <span class="item-metadata">
+                                                </span>
+                                                <span class="item-metadata">
                                             <span class="item-metastat">
                                               Handle:<strong>{{item.handle}}</strong> 
                                             </span>
-                                    <span class="item-metastat">
+                                                <span class="item-metastat">
                                               Location:<strong>{{item.location}}</strong> 
                                             </span>
-                                    </span>
-                                </md-item-template>
-                            </md-autocomplete>
-                        </div>
-                        <br>
-                        <div class="md-toolbar-tools md-toolbar-tools-bottom md-accent" layout="row" layout-sm="column" layout-align="space-between end">
-                            <lf-ng-md-file-input lf-files="postpicture" lf-placeholder="AddPhoto" preview></lf-ng-md-file-input>
-                            <md-button class="md-accent" ng-click="submitGroupPost()">Post</md-button>
-                        </div>
-                    </md-toolbar>
-                </section>
-                <section layout="column">
-                    <md-virtual-repeat-container flex id="vertical-container" md-auto-shrink style="min-width:530px;min-height:900px;margin-left:10px">
-                        <div layout="column" class="md-notifier" layout-align="center center">
-                            <md-button flex md-no-ink class="md-primary" ng-click="data.mywallunread=0">Load more {{data.mywallunread}}</md-button>
-                        </div>
-                        <div ng-if="data.groupWallFeed" md-virtual-repeat="post in data.groupWallFeed " md-item-size="300" md-on-demand class="repeated-item">
-                            <md-card ng-if="post.message" ng-class="{'md-hue-1':post.read}" ng-mouseover="post.read=true">
-                                <!-- <img class="md-card-image" alt="Washed Out"> -->
-                                <md-card-content id="post{{post.date}}">
-                                    <h3>
+                                                </span>
+                                            </md-item-template>
+                                        </md-autocomplete>
+                                    </div>
+                                    <br>
+                                    <div class="md-toolbar-tools md-toolbar-tools-bottom md-accent" layout="row" layout-sm="column" layout-align="space-between end">
+                                        <md-input-container>
+                                            <lf-ng-md-file-input lf-files="tab.groupPost.files" lf-on-file-removed="tab.resetGroupFiles" lf-property="images" multiple lf-placeholder="AddPhoto"></lf-ng-md-file-input>
+                                        </md-input-container>
+                                        <md-input-container>
+                                            <md-button class="md-accent" ng-click="submitGroupPost(tab)">Post</md-button>
+                                        </md-input-container>
+                                    </div>
+                                </md-toolbar>
+                                <md-card ng-if="post.date" style="max-width:500px" ng-repeat="post in Tab[tab.wallid] | orderBy: '-date'">
+                                    <md-card-content id="post{{post.date}}">
+                                        <div layout="row">
+                                            <img class="avatarImage" ng-src="{{data.files[data.profiles[post.user].profileImage]}}" alt="">
+                                            <h3>
                                     {{data.profiles[post.user].name}}
                                     </h3>
-                                    <p>
-                                        {{post.message}}
-                                    </p>
-                                </md-card-content>
-                                <div class="md-actions" layout="row" layout-align="end center">
-                                    <md-button>Favourite</md-button>
-                                    <md-button>Repost</md-button>
-                                    <md-button>Answer</md-button>
-                                </div>
-                            </md-card>
-                            <br/>
-                        </div>
-                    </md-virtual-repeat-container>
-                </section>
-            </div>
-            <section layout="column" layout-padding layout-align="center center" ng-if="data.subpage=='groupform'">
-                <md-toolbar flex>
-                    <div class="md-toolbar-tools">
-                        <h1> Create a Group</h1>
-                    </div>
-                </md-toolbar>
-                <md-card style="width:50%">
-                    <md-card-content>
-                        <form ng-submit="createPrivateGroup()">
-                            <md-input-container>
-                                <label>Name</label>
-                                <input name="name" ng-model="data.groupForm.name" required minlength="4">
-                            </md-input-container>
-                            <md-input-container>
-                                <label>Group information</label>
-                                <textarea ng-model="data.groupForm.info" columns="1" md-maxlength="120"></textarea>
-                            </md-input-container>
-                            <md-content class="md-padding autocomplete" layout="column">
-                                <md-chips md-autocomplete-snap md-require-match="true" ng-init="data.groupForm.users=[]" ng-model="data.groupForm.users">
-                                    <md-autocomplete md-items="item in queryHandles(data.groupForm.searchUserText)" md-item-text="item.name" placeholder="Add users" md-search-text="data.groupForm.searchUserText">
-                                        <span md-highlight-text="data.groupForm.searchUserText">{{item.name}} :: {{item.handle}}</span>
-                                    </md-autocomplete>
-                                    <md-chip-template>
-                                        <span>
-                                          <strong>{{$chip.name}}</strong>
-                                          <em>(@{{$chip.handle}})</em>
-                                        </span>
-                                    </md-chip-template>
-                                </md-chips>
+                                        </div>
+                                        <p>
+                                            {{post.message}}
+                                        </p>
+                                    </md-card-content>
+                                    <md-card-footer>
+                                        <md-grid-list md-cols="{{post.images.length>1?2:1}}" md-gutter="1em" md-row-height="1:1">
+                                            <md-grid-tile ng-init="getFile(image)" ng-click="showImageGallery(post.images)" ng-repeat="image in post.images">
+                                                <md-progress-circular ng-hide="data.files[image]" class="md-hue-2" md-mode="indeterminate" md-diameter="20px"></md-progress-circular>
+                                                <div ng-if="data.files[image]" ng-style="{'background-image':'url('+data.files[image]+')', 'background-size': 'cover', 'background-position': '50%','width':'100%','height':'100%'}">
+                                                </div>
+                                            </md-grid-tile>
+                                        </md-grid-list>
+                                    </md-card-footer>
+                                    <div class="md-actions" layout="row" layout-align="end center">
+                                        <ng-md-icon icon="star"></ng-md-icon>
+                                        <ng-md-icon icon="share"></ng-md-icon>
+                                        <ng-md-icon icon="reply" ng-click="post.answer=true"></ng-md-icon>
+                                    </div>
+                                </md-card>
+                                <md-button class="md-raised md-primary loadmore" ng-click="walls[tab.wallid].loadmore()">Load More..</md-button>
                             </md-content>
-                            <lf-ng-md-file-input lf-files="data.groupForm.files" lf-property="groupImage" lf-placeholder="Pick Group Picture" preview></lf-ng-md-file-input>
-                            <md-input-container>
-                                <md-button class="md-raised md-primary" type="submit">Save</md-button>
-                            </md-input-container>
-                        </form>
-                    </md-card-content>
-                </md-card>
-            </section>
-            <md-sidenav layout="column" flex class="md-sidenav-right md-whiteframe-z2" md-component-id="left" md-is-locked-open="$mdMedia('gt-md')">
-                <md-toolbar class="md-theme-indigo">
-                    <h1 class="md-toolbar-tools">Following</h1>
-                </md-toolbar>
-                <md-content layout-padding>
-                    <md-list>
-                        <md-list-item class="md-2-line" ng-click="loadFeedWall(feedid)" ng-repeat="feedid in feed.mySettings.following.data">
-                            <div class="md-list-item-text">
-                                <h3>{{data.profiles[feedid].name}}</h3>
-                                <p>@{{data.profiles[feedid].handle}}</p>
-                            </div>
-                        </md-list-item>
-                    </md-list>
-                </md-content>
-            </md-sidenav>
+                        </section>
+                        <section ng-if="tab.type=='hashtag' ">
+                            <md-content flex offset="30" class="md-padding">
+                                <md-card style="max-width:500px" ng-repeat="post in Tab[tab.wallid] | orderBy: '-date'">
+                                    <md-card-content id="post{{post.date}}">
+                                        <div layout="row">
+                                            <img class="avatarImage" ng-src="{{data.files[data.profiles[post.user].profileImage]}}" alt="">
+                                            <h3>
+                                    {{data.profiles[post.user].name}}
+                                    </h3>
+                                        </div>
+                                        <p>
+                                            {{post.message}}
+                                        </p>
+                                    </md-card-content>
+                                    <md-card-footer>
+                                        <md-grid-list md-cols="{{post.images.length>1?2:1}}" md-gutter="1em" md-row-height="1:1">
+                                            <md-grid-tile ng-init="getFile(image)" ng-click="showImageGallery(post.images)" ng-repeat="image in post.images">
+                                                <md-progress-circular ng-hide="data.files[image]" class="md-hue-2" md-mode="indeterminate" md-diameter="20px"></md-progress-circular>
+                                                <div ng-if="data.files[image]" ng-style="{'background-image':'url('+data.files[image]+')', 'background-size': 'cover', 'background-position': '50%','width':'100%','height':'100%'}">
+                                                </div>
+                                            </md-grid-tile>
+                                        </md-grid-list>
+                                    </md-card-footer>
+                                    <div class="md-actions" layout="row" layout-align="end center">
+                                        <ng-md-icon icon="star"></ng-md-icon>
+                                        <ng-md-icon icon="share"></ng-md-icon>
+                                        <ng-md-icon icon="reply" ng-click="post.answer=true"></ng-md-icon>
+                                    </div>
+                                </md-card>
+                                <md-button class="md-raised md-primary loadmore" ng-click="walls[tab.wallid].loadmore()">Load More..</md-button>
+                            </md-content>
+                        </section>
+                        <br/>
+                    </md-tab-body>
+                    <!--  <div class="demo-tab tab{{$index%4}}" style="padding: 25px; text-align: center;">
+                    </div>
+ -->
+                </md-tab>
+            </md-tabs>
         </md-content>
-        <md-content ng-if="data.selectedIndex==2" >
-            <md-sidenav class="md-sidenav-left md-whiteframe-z2" md-component-id="left" md-is-locked-open="$mdMedia('gt-md')">
-                <md-toolbar class="md-theme-indigo">
-                    <h1 class="md-toolbar-tools">Sidenav Left</h1>
-                </md-toolbar>
-                <md-list>
-                    <md-subheader class="md-no-sticky">3 line item</md-subheader>
-                    <md-list-item class="md-3-line" ng-repeat="item in todos">
-                        <img ng-src="{{item.face}}?{{$index}}" class="md-avatar" alt="{{item.who}}" />
+        <md-sidenav class="md-sidenav-right md-whiteframe-z2" md-component-id="right" md-is-locked-open="true">
+            <md-toolbar class="md-theme-indigo md-tall">
+                <div class="md-toolbar-tools">
+                    <div layout="row" layout-sm="column">
+                        <md-input-container style="margin-right: 10px;">
+                            <label>Type</label>
+                            <md-select ng-model="form.type">
+                                <md-option ng-repeat="type in types" value="{{type}}">
+                                    <ng-md-icon ng-if="type=='Group'" icon="group"></ng-md-icon>
+                                    <ng-md-icon ng-if="type=='HashTag'" icon="whatshot"></ng-md-icon>
+                                    <ng-md-icon ng-if="type=='User'" icon="person"></ng-md-icon>
+                                    {{type}}
+                                </md-option>
+                            </md-select>
+                        </md-input-container>
+                        <md-autocomplete style="margin:auto;" ng-if="form.type=='User'" md-selected-item="data.searchselectedItem" md-selected-item-change="form.query=item" md-search-text="data.searchText" md-items="item in queryHandles(data.searchText)" md-item-text="item.handle" md-min-length="3" placeholder="Search a user's handle" md-menu-class="autocomplete-handles-template">
+                            <md-item-template>
+                                <span class="item-title">
+		                            <ng-md-icon icon="perm_identity"></ng-md-icon>
+		                            <span> {{item.name}} </span>
+                                </span>
+                                <span class="item-metadata">
+		                            <span class="item-metastat">
+		                              Handle:<strong>{{item.handle}}</strong> 
+		                            </span>
+                                <span class="item-metastat">
+		                              Location:<strong>{{item.location}}</strong> 
+		                            </span>
+                                </span>
+                            </md-item-template>
+                        </md-autocomplete>
+                        <md-input-container ng-if="form.type=='HashTag'">
+                            <label for="content">{{form.type?form.type:'Choose type' }}</label>
+                            <input ng-disabled="!form.type" type="text" id="content" ng-model="form.query">
+                        </md-input-container>
+                        <md-input-container ng-if="form.type=='Group'">
+                            <label>Group Name</label>
+                            <input name="name" ng-model="form.query" required minlength="4">
+                        </md-input-container>
+                    </div>
+                </div>
+                <md-button class="md-toolbar-tools md-toolbar-tools-bottom" class="add-tab md-primary md-raised" ng-disabled="!form.type || !form.query" ng-click="addTab()" style="margin-right: 0;">{{form.type=='Group'?'Create':'Add' }}</md-button>
+            </md-toolbar>
+            <md-content layout-padding>
+                <md-list flex>
+                    <md-subheader class="md-no-sticky">Notifications</md-subheader>
+                    <md-list-item ng-if="!note.deleted" layout="row" class="md-3-line" ng-repeat="note in data.notifications">
+                        <img ng-src="{{data.files[data.profiles[note.from].profileImage]}}" class="md-avatar" alt="{{item.who}}" />
                         <div class="md-list-item-text" layout="column">
-                            <h3>{{ item.who }}</h3>
-                            <h4>{{ item.what }}</h4>
-                            <p>{{ item.notes }}</p>
+                            <b>{{note.data.type}} by @{{data.profiles[note.from].handle}}</b>
+                            <small>{{note.data.name}}</small>
+                        </div>
+                        <div layout="column">
+                            <md-button class="" ng-click="feed.acceptGroupInvitation(note);note.deleted=true">
+                                <ng-md-icon icon="check"></ng-md-icon>
+                            </md-button>
+                            <md-button ng-click="feed.deleteRequest(note);note.deleted=true">
+                                <ng-md-icon icon="clear"></ng-md-icon>
+                            </md-button>
                         </div>
                     </md-list-item>
                     <md-divider></md-divider>
-                    <md-subheader class="md-no-sticky">2 line item</md-subheader>
-                    <md-list-item class="md-2-line">
-                        <img ng-src="{{todos[0].face}}?20" class="md-avatar" alt="{{todos[0].who}}" />
+                </md-list>
+                <md-list flex>
+                    <md-subheader class="md-no-sticky">History</md-subheader>
+                    <md-list-item class="md-3-line" layout="row" ng-repeat="item in history">
                         <div class="md-list-item-text">
-                            <h3>{{ todos[0].who }}</h3>
-                            <p>Secondary text</p>
-                        </div>
-                    </md-list-item>
-                    <md-divider></md-divider>
-                    <md-subheader class="md-no-sticky">3 line item, long paragraph (see on mobile)</md-subheader>
-                    <md-list-item class="md-3-line">
-                        <img ng-src="{{todos[0].face}}?25" class="md-avatar" alt="{{todos[0].who}}" />
-                        <div class="md-list-item-text">
-                            <h3>{{ todos[0].who }}</h3>
-                            <p>Secondary line text Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam massa quam.</p>
-                        </div>
-                    </md-list-item>
-                    <md-divider></md-divider>
-                    <md-subheader class="md-no-sticky">md-offset class</md-subheader>
-                    <md-list-item class="md-2-line" ng-repeat="phone in phones">
-                        <md-icon md-svg-icon="communication:phone" ng-if="$index === 0"></md-icon>
-                        <div class="md-list-item-text" ng-class="{'md-offset': $index != 0 }">
-                            <h3> {{ phone.number }} </h3>
-                            <p> {{ phone.type }} </p>
+                            <ng-md-icon ng-if="item.type=='group'" icon="group"></ng-md-icon>
+                            <span ng-if="item.type=='hashtag'"><b>#</b></span>
+                            <ng-md-icon ng-if="item.type=='user'" icon="person"></ng-md-icon>
+                            {{item.handle || item.data.name || item.tag }}
                         </div>
                     </md-list-item>
                 </md-list>
-            </md-sidenav>
-        </md-content>
-        <md-content ng-if="data.selectedIndex==3" ng-init="getNewsFeed()" layout="row" >
-            <md-sidenav class="md-sidenav-left md-whiteframe-z2" md-component-id="left" md-is-locked-open="$mdMedia('gt-md')">
-                <md-toolbar class="md-theme-indigo">
-                    <md-input-container>
-                        <label>Enter Rss Feed</label>
-                        <input name="rssfeed" ng-model="data.newsForm.rsslink" type="url">
-                    </md-input-container>
-                    <md-button ng-click="addRssFeed()">Add</md-button>
-                </md-toolbar>
-                <md-content layout-padding>
-                    <md-list>
-                        <md-subheader class="md-no-sticky">Websites</md-subheader>
-                        <md-list-item class="md-3-line" ng-repeat="item in data.settings.news.data">
-                           
-                            <div class="md-list-item-text" layout="column">
-                                <h3>{{ item }}</h3>
-                                
-                            </div>
-                        </md-list-item>
-                        <md-divider></md-divider>
-                </md-content>
-            </md-sidenav>
-            <div layout="row" layout-wrap>
-                <md-card flex="25" ng-repeat="article in data.news | orderBy:'-date'" layout="column" layout-align="space-between center">
-                    <img height=150 ng-show="data.files[article.image]" ng-init="getFile(article.image)" ng-src="{{data.files[article.image]}}" class="md-card-image" alt="image caption">
-                    <md-card-content ng-click="getArticle(article.link)">
-                        <h4>{{article.title}}</h4>
-                        <article class="md-body-2">{{data.files[article.image]?article.summary.substring(0,200):article.summary.substring(0,300)}}...</article>
-                    </md-card-content>
-                    <md-card-footer style="width:90%" layout="row" layout-align="space-between end">
-                        <span class="md-caption">{{article.source}}</span>
-                        <span class="md-caption">{{article.date | fromNow}}</span>
-                    </md-card-footer>
-                </md-card>
-            </div>
-        </md-content>
+            </md-content>
+            <md-button style="bottom:0" ng-click="logout()">Log out</md-button>
+        </md-sidenav>
     </section>
-    <div id="notify" ng-show="notificationsBox" flex layout="column" layout-align="start center"></div>
+    <!-- 
+
+        <md-content>
+        <md-tabs md-selected="selectedIndex">
+            <md-tab ng-repeat="wall in walls" md-on-select="onWallSelected(wall)" md-on-deselect="announceDeselected(wall)" ng-disabled="wall.disabled">
+                <md-tab-label >
+                <img ng-if="wall.type=='owner'" src="images/pb.png"></img>
+                <ng-md-icon ng-if="wall.type=='privategroup'" icon="group"></ng-md-icon>
+                <ng-md-icon ng-if="wall.type=='hashtag'" icon="whatshot"></ng-md-icon>
+                <ng-md-icon ng-if="wall.type=='user'" icon="person"></ng-md-icon>
+                    {{wall.title}}
+                    <ng-md-icon icon="highlight_remove" ng-click="removeWall(wall)"></ng-md-icon>
+                </md-tab-label>
+                <md-tab-body>
+                    {{wall.content}}
+                </md-tab-body>
+            </md-tab>
+            <md-button> <ng-md-icon icon="my_library_add" ></ng-md-icon></md-button>
+        </md-tabs>
+        </md-content>
+    -->
     <script src="./bower_components/angular/angular.js"></script>
     <script src="./bower_components/angular-sanitize/angular-sanitize.js"></script>
     <script src="./bower_components/angular-animate/angular-animate.js"></script>
@@ -682,6 +494,630 @@
                     return moment(dateString).fromNow()
                 };
             }).controller('AppCtrl', function($scope, $mdToast, $mdDialog, $q) {
+                $scope.types = ["User", "Group", "HashTag"]
+                $scope.form = {}
+                var tabs = [],
+                    selected = null,
+                    previous = null;
+                $scope.tabs = tabs;
+                // $scope.selectedIndex = 0;
+                $scope.$watch('selectedIndex', function(current, old) {
+                    previous = selected;
+                    console.log($scope.tabs, current)
+                    if ($scope.tabs[current]) $scope.walls[$scope.tabs[current].id].start()
+                    selected = $scope.tabs[current];
+                });
+                $scope.logout = function() {
+                    location.reload()
+                    eraseCookie("peerbay")
+
+                }
+
+
+                $scope.addTab = function() {
+                    console.log($scope.form.query)
+                    switch ($scope.form.type) {
+                        case "User":
+                            var user = $scope.form.query.id
+                            $scope.feed.addSettingValue("following", user)
+                            $scope.feed.getProfile(user).then(function(profile) {
+                                // console.log(profile)
+                                $scope.data.profiles[user] = profile[0]
+                                $scope.getFile(profile[0].profileImage)
+                                $scope.data.profiles[user].type = "user"
+                                $scope.data.profiles[user].wallid = $scope.Wall($scope.data.profiles[user])
+                                    // $scope.$apply()
+
+                                tabs.push($scope.data.profiles[user])
+                            })
+                            break;
+                        case "Group":
+                            $scope.feed.createPrivateGroup($scope.form.query).then(function(answer) {
+                                console.log(answer)
+                            })
+                            break;
+                        case "HashTag":
+                            $scope.feed.addSettingValue("hashtags", $scope.form.query)
+
+
+                            tabs.push({
+                                "type": "hashtag",
+                                "tag": $scope.form.query,
+                                "wallid": $scope.Wall({
+                                    type: "hashtag",
+                                    "tag": $scope.form.query
+                                })
+                            })
+                            break;
+
+                    }
+                    $scope.form = {}
+                };
+                $scope.removeTab = function(tab) {
+                    var index = tabs.indexOf(tab);
+                    tabs.splice(index, 1);
+                    switch (tab.type) {
+                        case "hashtag":
+                            $scope.feed.removeSettingValue("hashtags", tab.tag)
+                            break;
+                        case "user":
+                            $scope.feed.removeSettingValue("following", tab._id)
+                            break;
+                        case "group":
+                            $scope.feed.removeSettingValue("groups", tab.settingvalue)
+
+                    }
+                    $scope.history.push(tab)
+
+                };
+                $scope.Tab = {}
+                $scope.history = []
+                $scope.admin = {}
+                $scope.walls = {}
+                $scope.Wall = function(data) {
+                    var wall = new Wall(data)
+                    $scope.walls[wall.id] = wall
+                    return wall.id
+                }
+                $scope.unread = {}
+                var Wall = function(data) {
+                    this.feed = data
+                    console.log("wall:", data)
+                    this.id = peerFeed.util.getRandomFilename()
+                    $scope.Tab[this.id] = []
+                    $scope.unread[this.id] = []
+                    this.lastdate = 2000000000000000
+                    return this
+                }
+                Wall.prototype = {
+                        start: function() {
+                            this.active = true
+
+                            console.log("started wall", this.feed)
+                            var self = this;
+
+                            switch (this.feed.type) {
+                                case "user":
+                                case "owner":
+                                    var self = this;
+                                    if (this.started) {
+                                        if ($scope.unread[this.id].length) {
+                                            $scope.feed.get($scope.unread[this.id]).then(function(data) {
+                                                console.log(data)
+                                                data.forEach(function(doc, i, theDocs) {
+                                                    doc.date = parseInt(doc._id.substring(46))
+                                                    if (doc.date && self.lastdate > doc.date) self.lastdate = doc.date
+                                                    doc.feedID = doc._id.substring(0, 46)
+                                                    theDocs[i] = doc;
+                                                    $scope.Tab[self.id].push(doc)
+                                                })
+                                                $scope.unread[self.id] = []
+                                                $scope.$apply()
+                                                    // console.log(self.loadedPosts)
+
+                                            })
+                                        }
+                                    } else {
+                                        this.started = true
+                                        $scope.feed.getFeedDocIds(this.feed._id).then(
+                                            function(ans) {
+                                                // self.index = self.index.concat(ans)
+                                                //     // console.log(self.index)
+                                                //     // console.log(ans)
+                                                // self.index.sort(function(a, b) {
+                                                //     return parseFloat(b.date) - parseFloat(a.date);
+                                                // });
+                                                console.log(ans)
+                                                $scope.feed.get(ans).then(function(data) {
+                                                        data.forEach(function(doc, i, theDocs) {
+                                                                doc.date = parseInt(doc._id.substring(46))
+                                                                if (doc.date && self.lastdate > doc.date) self.lastdate = doc.date
+                                                                doc.feedID = doc._id.substring(0, 46)
+                                                                theDocs[i] = doc;
+                                                                $scope.Tab[self.id].push(doc)
+                                                                $scope.$apply()
+                                                            })
+                                                            // console.log(self.loadedPosts)
+
+                                                    })
+                                                    // console.log(self.index)
+                                                    // self.getItemAtIndex(0)
+                                            })
+                                        console.log("following", this.feed)
+                                        $scope.feed.follow(this.feed._id, function(data) {
+
+                                            // $scope.$apply()
+                                            // self.index = self.index.concat(data)
+                                            // self.index.sort(function(a, b) {
+                                            //     return parseFloat(b.date) - parseFloat(a.date);
+                                            // });
+                                            console.log(data)
+                                            if (self.active) {
+                                                $scope.feed.get(data).then(function(data) {
+                                                    console.log(data)
+                                                    data.forEach(function(doc, i, theDocs) {
+                                                            doc.date = parseInt(doc._id.substring(46))
+                                                            if (doc.date && self.lastdate > doc.date) self.lastdate = doc.date
+                                                            doc.feedID = doc._id.substring(0, 46)
+                                                            theDocs[i] = doc;
+                                                            $scope.Tab[self.id].push(doc)
+                                                            $scope.$apply()
+                                                        })
+                                                        // console.log(self.loadedPosts)
+
+                                                })
+                                            } else {
+                                                console.log()
+                                                $scope.unread[self.id] = $scope.unread[self.id].concat(data)
+                                                $scope.$apply()
+
+                                            }
+                                            // console.log(self.index)
+                                        })
+
+
+
+                                    }
+
+
+
+
+                                    break;
+                                case "group":
+                                    console.log(this.feed)
+                                    if (this.started) {
+                                        if ($scope.unread[this.id].length) {
+                                            $scope.feed.get($scope.unread[this.id]).then(function(data) {
+                                                console.log(data)
+                                                for (var i in data) {
+                                                    var doc = data[i]
+                                                    var feedID = doc._id.substring(0, 46)
+                                                    doc = $scope.feed.decryptDoc(doc, self.feed.secret)
+                                                    var post = JSON.parse(doc.data.doc)
+                                                    post.date = parseInt(doc._id.substring(46))
+                                                    if (post.date && self.lastdate > post.date) self.lastdate = post.date
+                                                    post.feedID = feedID
+                                                    post.user = doc.data.key
+                                                    post._id = doc._id
+                                                    $scope.Tab[self.id].push(post)
+                                                    console.log(post)
+
+                                                }
+                                                $scope.unread[self.id] = []
+                                                $scope.$apply()
+                                                    // console.log(self.loadedPosts)
+
+                                            })
+                                        }
+                                    } else {
+                                        this.started = true
+                                        this.feed.data.users.forEach(function(user) {
+                                            $scope.getProfile(user)
+                                        })
+                                        $scope.feed.getFeedDocIds(this.feed.feedID).then(
+                                            function(ans) {
+                                                // self.index = self.index.concat(ans)
+                                                //     // console.log(self.index)
+                                                //     // console.log(ans)
+                                                // self.index.sort(function(a, b) {
+                                                //     return parseFloat(b.date) - parseFloat(a.date);
+                                                // });
+                                                // console.log(self.index)
+                                                // self.getItemAtIndex(0)
+                                                $scope.feed.get(ans).then(function(data) {
+                                                    console.log(data)
+                                                    for (var i in data) {
+                                                        var doc = data[i]
+                                                        var feedID = doc._id.substring(0, 46)
+                                                        doc = $scope.feed.decryptDoc(doc, self.feed.secret)
+                                                        var post = JSON.parse(doc.data.doc)
+                                                        post.date = parseInt(doc._id.substring(46))
+                                                        if (post.date && self.lastdate > post.date) self.lastdate = post.date
+                                                        post.feedID = feedID
+                                                        post.user = doc.data.key
+                                                        post._id = doc._id
+                                                        $scope.Tab[self.id].push(post)
+
+                                                        console.log(post)
+
+                                                    }
+
+                                                    // console.log(self.loadedPosts)
+
+
+                                                })
+                                            })
+                                        console.log("following", this.feed)
+                                        $scope.feed.follow(this.feed.feedID, function(data) {
+                                            console.log(data)
+                                            if (self.active) {
+                                                $scope.feed.get(data).then(function(data) {
+                                                    console.log(data)
+                                                    for (var i in data) {
+                                                        var doc = data[i]
+                                                        var feedID = doc._id.substring(0, 46)
+                                                        doc = $scope.feed.decryptDoc(doc, self.feed.secret)
+                                                        var post = JSON.parse(doc.data.doc)
+                                                        post.date = parseInt(doc._id.substring(46))
+                                                        if (post.date && self.lastdate > post.date) self.lastdate = post.date
+                                                        post.feedID = feedID
+                                                        post.user = doc.data.key
+                                                        post._id = doc._id
+                                                        $scope.Tab[self.id].push(post)
+                                                        console.log(post)
+                                                        $scope.$apply()
+
+                                                    }
+
+                                                    // console.log(self.loadedPosts)
+
+
+                                                })
+                                            } else {
+                                                $scope.unread[self.id] = $scope.unread[self.id].concat(data)
+                                                $scope.$apply()
+                                            }
+                                        })
+                                    }
+
+                                case "hashtag":
+                                    var self = this;
+                                    if (this.started) {
+                                        if ($scope.unread[this.id].length) {
+                                            $scope.feed.get($scope.unread[this.id]).then(function(data) {
+                                                console.log(data)
+                                                data.forEach(function(doc, i, theDocs) {
+                                                    doc.date = parseInt(doc._id.substring(46))
+                                                    if (doc.date && self.lastdate > doc.date) self.lastdate = doc.date
+                                                    doc.user = doc._id.substring(0, 46)
+                                                    $scope.getProfile(doc.user)
+                                                    theDocs[i] = doc;
+                                                    $scope.Tab[self.id].push(doc)
+                                                })
+                                                $scope.unread[self.id] = []
+                                                $scope.$apply()
+                                                    // console.log(self.loadedPosts)
+
+                                            })
+                                        }
+                                    } else {
+                                        this.started = true
+                                        $scope.feed.getTagDocIds(this.feed.tag).then(
+                                            function(ans) {
+                                                // self.index = self.index.concat(ans)
+                                                //     // console.log(self.index)
+                                                //     // console.log(ans)
+                                                // self.index.sort(function(a, b) {
+                                                //     return parseFloat(b.date) - parseFloat(a.date);
+                                                // });
+                                                console.log(ans)
+                                                $scope.feed.get(ans).then(function(data) {
+                                                        data.forEach(function(doc, i, theDocs) {
+                                                                doc.date = parseInt(doc._id.substring(46))
+                                                                if (doc.date && self.lastdate > doc.date) self.lastdate = doc.date
+                                                                doc.user = doc._id.substring(0, 46)
+                                                                $scope.getProfile(doc.user)
+                                                                theDocs[i] = doc;
+                                                                $scope.Tab[self.id].push(doc)
+                                                                $scope.$apply()
+                                                            })
+                                                            // console.log(self.loadedPosts)
+
+                                                    })
+                                                    // console.log(self.index)
+                                                    // self.getItemAtIndex(0)
+                                            })
+                                        $scope.feed.follow("tag-" + this.feed.tag, function(data) {
+
+                                            // $scope.$apply()
+                                            // self.index = self.index.concat(data)
+                                            // self.index.sort(function(a, b) {
+                                            //     return parseFloat(b.date) - parseFloat(a.date);
+                                            // });
+                                            console.log(data)
+                                            if (self.active) {
+                                                $scope.feed.get(data).then(function(data) {
+                                                    console.log(data)
+                                                    data.forEach(function(doc, i, theDocs) {
+                                                            doc.date = parseInt(doc._id.substring(46))
+                                                            if (doc.date && self.lastdate > doc.date) self.lastdate = doc.date
+                                                            doc.user = doc._id.substring(0, 46)
+                                                            $scope.getProfile(doc.user)
+                                                            theDocs[i] = doc;
+                                                            $scope.Tab[self.id].push(doc)
+                                                            $scope.$apply()
+                                                        })
+                                                        // console.log(self.loadedPosts)
+
+                                                })
+                                            } else {
+                                                console.log()
+                                                $scope.unread[self.id] = $scope.unread[self.id].concat(data)
+                                                $scope.$apply()
+
+                                            }
+                                            // console.log(self.index)
+                                        })
+
+
+
+                                    }
+
+
+                            }
+
+
+                        },
+                        stop: function() {
+
+                        },
+                        pause: function() {
+                            console.log("paused")
+                            this.active = false
+                        },
+                        loadmore: function() {
+                            var self = this;
+
+                            switch (this.feed.type) {
+                                case "user":
+                                case "owner":
+                                    $scope.feed.getFeedDocIds(this.feed._id, this.lastdate).then(
+                                        function(ans) {
+
+                                            $scope.feed.get(ans).then(function(data) {
+                                                data.forEach(function(doc, i, theDocs) {
+                                                    doc.date = parseInt(doc._id.substring(46))
+                                                    if (doc.date && self.lastdate > doc.date) self.lastdate = doc.date
+                                                    doc.feedID = doc._id.substring(0, 46)
+                                                    theDocs[i] = doc;
+                                                    $scope.Tab[self.id].push(doc)
+                                                    $scope.$apply()
+                                                })
+                                            })
+                                        })
+                                    break;
+                                case "group":
+                                    $scope.feed.getFeedDocIds(this.feed.feedID, this.lastdate).then(
+                                        function(ans) {
+                                            $scope.feed.get(ans).then(function(data) {
+                                                console.log(data)
+                                                for (var i in data) {
+                                                    var doc = data[i]
+                                                    var feedID = doc._id.substring(0, 46)
+                                                    doc = $scope.feed.decryptDoc(doc, self.feed.secret)
+                                                    var post = JSON.parse(doc.data.doc)
+                                                    post.date = parseInt(doc._id.substring(46))
+                                                    if (post.date && self.lastdate > post.date) self.lastdate = post.date
+                                                    post.feedID = feedID
+                                                    post.user = doc.data.key
+                                                    post._id = doc._id
+                                                    $scope.Tab[self.id].push(post)
+                                                    console.log(post)
+
+                                                }
+
+                                            })
+                                        })
+                                    break;
+                                case "hashtag":
+                                    $scope.feed.getTagDocIds(this.feed.tag, this.lastdate).then(
+                                        function(ans) {
+
+                                            $scope.feed.get(ans).then(function(data) {
+                                                data.forEach(function(doc, i, theDocs) {
+                                                    doc.date = parseInt(doc._id.substring(46))
+                                                    if (doc.date && self.lastdate > doc.date) self.lastdate = doc.date
+                                                    doc.user = doc._id.substring(0, 46)
+                                                    $scope.getProfile(doc.user)
+                                                    theDocs[i] = doc;
+                                                    $scope.Tab[self.id].push(doc)
+                                                    $scope.$apply()
+                                                })
+                                            })
+                                        })
+                                    break;
+
+                            }
+
+                        }
+                    }
+                    // 4 types of walls
+                    // private group
+                    // public group
+                    // hashtag 
+                    // user
+
+                var cookie = readCookie("peerbay")
+                if (cookie) {
+                    console.log(cookie)
+                    cookie = cookie.split(",")
+                    var cookieboxKeys = nacl.box.keyPair.fromSecretKey(nacl.util.decodeBase64(cookie[0]))
+                    var cookiesignKeys = nacl.sign.keyPair.fromSecretKey(nacl.util.decodeBase64(cookie[1]))
+                    startFeed(cookieboxKeys, cookiesignKeys)
+                }
+                $scope.signIn = function() {
+                    $scope.data.signingIn = true
+                        // console.log($scope.data.username, $scope.data.password)
+                    $scope.showSimpleToast("Calculating encryption keys...")
+                    peerFeed.crypto.getKeyPair($scope.data.password, $scope.data.username, function(boxKeys, signKeys) {
+                        peerFeed.session.keys = boxKeys
+                        peerFeed.session.signKeys = signKeys
+                        peerFeed.session.keyPairReady = true
+                            // Keep polling until we have a key pair
+                        var keyReadyInterval = setInterval(function() {
+                            if (peerFeed.session.keyPairReady) {
+                                clearInterval(keyReadyInterval)
+                                $mdToast.hide();
+
+                                startFeed(boxKeys, signKeys)
+
+
+                            }
+                        }, 500)
+                    })
+                }
+
+                function startFeed(boxKeys, signKeys) {
+                    new Feed(boxKeys, signKeys).then(function(feed) {
+                        $scope.data.connected = true
+                        if ($scope.data.remember) {
+
+                            createCookie("peerbay", [nacl.util.encodeBase64(boxKeys.secretKey), nacl.util.encodeBase64(signKeys.secretKey)], 2)
+                        }
+                        feed.getProfile().then(function(profile) {
+                            $scope.feed = feed
+                            $scope.signKey = feed.signKey
+                            console.log(profile)
+                            if (!profile[0]) {
+
+                                console.log("new user")
+                                if ($scope.data.signup) {
+                                    $scope.data.page = "profileform"
+                                } else {
+                                    $scope.showSimpleToast("New user? Sign Up or try another username/password.")
+                                    $scope.data.signingIn = false
+                                    $scope.data.newAccount = true
+                                    $scope.$apply()
+                                }
+
+                            } else {
+                                $scope.feed.onlineUsers(function(usersnum) {
+                                    $scope.data.onlineUsers = usersnum[0]
+                                })
+                                $scope.data.profile = profile[0]
+                                $scope.data.profile.type = "owner"
+                                $scope.data.profile.admin = $scope.signKey
+
+                                $scope.data.profiles[$scope.data.profile._id] = $scope.data.profile
+
+                                $scope.data.profile.wallid = $scope.Wall($scope.data.profile)
+                                tabs.push($scope.data.profile)
+                                $scope.feed.getSettings().then(function(settings) {
+                                    // console.log("settings:", settings)
+                                    $scope.data.settings = settings
+                                    if (settings.groups) {
+                                        $scope.feed.getGroupsInfo($scope.data.settings.groups.data).then(function(groups) {
+                                            console.log(groups)
+                                            groups.forEach(function(group, idx, all) {
+                                                if (group.data.name) {
+                                                    group.type = "group"
+                                                    all[idx] = group
+
+                                                    group.wallid = $scope.Wall(group)
+                                                    tabs.push(group)
+
+                                                }
+                                            })
+                                        })
+
+
+                                    }
+                                    if (settings.following) {
+                                        settings.following.data.forEach(function(user, idx, all) {
+                                            $scope.feed.getProfile(user).then(function(profile) {
+                                                // console.log(profile)
+                                                $scope.data.profiles[user] = profile[0]
+                                                $scope.getFile(profile[0].profileImage)
+                                                $scope.data.profiles[user].type = "user"
+                                                $scope.data.profiles[user].wallid = $scope.Wall($scope.data.profiles[user])
+                                                    // $scope.$apply()
+
+                                                tabs.push($scope.data.profiles[user])
+                                            })
+                                        })
+
+
+                                    }
+                                    if (settings.hashtags) {
+                                        settings.hashtags.data.forEach(function(tag, idx, all) {
+                                            tabs.push({
+                                                type: "hashtag",
+                                                "tag": tag,
+                                                "wallid": $scope.Wall({
+                                                    type: "hashtag",
+                                                    "tag": tag
+                                                })
+                                            })
+                                        })
+                                    } else {
+                                        var wall = new Wall({
+                                            type: "hashtag",
+                                            "tag": "peerbay"
+                                        })
+                                        $scope.walls[wall.id] = wall
+                                        tabs.push({
+                                            type: "hashtag",
+                                            "tag": "peerbay",
+                                            "wallid": wall.id
+                                        })
+                                    }
+
+
+                                })
+
+
+
+
+                                $scope.feed.getNewRequests().then(function(requests) {
+                                    console.log(requests)
+                                    $scope.data.notifications = $scope.data.notifications.concat(requests)
+                                })
+                                $scope.feed.follow("requests-" + $scope.signKey, function(data) {
+                                        $scope.feed.getNewRequests().then(function(requests) {
+                                            console.log(requests)
+                                            $scope.data.notifications = $scope.data.notifications.concat(requests)
+                                            $scope.$apply()
+                                        })
+
+
+                                    })
+                                    // $scope.feed.getFeed(feed.signKey).then(function(data) {
+                                    //     console.log(data)
+                                    //     $scope.data.publicWall = $scope.data.publicWall.concat(data)
+                                    //         // $scope.$apply()
+                                    // })
+                                $scope.data.page = "feeds"
+
+
+                            }
+
+                            // feed.follow
+                        })
+
+                        $scope.$apply()
+                    })
+
+                }
+
+
+
+
+
+
+
+
+
+
 
 
                 $scope.getGroupInfo = function() {
@@ -817,6 +1253,54 @@
 
 
                 }
+                $scope.showImageGallery = function(images) {
+
+
+                    $mdDialog.show({
+
+                        clickOutsideToClose: true,
+                        scope: $scope, // use parent scope in template
+                        preserveScope: true, // do not forget this if use parent scope
+                        // Since GreetingController is instantiated with ControllerAs syntax
+                        // AND we are passing the parent '$scope' to the dialog, we MUST
+                        // use 'vm.<xxx>' in the template markup
+                        template: '<md-dialog aria-label="Article"  style="max-width:50%">' +
+                            '  <md-dialog-content>' +
+                            '<md-card flex="70" >' +
+                            '<md-card-content >' +
+                            '<img style="width:100%" ng-if="data.files[image]"  ng-src="{{data.files[image]}}" class="md-card-image" alt="image caption">' +
+                            '</md-card-content>' +
+                            '<md-card-footer>' +
+                            '<md-button ng-click="previousPic()">Previous</md-button>' +
+                            '<md-button ng-click="nextPic()">Next</md-button>' +
+                            '</md-card-footer>' +
+                            ' </md-card>' +
+                            '  </md-dialog-content>' +
+                            '</md-dialog>',
+
+                        controller: function DialogController($scope, $mdDialog) {
+                            var numimg = images.length
+                            var i = 0;
+                            $scope.image = images[i];
+                            $scope.previousPic = function() {
+                                if (i == 0) i = numimg
+                                i--;
+                                $scope.image = images[i];
+                            }
+                            $scope.nextPic = function() {
+                                i++;
+                                if (i == (numimg)) i = 0
+                                $scope.image = images[i];
+                            }
+
+
+                        }
+                    })
+
+
+
+
+                }
                 $scope.showNotifications = function() {
 
                     $scope.notificationsBox = true
@@ -880,9 +1364,6 @@
                     secondLocked: true,
                     secondLabel: "Item Two",
                     bottom: false,
-                    name: "Vas Kef",
-                    username: "vasilis",
-                    password: '1234',
                     connected: false,
                     signingIn: false,
                     groupForm: {},
@@ -967,92 +1448,12 @@
 
                 }
                 $scope.loadAllGroups = function() {
-                    if("groups" in $scope.data.settings){
+                    if ("groups" in $scope.data.settings) {
 
                         $scope.data.groupsWall = new DynamicGroupWall($scope.data.groups)
 
                     }
 
-                }
-                $scope.signIn = function() {
-                    $scope.data.signingIn = true
-                        // console.log($scope.data.username, $scope.data.password)
-                    $scope.showSimpleToast("Calculating encryption keys...")
-                    peerFeed.crypto.getKeyPair($scope.data.password, $scope.data.username, function(boxKeys, signKeys) {
-                        peerFeed.session.keys = boxKeys
-                        peerFeed.session.signKeys = signKeys
-                        peerFeed.session.keyPairReady = true
-                            // Keep polling until we have a key pair
-                        var keyReadyInterval = setInterval(function() {
-                            if (peerFeed.session.keyPairReady) {
-                                clearInterval(keyReadyInterval)
-                                $mdToast.hide();
-
-
-                                new Feed(boxKeys, signKeys).then(function(feed) {
-                                    $scope.data.connected = true
-                                    feed.getProfile().then(function(profile) {
-                                        $scope.feed = feed
-                                        $scope.signKey = feed.signKey
-                                        console.log(profile)
-                                        if (!profile[0]) {
-
-                                            console.log("new user")
-                                            if ($scope.data.signup) {
-                                                $scope.data.page = "profileform"
-                                            } else {
-                                                $scope.showSimpleToast("New user? Sign Up or try another username/password.")
-                                                $scope.data.signingIn = false
-                                                $scope.data.newAccount = true
-                                                $scope.$apply()
-                                            }
-
-                                        } else {
-
-                                            $scope.data.profile = profile[0]
-                                            $scope.feed.getNewRequests().then(function(requests) {
-                                                console.log(requests)
-                                                $scope.data.notifications = $scope.data.notifications.concat(requests)
-                                            })
-                                            $scope.feed.follow("requests-" + $scope.signKey, function(data) {
-                                                    $scope.feed.getNewRequests().then(function(requests) {
-                                                        console.log(requests)
-                                                        $scope.data.notifications = $scope.data.notifications.concat(requests)
-                                                    })
-
-
-                                                })
-                                                // $scope.feed.getFeed(feed.signKey).then(function(data) {
-                                                //     console.log(data)
-                                                //     $scope.data.publicWall = $scope.data.publicWall.concat(data)
-                                                //         // $scope.$apply()
-                                                // })
-                                            $scope.data.page = "feeds"
-                                            $scope.feed.getSettings().then(function(settings) {
-                                                console.log("settings:", settings)
-                                                $scope.data.settings = settings
-                                                if (settings.following) {
-
-
-                                                    $scope.data.publicWall = new DynamicWall(settings.following.data)
-                                                    $scope.data.publicWall.addFeedID(feed.signKey)
-                                                } else {
-                                                    $scope.data.publicWall = new DynamicWall([feed.signKey])
-
-                                                }
-                                            })
-
-                                        }
-
-                                        // feed.follow
-                                    })
-
-                                    $scope.$apply()
-                                })
-
-                            }
-                        }, 500)
-                    })
                 }
                 $scope.getProfile = function(feedID) {
                     console.log("get profile", feedID)
@@ -1093,37 +1494,44 @@
                     }
                 }
                 $scope.submitPublicPost = function() {
-                    console.log($scope.data.publicPost.text)
-                    var publicPost = {
-                        message: $scope.data.publicPost.text,
-                        files: $scope.data.publicPost.files,
-                        tags: [],
-                        mentions: []
-                    }
-                    var mentions = /(?:^|\W)@(\w+)(?!\w)/g,
-                        tags = /(?:^|\W)#(\w+)(?!\w)/g,
-                        match = [];
-                    while (match = tags.exec($scope.data.publicPost.text)) {
-                        publicPost.tags.push(match[1])
-                    }
-                    while (match = mentions.exec($scope.data.publicPost.text)) {
-                        publicPost.mentions.push(match[1])
-                    }
-                    $scope.feed.publicPost(publicPost).then(function(answer) {
-                        console.log(answer)
-                    })
-                    $scope.data.resetPublicFiles()
-                    $scope.data.publicPost = {}
+                    if ($scope.data.publicPost.text || $scope.data.publicPost.files.length) {
+                        var publicPost = {
+                            message: $scope.data.publicPost.text,
+                            files: $scope.data.publicPost.files,
+                            tags: [],
+                            mentions: []
+                        }
+                        var mentions = /(?:^|\W)@(\w+)(?!\w)/g,
+                            tags = /(?:^|\W)#(\w+)(?!\w)/g,
+                            match = [];
+                        while (match = tags.exec($scope.data.publicPost.text)) {
+                            publicPost.tags.push(match[1])
+                        }
+                        while (match = mentions.exec($scope.data.publicPost.text)) {
+                            publicPost.mentions.push(match[1])
+                        }
+                        $scope.feed.publicPost(publicPost).then(function(answer) {
+                            console.log(answer)
+                        })
+                        $scope.data.resetPublicFiles()
+                        $scope.data.publicPost.text = ""
+                        $scope.data.publicPost.files = []
 
-                }
-                $scope.submitGroupPost = function() {
-                    var groupPost = {
-                        message: $scope.data.groupPost.text
                     }
-                    $scope.feed.groupPost($scope.data.groupWall, groupPost).then(function(answer) {
-                        console.log(answer)
-                    })
-                    $scope.data.groupPost.text = ""
+                }
+                $scope.submitGroupPost = function(group) {
+                    if (group.groupPost.text || group.groupPost.files.length) {
+                        var groupPost = {
+                            message: group.groupPost.text,
+                            files: group.groupPost.files,
+                        }
+                        $scope.feed.groupPost(group, groupPost).then(function(answer) {
+                            console.log(answer)
+                        })
+                        group.resetGroupFiles()
+                        group.groupPost.text = ""
+                        group.groupPost.files = []
+                    }
 
                 }
                 $scope.autocompletePublicPost = function(text, result) {
@@ -1424,6 +1832,30 @@
 
             });
     })();
+
+    function createCookie(name, value, days) {
+        if (days) {
+            var date = new Date();
+            date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+            var expires = "; expires=" + date.toGMTString();
+        } else var expires = "";
+        document.cookie = name + "=" + value + expires + "; path=/";
+    }
+
+    function readCookie(name) {
+        var nameEQ = name + "=";
+        var ca = document.cookie.split(';');
+        for (var i = 0; i < ca.length; i++) {
+            var c = ca[i];
+            while (c.charAt(0) == ' ') c = c.substring(1, c.length);
+            if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
+        }
+        return null;
+    }
+
+    function eraseCookie(name) {
+        createCookie(name, "", -1);
+    }
     </script>
 </body>
 

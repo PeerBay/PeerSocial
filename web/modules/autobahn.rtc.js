@@ -7,7 +7,7 @@ var Channel = function(channel, proxy) {
     this.outEventHandler = window.document.createElement("channel")
     this.subscriptions = []
     this.peerID = self.channel.peerID
-    this.multipart={}
+    this.multipart = {}
         // if (proxy) {
         //     this.proxy
         // }
@@ -18,42 +18,59 @@ var Channel = function(channel, proxy) {
         //     // console.log("test:",test)
         //     return {"tested":self.channel.peerID}
         // })
-    this.channel.normalsend = this.channel.send
-    this.channel.send = function(data) {
-        if (data.length > 15000) {
-            multipartID = self._reqID()
-            for (i = 0; i <= data.length; i += 15000) {
-                self.channel.normalsend(JSON.stringify({
-                    "multipart": multipartID,
-                    "length": data.length,
-                    "data": data.substr(i, 15000)
-                }))
+        // this.channel.normalsend = this.channel.send
+        // this.channel.send = function(data) {
+        //     if (data.length > 15200) {
+        //         console.log("trigger multipart!",data.length,data)
+        //         multipartID = self._reqID()
+        //         for (i = 0; i <= data.length; i += 15000) {
+        //             self.channel.normalsend(JSON.stringify({
+        //                 "multipart": multipartID,
+        //                 "length": data.length,
+        //                 "data": data.substr(i, 15000)
+        //             }))
 
-            }
-        }else{
-            self.channel.normalsend(data)
-        }
-    }
+    //         }
+    //     }else{
+    //         self.channel.normalsend(data)
+    //     }
+    // }
     this.channel.onmessage = function(e) {
-        // console.log(this.peerID,e.data)
-        var request = JSON.parse(e.data)
-        if (request.multipart) {
-            if (request.multipart in self.multipart) {
-                self.multipart[request.multipart].data += request.data
-                if (self.multipart[request.multipart].data.length == self.multipart[request.multipart].length) {
-                    request = JSON.parse(self.multipart[request.multipart].data)
-                    delete self.multipart[request.multipart]
-                } else {
+        try {
+            var request = JSON.parse(e.data)
+        } catch (e) {
+            console.log(e)
+            if (mem) {
+                mem += e.data
+                try {
+                    var request = JSON.parse(mem)
+                    mem = ""
+                } catch (e) {
                     return
                 }
             } else {
-                self.multipart[request.multipart] = {
-                    length: request.length,
-                    data: request.data
-                }
+                mem = e.data
                 return
             }
         }
+        // if (request.multipart) {
+        //     console.log("incomign multipart")
+        //     if (request.multipart in self.multipart) {
+        //         self.multipart[request.multipart].data += request.data
+        //         if (self.multipart[request.multipart].data.length == self.multipart[request.multipart].length) {
+        //             request = JSON.parse(self.multipart[request.multipart].data)
+        //             delete self.multipart[request.multipart]
+        //         } else {
+        //             return
+        //         }
+        //     } else {
+        //         self.multipart[request.multipart] = {
+        //             length: request.length,
+        //             data: request.data
+        //         }
+        //         return
+        //     }
+        // }
         switch (request.action) {
 
             case "publish":
@@ -75,12 +92,17 @@ var Channel = function(channel, proxy) {
                         "topic": topic,
                         "data": data.detail
                     })
+                    try {
+                        self.channel.send(JSON.stringify({
+                            "action": "publish",
+                            "topic": topic,
+                            "data": data.detail
+                        }))
+                    }catch(e){
+                        self.close()
+                        self.onclose()
+                    }
 
-                    self.channel.send(JSON.stringify({
-                        "action": "publish",
-                        "topic": topic,
-                        "data": data.detail
-                    }))
                 }, false)
                 break;
             case "call":
@@ -109,30 +131,49 @@ var Channel = function(channel, proxy) {
                 });
                 self.eventHandler.dispatchEvent(event)
                 break;
-
+            case "close":
+                delete this.eventHandler
+                delete this.inEventHandler
+                delete this.outEventHandler
+                console.log("subchannel closes")
+                self.onclose()
         }
     }
 
 }
 Channel.prototype = {
+    onclose: function() {},
+    close: function() {
+        console.log("subchannel closes")
+        delete this.eventHandler
+        delete this.inEventHandler
+        delete this.outEventHandler
 
+    },
     _sendRequest: function(request, topic) {
         this.channel.send(JSON.stringify({
             "action": request,
             "topic": topic,
-            "peer": myPeerID
         }))
 
     },
-    publish: function(topic, data) {
-        // console.log('publishing ', topic)
-        // console.log("me publishing:",topic," to channel:",this.channel.peerID)
-        data.peer = myPeerID
-        var event = new CustomEvent(topic, {
-            detail: data
-        });
+    publish: function(topic, data, force) {
+        console.log('publishing ', topic)
+            // console.log("me publishing:",topic," to channel:",this.channel.peerID)
+        if (force) {
+            this.channel.send(JSON.stringify({
+                "action": "publish",
+                "topic": topic,
+                "data": data
+            }))
+        } else {
+            var event = new CustomEvent(topic, {
+                detail: data
+            });
 
-        this.outEventHandler.dispatchEvent(event)
+            this.outEventHandler.dispatchEvent(event)
+
+        }
     },
     subscriptions: {},
 
@@ -160,7 +201,7 @@ Channel.prototype = {
     call: function(procedure, data) {
         reqid = this._reqID()
         var self = this
-        data.peer = myPeerID
+
         this.channel.send(JSON.stringify({
             "action": "call",
             "procedure": procedure,

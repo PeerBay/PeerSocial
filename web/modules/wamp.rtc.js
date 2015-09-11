@@ -83,6 +83,7 @@ var Exit = function(address) {
 
             })
             self.onconnection(self)
+            console.log("connect exit")
             resolve(self)
         }
         self.connection.open()

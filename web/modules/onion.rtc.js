@@ -7,15 +7,40 @@ var Onion = function() {
     self = this
     new Exit().then(
         function(exit) {
-            exit.onclose=function(){
+            exit.onclose = function() {
+
+            }
+            self.exit = exit
+            self.waiting = true;
+            self.rtcKey = exit.rtcKey
+            self.peers = {}
+            exit.ondisconnect = function(peerID, type) {
                 
+                if (peerID in self.peers) {
+                    console.log(peerID, 'in self.peers', self.peers)
+                    for (i in self.peers[peerID]) {
+                        console.log(self.peers[peerID][i],self.proxies,self.proxying)
+                        if (self.peers[peerID][i] in self.proxies) {
+                            console.log("stop proxy ", self.peers[peerID][i])
+                            self.proxies[self.peers[peerID][i]].close()
+                            delete self.sessions[self.peers[peerID][i]]
+                            delete self.proxies[self.peers[peerID][i]]
+                            self.runOnion(1)
+                        } else if (self.peers[peerID][i] in self.proxying) {
+                            console.log("stop proxying ", self.peers[peerID][i])
+                            self.proxying[self.peers[peerID][i]].close()
+                            delete self.proxying[self.peers[peerID][i]]
+                        }
+                    }
+                }
+                delete self[type][peerID]
             }
             exit.onleacher = function(channel) {
                 if (Object.keys(self.leachers).length >= 6) {
                     exit.wssession.call("disallowLeachers", [exit.rtcKey])
                 }
-                self.rtcKey = exit.rtcKey
-                self.waiting = true;
+                self.peers[channel.peerID] = []
+
                 // console.log("new leacher", channel.peerID)
                 self.leachers[channel.peerID] = new Channel(channel)
                 self.leachers[channel.peerID].onclose = function() {
@@ -28,6 +53,10 @@ var Onion = function() {
                 self.leachers[channel.peerID].register("map", function(data) {
                     return Object.keys(self.seeds)
                 })
+
+                // self.leachers[channel.peerID].register("stopsession", function(data) {
+                //     sessionID = data.sessionID
+                // })
                 self.leachers[channel.peerID].register("session", function(data) {
 
                     sessionID = data.sessionID
@@ -36,6 +65,7 @@ var Onion = function() {
                             console.log("direct session was asked from ", channel.peerID)
                             ses = new Session()
                             ses.peerID = sessionID
+                            ses.type = "direct"
                             ses.send = function(req) {
                                 console.log("ses sending:", req)
                                 self.leachers[channel.peerID].publish(sessionID, req)
@@ -53,11 +83,18 @@ var Onion = function() {
                         case "proxy":
                             console.log("proxy session was asked from ", channel.peerID, " to ", data.to)
                             to = data.to
+
                             if (to in self.seeds) {
+                                self.peers[to].push(sessionID)
+                                self.peers[channel.peerID].push(sessionID)
 
                                 self.seeds[to].call("session", data[data.to]).then(function(d) {
                                     console.log("proxy from:", channel.peerID, " to ", data.to, " established with sesid", sessionID)
                                     self.proxying[data.sessionID] = new Session(data.sessionID, self.seeds[data.to], self.leachers[channel.peerID])
+                                    self.proxying[data.sessionID].type = "proxy"
+                                    self.proxying[data.sessionID].close = function() {
+
+                                    }
                                 })
                                 return self.seedMap[to]
                             } else {
@@ -66,7 +103,9 @@ var Onion = function() {
 
                             break;
                         case "exit":
+                            self.peers[channel.peerID].push(sessionID)
                             self.proxying[data.sessionID] = new Session(data.sessionID, self.leachers[channel.peerID], exit)
+                            self.proxying[data.sessionID].type = "exit"
                             return {
                                 "exit": true
                             }
@@ -77,20 +116,35 @@ var Onion = function() {
                 })
 
             }
-            exit.getRandomPeers(3).then(function(seeds) {
+
+            self.runOnion(3)
+
+        })
+
+
+}
+Onion.prototype = {
+        runOnion: function(num) {
+            var self = this
+            this.exit.getRandomPeers(num).then(function(seeds) {
+                console.log(seeds)
                 if (seeds.length == 0) {
-                    exit.type = "exitonly"
-                    self.proxies["exit"] = exit.wssession
+                    self.exit.type = "exitonly"
+                    self.proxies["exit"] = self.exit.wssession
                     self.onready()
                     self.waiting = false
                 }
                 for (i in seeds) {
-                    exit.createConnection(seeds[i]).then(function(channel) {
+                    console.log(self)
+                    self.exit.createConnection(seeds[i]).then(function(channel) {
+                        self.waiting = false
+                        console.log("stopped waiting")
                         if (channel.peerID in self.seeds) {
                             console.warn(channel.peerID, "in seeds")
                             return null
                         }
                         console.log("seed :", channel.peerID)
+                        self.peers[channel.peerID] = []
                         self.seeds[channel.peerID] = new Channel(channel)
                             // self.routes.push([channel.peerID])
                         self.onion([channel.peerID])
@@ -108,10 +162,8 @@ var Onion = function() {
                     })
                 }
             })
+        },
 
-        })
-}
-Onion.prototype = {
         seeds: {},
         leachers: {},
         seedMap: {},
@@ -119,22 +171,67 @@ Onion.prototype = {
         routes: [],
         proxies: {},
         proxying: {},
+        subscriptions: {},
+        seedSessions: {},
         publish: function(topic, data) {
             var keys = Object.keys(this.proxies)
-            this.proxies[keys[keys.length * Math.random() << 0]].publish(topic, data);
+
+            this.proxies[keys[keys.length * Math.random() << 0]].publish(topic, data, true);
         },
         subscribe: function(topic, func) {
             var keys = Object.keys(this.proxies)
-            this.proxies[keys[keys.length * Math.random() << 0]].subscribe(topic, func)
+            key = keys[keys.length * Math.random() << 0]
+            if (key != "exit") {
+                this.subscriptions[key][topic] = func
+
+            }
+            try {
+                this.proxies[key].subscribe(topic, func)
+            } catch (e) {
+                console.log(e)
+                delete this.proxies[key]
+                this.runOnion(2)
+
+                for (t in this.subscriptions[key]) {
+                    this.subscribe(t, this.subscriptions[key][t])
+                }
+            }
+
         },
         call: function(procedure, data) {
             var self = this
             var keys = Object.keys(this.proxies)
             var key = keys[keys.length * Math.random() << 0]
+
             return new Promise(function(resolve, reject) {
-                self.proxies[key].call(procedure, data).then(function(ans) {
-                    resolve(ans)
-                })
+
+                try {
+                    self.proxies[key].call(procedure, data).then(function(ans) {
+                        if(ans=="error"){
+                            delete self.proxies[key]
+                            self.call(procedure,data)
+                        }else{
+                        resolve(ans)
+                            
+                        }
+                    })
+                } catch (e) {
+                    console.log(e)
+                    delete self.proxies[key]
+                    self.runOnion(1)
+
+                    // for (t in self.subscriptions[key]) {
+                    //     self.subscribe(t, this.subscriptions[key][t])
+                    // }
+                    // try {
+                    //     self.call(procedure, data).then(function(ans) {
+                    //         resolve(ans)
+                    //     })
+                    // } catch (e) {
+                    //     console.log(e)
+                    // }
+                }
+
             })
         },
         onready: function() {
@@ -146,6 +243,12 @@ Onion.prototype = {
             var sessionKey = nacl.util.encodeBase64(sessionKeys.publicKey)
                 // console.log("calling onion with route ", route)
                 // send proxy request to seed
+            if (!(route[0] in self.seedSessions)) {
+                self.seedSessions[route[0]] = []
+
+            }
+            self.seedSessions[route[0]].push(sessionKey)
+            self.subscriptions[sessionKey] = {}
             if (route.length == 1) {
                 if (direct) {
 
@@ -156,6 +259,7 @@ Onion.prototype = {
                         "type": "exit"
                     }
                     self.seeds[route[0]].call("session", req).then(function(exitKey) {
+                        self.peers[route[0]].push(sessionKey)
                         self.sessions[sessionKey] = new Session(sessionKey, self.seeds[route[0]])
                         self.proxies[sessionKey] = new Channel(self.sessions[sessionKey])
 
@@ -185,6 +289,10 @@ Onion.prototype = {
                     console.log("Onion route from me to:", route)
                     self.sessions[sessionKey] = new Session(sessionKey, self.seeds[route[0]])
                     self.proxies[sessionKey] = new Channel(self.sessions[sessionKey])
+                    self.proxies[sessionKey].onclose = function() {
+                        delete self.sessions[sessionKey]
+                        delete self.proxies[sessionKey]
+                    }
                     if (self.waiting) {
                         self.onready()
                         self.waiting = false;
@@ -213,6 +321,7 @@ var Session = function(key, seed, leacher) {
     this.peerID = key
     this.leacher = leacher
     this.seed = seed
+    this.subscriptions = []
     if (leacher instanceof Exit) {
         console.log("proxy exit for:", seed.peerID, " and sessionID:", this.peerID)
         this.seed.subscribe(this.peerID, function(req) {
@@ -222,7 +331,8 @@ var Session = function(key, seed, leacher) {
                     self.leacher.wssession.publish(req.topic, req.data)
                     break;
                 case "subscribe":
-                    self.leacher.wssession.subscribe(req.topic, function(data) {
+
+                    var sub = self.leacher.wssession.subscribe(req.topic, function(data) {
                         ans = {
                             topic: req.topic,
                             data: data,
@@ -230,17 +340,18 @@ var Session = function(key, seed, leacher) {
                         }
                         self.seed.publish(self.peerID, ans)
                     })
+                    self.subscriptions.push(sub)
                     break;
                 case "call":
 
                     self.leacher.wssession.call(req.procedure, req.data).then(
                         function(answer) {
-                            
-                            console.log("answer for request",{
+
+                            console.log("answer for request", {
                                 "action": "answer",
                                 "id": req.id,
                                 "data": answer
-                            },"on",self.peerID)
+                            }, "on", self.peerID)
                             self.seed.publish(self.peerID, {
                                 "action": "answer",
                                 "id": req.id,
@@ -248,7 +359,7 @@ var Session = function(key, seed, leacher) {
                             })
 
                         },
-                        function(err){
+                        function(err) {
                             console.log(err)
                         })
                     break;
@@ -273,7 +384,7 @@ var Session = function(key, seed, leacher) {
 
         console.log("New proxy proxyID:", this.peerID, " from:ME to:", self.seed.peerID)
         this.send = function(data) {
-            console.log("Send proxy with proxyID:", self.peerID, " from:ME to:", self.seed.peerID, data)
+            console.log("Send proxy with proxyID:", self.peerID, " from:ME to:", self.seed.peerID)
             seed.publish(self.peerID, JSON.parse(data))
         }
         seed.subscribe(self.peerID, function(data) {
@@ -286,6 +397,8 @@ var Session = function(key, seed, leacher) {
 
 }
 Session.prototype = {
+    close: function() {},
+
     _init: function(route) {
         // session="s"
         // route=[1,2,3,exit]
