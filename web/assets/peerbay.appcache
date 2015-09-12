@@ -1,15 +1,14 @@
 CACHE MANIFEST
 
 
-#version 1.5 9-11-2015
+#version 1.6 9-12-2015
 
 CACHE:
 
 #images
 http://peerbay.net/images/logo.png
 
-#internal HTML documents
-http://peerbay.net/index.html
+
 
 #style sheets
 http://peerbay.net/assets/app.css
@@ -39,10 +38,6 @@ http://peerbay.net/modules/crypto/nacl-stream.js
 http://peerbay.net/modules/crypto/blake2s.js
 http://peerbay.net/modules/crypto/scrypt.js
 http://peerbay.net/modules/crypto/base58.js
-http://peerbay.net/modules/autobahn.rtc.js
-http://peerbay.net/modules/wamp.rtc.js
-http://peerbay.net/modules/onion.rtc.js
-http://peerbay.net/modules/peerbay.js
 http://peerbay.net/modules/peerFeed.js
 
 NETWORK:

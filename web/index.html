@@ -1,6 +1,6 @@
 <!DOCTYPE html>
-<html lang="en">
-<!-- <html lang="en" manifest="./assets/peerbay.appcache"> -->
+<!-- <html lang="en"> -->
+<html lang="en" manifest="./assets/peerbay.appcache">
 
 <head>
     <title>PeerFeed</title>
@@ -94,7 +94,7 @@
             <!-- layout="column" layout-fill layout-align="top center" -->
             <md-tabs md-selected="selectedIndex" md-border-bottom md-autoselect md-dynamic-height='true'>
                 <md-tab md-on-select="walls[tab.wallid].start()" md-on-deselect="walls[tab.wallid].pause()" ng-repeat="tab in tabs" ng-disabled="tab.disabled">
-                    <md-tab-label>
+                    <md-tab-label ng-class="{'md-raised':tab.type=='owner'}">
                         <ng-md-icon ng-if="tab.type=='owner'" icon="person_outline"></ng-md-icon>
                         <ng-md-icon ng-if="tab.type=='group'" icon="group"></ng-md-icon>
                         <span ng-if="tab.type=='hashtag'"><b>#</b></span>
@@ -1031,8 +1031,10 @@
                 }
                 $scope.signIn = function() {
                     $scope.data.signingIn = true
-                        // console.log($scope.data.username, $scope.data.password)
-                    $scope.showSimpleToast("Calculating encryption keys...")
+                    if(!$scope.data.password || !$scope.data.username){
+                        $scope.showSimpleToast("Please enter username and password to sign up...")
+                        return
+                    }
                     peerFeed.crypto.getKeyPair($scope.data.password, $scope.data.username, function(boxKeys, signKeys) {
                         peerFeed.session.keys = boxKeys
                         peerFeed.session.signKeys = signKeys
