@@ -1,6 +1,6 @@
 <!DOCTYPE html>
-<!-- <html lang="en"> -->
-<html lang="en" manifest="./assets/peerbay.appcache">
+<html lang="en">
+<!-- <html lang="en" manifest="./assets/peerbay.appcache"> -->
 
 <head>
     <title>PeerFeed</title>
@@ -18,13 +18,18 @@
 </head>
 
 <body ng-controller="AppCtrl" layout="row" ng-app="MyApp">
+        
     <section ng-if="data.page=='signin'" flex layout="column" layout-align="center center">
         <md-content layout-padding>
             <md-card>
                 <md-card-content>
                     <img src="images/logo.png" class="md-card-image" width=300 />
-                    <md-highlight-text>This is a testing version.Works better on Chrome/Chromium.
-                    Check the demo accounts.</md-highlight-text>
+ <p>This is a testing version.
+                    </p>
+                    <p>
+                    Works better on Chrome/Chromium.
+                    </p>
+                    <p>Check the demo accounts.</p>
                     <md-input-container>
                         <label>Username</label>
                         <input ng-disabled="data.signingIn" name="username" ng-model="data.username" required minlength="4">
@@ -45,6 +50,7 @@
                         <md-checkbox ng-model="data.remember" aria-label="Remember Me">Remember Me</md-checkbox>
                     </md-input-container>
                     <md-progress-linear ng-if="data.signingIn" md-mode="indeterminate"></md-progress-linear>
+                   
                 </md-card-content>
             </md-card>
         </md-content>
