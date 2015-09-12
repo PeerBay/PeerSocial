@@ -471,6 +471,7 @@
                     </md-list-item>
                 </md-list>
             </md-content>
+            <md-highlight-text style="bottom:0">{{onlineUsers}} connected browsers</md-highlight-text>
             <md-button style="bottom:0" ng-click="logout()">Log out</md-button>
         </md-sidenav>
     </section>
@@ -1120,7 +1121,7 @@
 
                             } else {
                                 $scope.feed.onlineUsers(function(usersnum) {
-                                    $scope.data.onlineUsers = usersnum[0]
+                                    $scope.onlineUsers = usersnum[0]
                                 })
                                 $scope.data.profile = profile[0]
                                 $scope.data.profile.type = "owner"
