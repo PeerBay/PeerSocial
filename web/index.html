@@ -50,7 +50,7 @@
                         <md-checkbox ng-model="data.remember" aria-label="Remember Me">Remember Me</md-checkbox>
                     </md-input-container>
                     <md-progress-linear ng-if="data.signingIn" md-mode="indeterminate"></md-progress-linear>
-                   
+
                 </md-card-content>
             </md-card>
         </md-content>
@@ -320,6 +320,7 @@
                         </section>
                         <section ng-if="tab.type=='hashtag' ">
                             <md-content flex offset="30" class="md-padding" class="basecolor">
+                               <md-toolbar style="max-width:500px" flex class="md-tall " >
                                 <form ng-submit="submitPublicPost(tab)">
                                     <div class="md-toolbar-tools">
                                         <md-input-container >
@@ -351,6 +352,7 @@
                                         </md-input-container>
                                     </div>
                                 </form>
+                                </md-toolbar>
                                 <md-card style="max-width:500px" ng-repeat="post in Tab[tab.wallid] | orderBy: '-date'">
                                     <md-card-content id="post{{post.date}}">
                                         <div layout="row">
