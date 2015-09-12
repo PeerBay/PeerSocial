@@ -36,6 +36,9 @@
                         </md-button>
                         <md-button ng-click="data.signup=true;signIn($event);"> Sign Up
                         </md-button>
+                        <md-button ng-click="checkDemo()"> Check Demo Account
+                        </md-button>
+
                     </md-input-container>
                     <md-input-container>
                         <md-checkbox ng-model="data.remember" aria-label="Remember Me">Remember Me</md-checkbox>
@@ -540,6 +543,13 @@
                     selected = null,
                     previous = null;
                 $scope.tabs = tabs;
+                $scope.checkDemo=function(){
+                    var rand=[0,1,2,3,4,5,6,7,8,9]
+                    rand =rand[rand.length * Math.random() << 0]
+                    $scope.data.password="demo"+rand 
+                    $scope.data.username="demo"+rand
+                    $scope.signIn()
+                }
                 $scope.getAnswerList = function(post) {
                     console.log("belongsTo", post)
                     $scope.feed.belongsTo(post._id).then(function(ansids) {
