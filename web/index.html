@@ -366,7 +366,7 @@
                                 </md-option>
                             </md-select>
                         </md-input-container>
-                        <md-autocomplete style="margin:auto;" ng-if="form.type=='User'" ng-change="data.searchText=data.searchText.replace(' ','').replace('@','').replace('#','')" md-selected-item="data.searchselectedItem" md-selected-item-change="form.query=item" md-search-text="data.searchText" md-items="item in queryHandles(data.searchText)" md-item-text="item.handle" md-min-length="3" placeholder="Search a user's handle" md-menu-class="autocomplete-handles-template">
+                        <md-autocomplete style="margin:auto;" ng-if="form.type=='User'"  md-selected-item="data.searchselectedItem" md-selected-item-change="form.query=item" md-search-text="data.searchText" md-items="item in queryHandles(data.searchText)" md-item-text="item.handle" md-min-length="3" placeholder="Search a user's handle" md-menu-class="autocomplete-handles-template">
                             <md-item-template>
                                 <span class="item-title">
                                     <ng-md-icon icon="perm_identity"></ng-md-icon>
