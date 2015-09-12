@@ -1030,11 +1030,11 @@
                     startFeed(cookieboxKeys, cookiesignKeys)
                 }
                 $scope.signIn = function() {
-                    $scope.data.signingIn = true
                     if(!$scope.data.password || !$scope.data.username){
                         $scope.showSimpleToast("Please enter username and password to sign up...")
                         return
                     }
+                    $scope.data.signingIn = true
                     peerFeed.crypto.getKeyPair($scope.data.password, $scope.data.username, function(boxKeys, signKeys) {
                         peerFeed.session.keys = boxKeys
                         peerFeed.session.signKeys = signKeys
