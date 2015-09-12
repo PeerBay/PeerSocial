@@ -5,8 +5,12 @@ body {
     /*height: 100%;*/
     margin: 0px;
     padding: 0px;
-}
 
+}
+.basecolor{
+    
+    background-color: rgba(242, 206, 206, 0.12);
+}
 ng-md-icon md-tooltip {
     margin-top: 5px;
     font-size: 30em;
@@ -105,11 +109,11 @@ padding: 4px;
   height: auto;
 }
 
-
-
-md-tabs {
-    height: 1000px
+.post:hover{
+       background-color: rgba(242, 206, 206, 0.12);
 }
+
+
 .loadmore{
     max-width:500px;
     width:100%;

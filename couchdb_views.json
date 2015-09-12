@@ -1,6 +1,5 @@
 {
    "_id": "_design/rel",
-   "_rev": "9-b00bab990b28853724be5ede14d2900f",
    "language": "javascript",
    "views": {
        "belongs": {

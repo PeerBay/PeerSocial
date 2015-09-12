@@ -901,10 +901,18 @@ Feed.prototype = {
 
         } else if (query.startsWith("#")) {
             return new Promise(function(resolve, reject) {
-                // self.onion.call("handles", query.slice(1)).then(function(results) {
-                //     resolve(results)
-                // })
-                resolve([])
+                self.onion.call("queryTags", [query.slice(1)]).then(function(results) {
+                    console.log(results)
+
+                    results.forEach(function(doc, idx, theDocs) {
+                        theDocs[idx]={
+                            count:doc.value,
+                            tag:doc.key[0]
+                        }
+                    })
+                    resolve(results)
+                })
+                // resolve([])
                 console.log("hashtag search")
             })
         }
@@ -917,6 +925,17 @@ Feed.prototype = {
         this.onion.subscribe(feedID, function(docid) {
 
             callback(docid)
+        })
+    },
+    belongsTo:function(postid){
+        var self=this;
+        return new Promise(function(resolve,reject){
+            console.log("belongsto",postid)
+            self.onion.call("belongsTo",[postid]).then(function(ansids){
+                
+                resolve(ansids)
+            })
+            
         })
     },
 

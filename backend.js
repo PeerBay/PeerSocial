@@ -749,6 +749,28 @@ function queryHandles(query) {
         })
     return deferred.promise
 }
+// ?startkey=["peer"]&endkey=["peer\u9999"]&group=true&group_level=1&limit=1
+function queryTags(query) {
+    console.log("quering tag:", query[0])
+    var deferred = Q.defer();
+    feeds.view("rel", "tag", {
+            "startkey": [query[0]],
+            "endkey": [query[0] + "\u9999"],
+            "group":true,
+            "group_level":1,
+            "limit": 3
+        },
+        function(err, body) {
+
+            console.log(JSON.stringify(body))
+            if (!err) {
+                deferred.resolve(body.rows)
+            } else {
+                deferred.reject(err)
+            }
+        })
+    return deferred.promise
+}
 
 function getBoxKeys(feedIds) {
     var deferred = Q.defer();
@@ -767,19 +789,19 @@ function getBoxKeys(feedIds) {
     return deferred.promise
 }
 
-function belongsTo(threadIds) {
-    console.log(threadIds)
+function belongsTo(threadId) {
+    console.log(threadId)
     var deferred = Q.defer();
     feeds.view("rel", "belongs", {
-            "keys": threadIds
+            "key": threadId[0]
         },
         function(err, body) {
-            var answer = {};
+            var answer = [];
             console.log(err, body)
             if (!err) {
-                body.rows.forEach(function(doc) {
-                    answer[doc.key] = doc.value
-                });
+                body.rows.forEach(function(doc){
+                    answer.push(doc.value)
+                })
                 deferred.resolve(answer)
             }
         })
@@ -798,7 +820,8 @@ function tag(tag) {
             "startkey": startkey,
             "endkey": [tag[0], 0],
             "descending": true,
-            "limit": 5
+            "limit": 5,
+            "reduce":false
         },
         function(err, body) {
             var answer = [];
@@ -899,6 +922,7 @@ connection.onopen = function(session) {
 
     })
     session.register("handles", queryHandles)
+    session.register("queryTags", queryTags)
     session.register("putwithid", putwithid)
     session.register("randomPeer", randomPeer)
     session.register("randomPeers", randomPeers)

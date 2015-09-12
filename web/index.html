@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="en" manifest="./assets/peerbay.appcache">
+<html lang="en">
+<!-- <html lang="en" manifest="./assets/peerbay.appcache"> -->
 
 <head>
     <title>PeerFeed</title>
@@ -33,7 +34,7 @@
                     <md-input-container>
                         <md-button ng-disabled="data.signingIn" class="md-raised md-primary" ng-click="signIn($event)">Sign In
                         </md-button>
-                        <md-button ng-if="data.newAccount" ng-click="data.signup=true;signIn($event);"> Sign Up
+                        <md-button ng-click="data.signup=true;signIn($event);"> Sign Up
                         </md-button>
                     </md-input-container>
                     <md-input-container>
@@ -54,7 +55,7 @@
                 <h1>Profile</h1>
             </div>
         </md-toolbar>
-        <md-content layout="row" layout-padding style="width:100%">
+        <md-content class="basecolor" layout="row" layout-padding style="width:100%">
             <form flex="50" offset="25" ng-submit="createProfile();data.page='feeds'">
                 <!--  <cropme width="667" height="300" ratio="0.4" icon-class="" type="png" destination-width="667" id="cropme1" ok-label="Ok"  cancel-label="Cancel" files="data.profile.files" property="coverImage" placeholder="Cover Image">
                 </cropme> -->
@@ -63,8 +64,8 @@
                     <input name="name" ng-model="data.profile.name" required minlength="4">
                 </md-input-container>
                 <md-input-container>
-                    <label>Handle</label>
-                    <input name="handle" ng-change="data.profile.handle.split(' ').join('')" ng-model="data.profile.handle" required minlength="4">
+                    <label>Handle (@)</label>
+                    <input name="handle" ng-change="data.profile.handle=data.profile.handle.split(' ').join('').replace('@','')" ng-model="data.profile.handle" required minlength="4">
                 </md-input-container>
                 <md-input-container>
                     <label>Location</label>
@@ -89,9 +90,9 @@
         </md-content>
     </section>
     <section ng-if="data.page=='feeds'" flex layout="row">
-        <md-content flex layout-padding layout="column" style="overflow:hidden">
+        <md-content flex layout-padding layout="column" style="">
             <!-- layout="column" layout-fill layout-align="top center" -->
-            <md-tabs md-selected="selectedIndex" md-border-bottom md-autoselect>
+            <md-tabs md-selected="selectedIndex" md-border-bottom md-autoselect md-dynamic-height='true'>
                 <md-tab md-on-select="walls[tab.wallid].start()" md-on-deselect="walls[tab.wallid].pause()" ng-repeat="tab in tabs" ng-disabled="tab.disabled">
                     <md-tab-label>
                         <ng-md-icon ng-if="tab.type=='owner'" icon="person_outline"></ng-md-icon>
@@ -99,11 +100,11 @@
                         <span ng-if="tab.type=='hashtag'"><b>#</b></span>
                         <ng-md-icon ng-if="tab.type=='user'" icon="person"></ng-md-icon>
                         {{tab.handle || tab.data.name || tab.tag }}<sup style="color:red" ng-if="unread[tab.wallid].length">{{unread[tab.wallid].length}}</sup>
-                        <ng-md-icon icon="clear" ng-click="removeTab( tab )"></ng-md-icon>
+                        <ng-md-icon ng-if="tab.type!='owner'" icon="clear" ng-click="removeTab( tab )"></ng-md-icon>
                     </md-tab-label>
-                    <md-tab-body style="height:100%">
-                        <section layout="row" ng-if="tab.type=='user'||tab.type=='owner' ">
-                            <md-content flex="20" layout="column">
+                    <md-tab-body style="">
+                        <section layout="row" ng-if="tab.type=='user'||tab.type=='owner' " class="basecolor">
+                            <md-content flex="20" layout="column" class="basecolor">
                                 <md-toolbar>
                                     <div class="md-toolbar-tools">
                                         <!--         <img flex="100" ng-init="getFile(data.profile.coverImage)" ng-src="{{data.files[data.profile.coverImage]}}"> -->
@@ -120,12 +121,13 @@
                                     </md-card-content>
                                     <md-card>
                             </md-content>
-                            <md-content flex offset-gt-md="10" class="md-padding">
-                                <md-toolbar style="max-width:500px" flex class="md-tall " ng-if="tab.type=='owner' ">
-                                    <form ng-submit="submitPublicPost()">
+                            <md-content flex="10" class="basecolor"></md-content>
+                            <md-content flex class="md-padding basecolor">
+                                <md-toolbar style="max-width:500px" flex class="md-tall " ng-init="tab.type=='user'?tab.publicPost.text='@'+tab.handle:pass ">
+                                    <form ng-submit="submitPublicPost(tab)">
                                         <div class="md-toolbar-tools">
                                             <md-input-container>
-                                                <md-autocomplete flex md-input-type="textarea" md-selected-item="data.publicPost.selectedItem" md-search-text="data.publicPost.text" md-items="item in queryPublicPost(data.publicPost.text)" md-item-text="autocompletePublicPost(data.publicPost.text,item.handle)" md-min-length="3" md-floating-label="What's happening?" md-menu-class="autocomplete-handles-template">
+                                                <md-autocomplete flex md-input-type="textarea" md-selected-item="tab.publicPost.selectedItem" md-search-text="tab.publicPost.text" md-items="item in queryPublicPost(tab.publicPost.text)" md-item-text="autocompletePublicPost(tab.publicPost.text,item.handle)" md-min-length="3" md-floating-label="{{tab.type=='owner'?'Share something':'Share with '+tab.name}}" md-menu-class="autocomplete-handles-template">
                                                     <md-item-template>
                                                         <span class="item-title">
                                             <ng-md-icon icon="perm_identity"></ng.-md-icon>
@@ -146,7 +148,7 @@
                                         <br>
                                         <div class="md-toolbar-tools md-toolbar-tools-bottom md-accent" layout="row" layout-sm="column" layout-align="space-between end">
                                             <md-input-container>
-                                                <lf-ng-md-file-input lf-files="data.publicPost.files" lf-on-file-removed="data.resetPublicFiles" lf-property="images" multiple lf-placeholder="AddPhoto"></lf-ng-md-file-input>
+                                                <lf-ng-md-file-input lf-files="tab.publicPost.files" lf-on-file-removed="tab.resetPublicFiles" lf-property="images" multiple lf-placeholder="AddPhoto"></lf-ng-md-file-input>
                                             </md-input-container>
                                             <md-input-container>
                                                 <md-button class="md-accent">Post</md-button>
@@ -154,13 +156,13 @@
                                         </div>
                                     </form>
                                 </md-toolbar>
-                                <md-card ng-if="post.date" style="max-width:500px" ng-repeat="post in Tab[tab.wallid] | orderBy: '-date'">
+                                <md-card ng-if="post.date" ng-click="post.wantAnswers=true" style="max-width:500px;margin:1px;" class="post" ng-repeat="post in Tab[tab.wallid] | orderBy: '-date'">
                                     <md-card-content id="post{{post.date}}">
                                         <div layout="row">
                                             <img class="avatarImage" ng-init="!data.files[data.profiles[post.feedID].profileImage]?getFile(data.profiles[post.feedID].profileImage):pass" ng-src="{{data.files[data.profiles[post.feedID].profileImage]}}" alt="">
                                             <h3>
-                                    {{data.profiles[post.feedID].name}}
-                                    </h3>
+                                                {{data.profiles[post.feedID].name}}
+                                                </h3>
                                         </div>
                                         <p>
                                             {{post.message}}
@@ -180,9 +182,9 @@
                                         <ng-md-icon icon="share"></ng-md-icon>
                                         <ng-md-icon icon="reply" ng-click="post.answer=true"></ng-md-icon>
                                     </div>
-                                    <div class="answerPost" ng-if="post.answer" layout="row">
+                                    <div class="answerPost md-accent md-hue-1" ng-if="post.answer" layout-padding layout="row">
                                         <img class="avatarImage" ng-src="{{data.files[data.profile.profileImage]}}" alt="">
-                                        <md-autocomplete ng-init="data.answerPost[post._id]={};data.answerPost[post._id].text='@'+data.profiles[post.feedID].handle" flex md-input-type="textarea" md-selected-item="data.publicPost.selectedItem" md-search-text="data.answerPost[post._id].text" md-items="item in queryPublicPost(data.publicPost.text)" md-item-text="autocompletePublicPost(data.publicPost.text,item.handle)" md-min-length="3" md-floating-label="Answer to {{data.profiles[post.feedID].name}}.." md-menu-class="autocomplete-handles-template">
+                                        <md-autocomplete ng-init="post.publicPost.text='@'+data.profiles[post.feedID].handle" flex md-input-type="textarea" md-selected-item="post.publicPost.selectedItem" md-search-text="post.publicPost.text" md-items="item in queryPublicPost(post.publicPost.text)" md-item-text="autocompletePublicPost(post.publicPost.text,item.handle)" md-min-length="3" md-floating-label="Answer to {{data.profiles[post.feedID].name}}.." md-menu-class="autocomplete-handles-template">
                                             <md-item-template>
                                                 <span class="item-title">
                                             <ng-md-icon icon="perm_identity"></ng-md-icon>
@@ -198,6 +200,31 @@
                                                 </span>
                                             </md-item-template>
                                         </md-autocomplete>
+                                        <md-button ng-click="submitPublicPost(post);">
+                                            <ng-md-icon icon="send"></ng-md-icon>
+                                        </md-button>
+                                    </div>
+                                    <div ng-if="post.wantAnswers" ng-init="getAnswerList(post)">
+                                        <md-list>
+                                            <md-subheader class="md-no-sticky">Answers</md-subheader>
+                                            <md-divider></md-divider>
+                                            <md-list-item class="md-3-line" ng-repeat="answer in post.answers | orderBy:'date'">
+                                                <img class="avatarImage" ng-init="data.profiles[answer.feedID]?pass:getProfile(answer.feedID)" ng-src="{{data.files[data.profiles[answer.feedID].profileImage]}}" alt="">
+                                                <div class="md-list-item-text" layout="column">
+                                                    <b>{{data.profiles[answer.feedID].handle}}</b>
+                                                    <p>{{ answer.message }}</p>
+                                                </div>
+                                            </md-list-item>
+                                        </md-list>
+                                        <md-input-container>
+                                            <md-button class=" md-primary" ng-click="getAnswers(post)">{{post.answerlist.length}} answers..</md-button>
+                                        </md-input-container>
+                                    </div>
+                                    </md-list-item>
+                                    </md-list>
+                                    </div>
+                                    <div>
+                                        <md-divider></md-divider>
                                     </div>
                                 </md-card>
                                 <br/>
@@ -221,7 +248,7 @@
                                     <span md-highlight-text="data.groupForm.searchUserText">{{item.name}} :: {{item.handle}}</span>
                                 </md-autocomplete>
                             </md-content>
-                            <md-content offset="10" flex class="md-padding">
+                            <md-content offset="10" flex class="md-padding basecolor">
                                 <md-toolbar style="max-width:500px" id="grouppostbox" flex class="md-tall ">
                                     <div class="md-toolbar-tools">
                                         <md-autocomplete flex md-input-type="textarea" md-selected-item="tab.groupPost.selectedItem" md-search-text="tab.groupPost.text" md-items="item in queryGroupPost(tab.groupPost.text)" md-item-text="autocompletePublicPost(tab.groupPost.text,item.handle)" md-min-length="3" md-floating-label="Post on {{tab.data.name}}" md-menu-class="autocomplete-handles-template">
@@ -282,7 +309,7 @@
                             </md-content>
                         </section>
                         <section ng-if="tab.type=='hashtag' ">
-                            <md-content flex offset="30" class="md-padding">
+                            <md-content flex offset="30" class="md-padding" class="basecolor">
                                 <md-card style="max-width:500px" ng-repeat="post in Tab[tab.wallid] | orderBy: '-date'">
                                     <md-card-content id="post{{post.date}}">
                                         <div layout="row">
@@ -336,19 +363,32 @@
                                 </md-option>
                             </md-select>
                         </md-input-container>
-                        <md-autocomplete style="margin:auto;" ng-if="form.type=='User'" md-selected-item="data.searchselectedItem" md-selected-item-change="form.query=item" md-search-text="data.searchText" md-items="item in queryHandles(data.searchText)" md-item-text="item.handle" md-min-length="3" placeholder="Search a user's handle" md-menu-class="autocomplete-handles-template">
+                        <md-autocomplete style="margin:auto;" ng-if="form.type=='User'" ng-change="data.searchText=data.searchText.replace(' ','').replace('@','').replace('#','')" md-selected-item="data.searchselectedItem" md-selected-item-change="form.query=item" md-search-text="data.searchText" md-items="item in queryHandles(data.searchText)" md-item-text="item.handle" md-min-length="3" placeholder="Search a user's handle" md-menu-class="autocomplete-handles-template">
                             <md-item-template>
                                 <span class="item-title">
-		                            <ng-md-icon icon="perm_identity"></ng-md-icon>
-		                            <span> {{item.name}} </span>
+                                    <ng-md-icon icon="perm_identity"></ng-md-icon>
+                                    <span> {{item.name}} </span>
                                 </span>
                                 <span class="item-metadata">
-		                            <span class="item-metastat">
-		                              Handle:<strong>{{item.handle}}</strong> 
-		                            </span>
+                                    <span class="item-metastat">
+                                      Handle:<strong>{{item.handle}}</strong> 
+                                    </span>
                                 <span class="item-metastat">
-		                              Location:<strong>{{item.location}}</strong> 
-		                            </span>
+                                      Location:<strong>{{item.location}}</strong> 
+                                    </span>
+                                </span>
+                            </md-item-template>
+                        </md-autocomplete>
+                        <md-autocomplete style="margin:auto;" ng-if="form.type=='HashTag'" md-selected-item="data.searchselectedItem" md-selected-item-change="form.query=item" md-search-text="data.searchText" md-items="item in queryTags(data.searchText)" md-item-text="item.tag" md-min-length="2" placeholder="Search a HashTag" md-menu-class="autocomplete-handles-template">
+                            <md-item-template>
+                                <span class="item-title">
+                                    <b>#</b>
+                                    <span> {{item.tag}} </span>
+                                </span>
+                                <span class="item-metadata">
+                                    <span class="item-metastat">
+                                      Count:<strong>{{item.count}}</strong> 
+                                    </span>
                                 </span>
                             </md-item-template>
                         </md-autocomplete>
@@ -500,7 +540,29 @@
                     selected = null,
                     previous = null;
                 $scope.tabs = tabs;
-                // $scope.selectedIndex = 0;
+                $scope.getAnswerList = function(post) {
+                    console.log("belongsTo", post)
+                    $scope.feed.belongsTo(post._id).then(function(ansids) {
+                        console.log(ansids)
+                        post.answerlist = ansids
+                        post.answers = []
+                    })
+                }
+                $scope.getAnswers = function(post) {
+                        var ansids = post.answerlist.splice(0, 3)
+
+                        $scope.feed.get(ansids).then(function(ansdocs) {
+                            console.log(post.answers)
+                            ansdocs.forEach(function(ans, idx, all) {
+                                var dateid = ans._id.split("-")
+                                ans.date = dateid[1]
+                                ans.feedID = dateid[0]
+                                all[idx] = ans
+                            })
+                            post.answers = post.answers.concat(ansdocs)
+                        })
+                    }
+                    // $scope.selectedIndex = 0;
                 $scope.$watch('selectedIndex', function(current, old) {
                     previous = selected;
                     console.log($scope.tabs, current)
@@ -542,10 +604,10 @@
 
                             tabs.push({
                                 "type": "hashtag",
-                                "tag": $scope.form.query,
+                                "tag": $scope.form.query.tag,
                                 "wallid": $scope.Wall({
-                                    type: "hashtag",
-                                    "tag": $scope.form.query
+                                    "type": "hashtag",
+                                    "tag": $scope.form.query.tag
                                 })
                             })
                             break;
@@ -629,6 +691,7 @@
                                                 // });
                                                 console.log(ans)
                                                 $scope.feed.get(ans).then(function(data) {
+
                                                         data.forEach(function(doc, i, theDocs) {
                                                                 doc.date = parseInt(doc._id.split("-")[1])
                                                                 if (doc.date && self.lastdate > doc.date) self.lastdate = doc.date
@@ -881,51 +944,61 @@
                             switch (this.feed.type) {
                                 case "user":
                                 case "owner":
-                                    $scope.feed.getFeedDocIds(this.feed._id, this.lastdate).then(
-                                        function(ans) {
+                                    if (this.lastchecked != self.lastdate) {
+                                        console.log(this.feed._id, this.lastdate)
+                                        $scope.feed.getFeedDocIds(this.feed._id, this.lastdate).then(
+                                            function(ans) {
 
-                                            $scope.feed.get(ans).then(function(data) {
-                                                data.forEach(function(doc, i, theDocs) {
-                                                    doc.date = parseInt(doc._id.split("-")[1])
-                                                    if (doc.date && self.lastdate > doc.date) self.lastdate = doc.date
-                                                    doc.feedID = doc._id.split("-")[0]
-                                                    theDocs[i] = doc;
-                                                    $scope.Tab[self.id].push(doc)
-                                                    $scope.$apply()
+                                                $scope.feed.get(ans).then(function(data) {
+                                                    data.forEach(function(doc, i, theDocs) {
+                                                        console.log(doc)
+                                                        doc.date = parseInt(doc._id.split("-")[1])
+                                                        self.lastchecked = self.lastdate
+                                                        if (doc.date && self.lastdate >= doc.date) self.lastdate = doc.date
+                                                        doc.feedID = doc._id.split("-")[0]
+                                                        theDocs[i] = doc;
+                                                        $scope.Tab[self.id].push(doc)
+                                                        $scope.$apply()
+                                                    })
                                                 })
                                             })
-                                        })
+                                    }
                                     break;
                                 case "group":
-                                    $scope.feed.getFeedDocIds(this.feed.feedID, this.lastdate).then(
-                                        function(ans) {
-                                            $scope.feed.get(ans).then(function(data) {
-                                                console.log(data)
-                                                for (var i in data) {
-                                                    var doc = data[i]
-                                                    var feedID = doc._id.split("-")[0]
-                                                    doc = $scope.feed.decryptDoc(doc, self.feed.secret)
-                                                    var post = JSON.parse(doc.data.doc)
-                                                    post.date = parseInt(doc._id.split("-")[1])
-                                                    if (post.date && self.lastdate > post.date) self.lastdate = post.date
-                                                    post.feedID = feedID
-                                                    post.user = doc.data.key
-                                                    post._id = doc._id
-                                                    $scope.Tab[self.id].push(post)
-                                                    console.log(post)
+                                    if (this.lastchecked != self.lastdate) {
+                                        $scope.feed.getFeedDocIds(this.feed.feedID, this.lastdate).then(
+                                            function(ans) {
+                                                $scope.feed.get(ans).then(function(data) {
+                                                    console.log(data)
+                                                    for (var i in data) {
+                                                        var doc = data[i]
+                                                        var feedID = doc._id.split("-")[0]
+                                                        self.lastchecked = self.lastdate
+                                                        doc = $scope.feed.decryptDoc(doc, self.feed.secret)
+                                                        var post = JSON.parse(doc.data.doc)
+                                                        post.date = parseInt(doc._id.split("-")[1])
+                                                        if (post.date && self.lastdate > post.date) self.lastdate = post.date
+                                                        post.feedID = feedID
+                                                        post.user = doc.data.key
+                                                        post._id = doc._id
+                                                        $scope.Tab[self.id].push(post)
+                                                        console.log(post)
 
-                                                }
+                                                    }
 
+                                                })
                                             })
-                                        })
+                                    }
                                     break;
                                 case "hashtag":
+                                 if (this.lastchecked != self.lastdate) {
                                     $scope.feed.getTagDocIds(this.feed.tag, this.lastdate).then(
                                         function(ans) {
 
                                             $scope.feed.get(ans).then(function(data) {
                                                 data.forEach(function(doc, i, theDocs) {
                                                     doc.date = parseInt(doc._id.split("-")[1])
+                                                    self.lastchecked = self.lastdate
                                                     if (doc.date && self.lastdate > doc.date) self.lastdate = doc.date
                                                     doc.user = doc._id.split("-")[0]
                                                     $scope.getProfile(doc.user)
@@ -935,6 +1008,7 @@
                                                 })
                                             })
                                         })
+                                }
                                     break;
 
                             }
@@ -1471,7 +1545,18 @@
                 }
                 $scope.queryHandles = function(query) {
                     var deferred = $q.defer();
+                    query = query.split(" ").join('').replace("@").replace("#")
                     $scope.feed.search("@" + query).then(function(results) {
+
+                        console.log(results)
+                        deferred.resolve(results)
+                    })
+                    return deferred.promise
+                }
+                $scope.queryTags = function(query) {
+                    var deferred = $q.defer();
+                    query = query.split(" ").join('').replace("@", '').replace("#", '')
+                    $scope.feed.search("#" + query).then(function(results) {
 
                         console.log(results)
                         deferred.resolve(results)
@@ -1494,29 +1579,43 @@
                         }
                     }
                 }
-                $scope.submitPublicPost = function() {
-                    if ($scope.data.publicPost.text || $scope.data.publicPost.files.length) {
+                $scope.submitPublicPost = function(tab) {
+                    if (tab.publicPost.text || tab.publicPost.files.length) {
                         var publicPost = {
-                            message: $scope.data.publicPost.text,
-                            files: $scope.data.publicPost.files,
+                            message: tab.publicPost.text,
+                            files: tab.publicPost.files,
                             tags: [],
                             mentions: []
                         }
                         var mentions = /(?:^|\W)@(\w+)(?!\w)/g,
                             tags = /(?:^|\W)#(\w+)(?!\w)/g,
                             match = [];
-                        while (match = tags.exec($scope.data.publicPost.text)) {
+                        while (match = tags.exec(tab.publicPost.text)) {
                             publicPost.tags.push(match[1])
                         }
-                        while (match = mentions.exec($scope.data.publicPost.text)) {
+                        while (match = mentions.exec(tab.publicPost.text)) {
                             publicPost.mentions.push(match[1])
+                        }
+                        tab.publicPost.text = ""
+                        if (!tab.type) {
+                            //it's a subpost
+                            if (!tab.publicPost.belongsTo) {
+                                //first answer
+                                publicPost.belongsTo = tab._id
+                            } else {
+                                publicPost.belongsTo = tab.belongsTo
+
+                            }
+                            publicPost.answersTo = tab._id
+                            tab.publicPost.text = ""
+                            tab.answer = false
                         }
                         $scope.feed.publicPost(publicPost).then(function(answer) {
                             console.log(answer)
                         })
-                        $scope.data.resetPublicFiles()
-                        $scope.data.publicPost.text = ""
-                        $scope.data.publicPost.files = []
+                        if (tab.resetPublicFiles) tab.resetPublicFiles()
+
+                        tab.publicPost.files = []
 
                     }
                 }
