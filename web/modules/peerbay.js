@@ -51,7 +51,7 @@ function Feed(boxKeys, signKeys) {
             self.onion = onion
             console.log(onion)
             var keyReadyInterval = setInterval(function() {
-                if (!onion.waiting) {
+                if (!self.onion.waiting) {
                     clearInterval(keyReadyInterval)
                     resolve(self)
                 }
@@ -59,7 +59,7 @@ function Feed(boxKeys, signKeys) {
         } else {
             self.onion = new Onion()
              var keyReadyInterval = setInterval(function() {
-                if (!onion.waiting) {
+                if (!self.onion.waiting) {
                     clearInterval(keyReadyInterval)
                     resolve(self)
                 }
