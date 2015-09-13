@@ -50,23 +50,25 @@ function Feed(boxKeys, signKeys) {
         if (onion) {
             self.onion = onion
             console.log(onion)
-
-            if ("waiting" in onion && !onion.waiting) {
-                console.log("stoped waiting",self.onion.waiting)
-                resolve(self)
-            } else {
-                self.onion.onready = function() {
-                    console.log("ready1")
+            var keyReadyInterval = setInterval(function() {
+                if (!onion.waiting) {
+                    clearInterval(keyReadyInterval)
                     resolve(self)
                 }
-            }
+            }, 500)
         } else {
             self.onion = new Onion()
-            self.onion.onready = function() {
-                    console.log("ready2")
+             var keyReadyInterval = setInterval(function() {
+                if (!onion.waiting) {
+                    clearInterval(keyReadyInterval)
+                    resolve(self)
+                }
+            }, 500)
+            // self.onion.onready = function() {
+            //     console.log("ready2")
 
-                resolve(self)
-            }
+            //     resolve(self)
+            // }
         }
 
 
@@ -523,9 +525,9 @@ Feed.prototype = {
             var groupAdmin = {}
             var groupIDs = []
             var groupSecrets = {}
-            var settingValues={}
+            var settingValues = {}
             for (i in groupKeys) {
-                if(typeof groupKeys[i]=="string") groupKeys[i] = JSON.parse(groupKeys[i])
+                if (typeof groupKeys[i] == "string") groupKeys[i] = JSON.parse(groupKeys[i])
                 if (groupKeys[i][0].length == 88) {
                     groupID = peerFeed.crypto.getpeerFeedID(nacl.util.decodeBase64(groupKeys[i][0]).subarray(32, 64))
                     groupAdmin[groupID] = nacl.sign.keyPair.fromSeed(nacl.util.decodeBase64(groupKeys[i][0]).subarray(0, 32))
@@ -902,17 +904,17 @@ Feed.prototype = {
         } else if (query.startsWith("#")) {
             return new Promise(function(resolve, reject) {
                 self.onion.call("queryTags", [query.slice(1)]).then(function(results) {
-                    console.log(results)
+                        console.log(results)
 
-                    results.forEach(function(doc, idx, theDocs) {
-                        theDocs[idx]={
-                            count:doc.value,
-                            tag:doc.key[0]
-                        }
+                        results.forEach(function(doc, idx, theDocs) {
+                            theDocs[idx] = {
+                                count: doc.value,
+                                tag: doc.key[0]
+                            }
+                        })
+                        resolve(results)
                     })
-                    resolve(results)
-                })
-                // resolve([])
+                    // resolve([])
                 console.log("hashtag search")
             })
         }
@@ -927,15 +929,15 @@ Feed.prototype = {
             callback(docid)
         })
     },
-    belongsTo:function(postid){
-        var self=this;
-        return new Promise(function(resolve,reject){
-            console.log("belongsto",postid)
-            self.onion.call("belongsTo",[postid]).then(function(ansids){
-                
+    belongsTo: function(postid) {
+        var self = this;
+        return new Promise(function(resolve, reject) {
+            console.log("belongsto", postid)
+            self.onion.call("belongsTo", [postid]).then(function(ansids) {
+
                 resolve(ansids)
             })
-            
+
         })
     },
 
